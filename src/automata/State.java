@@ -1,3 +1,5 @@
+package automata;
+
 public class State {
     private boolean finalState;
     
