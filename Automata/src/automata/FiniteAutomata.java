@@ -1,6 +1,6 @@
 package automata;
 
-import java.util.List;
+import java.util.Set;
 
 public interface FiniteAutomata {
     /**
@@ -11,11 +11,16 @@ public interface FiniteAutomata {
     /**
      * Returns the list of all the states in the FA
      */
-    public List<State> allStates();
+    public Set<State> allStates();
     
     /**
      * Returns the alphabet of the finite automata
      */
-    public List<Character> alphabet();
+    public Set<Character> alphabet();
     
+    
+    /**
+     * Returns the set of all final states in the FA
+     */
+    public Set<State> finalStates(); 
 }

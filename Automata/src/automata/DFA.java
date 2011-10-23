@@ -1,7 +1,5 @@
 package automata;
 
-import automata.State;
-
 
 public interface DFA extends FiniteAutomata {    
     /**
