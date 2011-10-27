@@ -1,5 +1,6 @@
 package conversion;
 
+import automata.MapBasedDFA;
 import automata.DFA;
 import automata.NFA;
 import automata.State;
@@ -12,7 +13,7 @@ import java.util.Set;
  */
 class NFAConverter {
     private NFA nfa;
-    private TempDFA dfa;
+    private MapBasedDFA dfa;
 
     public NFAConverter(NFA nfa) {
         this.nfa = nfa;
@@ -34,7 +35,7 @@ class NFAConverter {
     private Set<State> fringeStates;
     private State startState;
 
-    private TempDFA generateDFA() {
+    private MapBasedDFA generateDFA() {
         nfaToDfaConversions = new HashMap<Set<State>, State>();
         dfaToNfaConversions = new HashMap<State, Set<State>>();
         fringeStates = new HashSet<State>();
@@ -44,7 +45,7 @@ class NFAConverter {
         dfaToNfaConversions.put(startState, nfa.startStates());
         fringeStates.add(startState);
 
-        dfa = new TempDFA(startState);
+        dfa = new MapBasedDFA(startState);
 
         completeConversion();
 
