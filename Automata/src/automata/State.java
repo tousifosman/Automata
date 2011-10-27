@@ -1,20 +1,39 @@
 package automata;
 
+import java.util.LinkedList;
 import java.util.Random;
+import java.util.List;
 
+/**
+ * Tokens are stored in the state in a hierarchical list. The first token is
+ * the most general token applying to the State, and the last token is the 
+ * most specific/smallest token.
+ */
 public class State {
     private boolean finalState;
     private String name;
     private int id;
+    private List<String> tokens;
     
     private static int count = 0;
     
     public State() {
+        this(new LinkedList<String>());
+    }
+    
+    public State(List<String> tokens) {
+        this.tokens = new LinkedList<String>();
+        this.tokens.addAll(tokens);
+        
         this.name = "q" + count;
         this.id = (new Random()).nextInt();
         this.finalState = false;
         
         count++;
+    }
+    
+    public List<String> getTokens() {
+        return new LinkedList(this.tokens);
     }
    
     public boolean isFinal() {
