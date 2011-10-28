@@ -71,6 +71,7 @@ class NFAConverter {
                     State nextState = nfaToDfaConversions.get(transitionStates);
                     dfa.addTransisition(currState, letter, nextState);
                 } else {
+                    // TODO : Preserve tokens inside states
                     State nextState = new State();
                     if (anyFinal(transitionStates)) nextState.setFinal(true);
 

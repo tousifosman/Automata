@@ -7,7 +7,8 @@ import java.util.List;
 /**
  * Tokens are stored in the state in a hierarchical list. The first token is
  * the most general token applying to the State, and the last token is the 
- * most specific/smallest token.
+ * most specific/smallest token. However, tokens only matter if the state is 
+ * actually final.
  */
 public class State {
     private boolean finalState;

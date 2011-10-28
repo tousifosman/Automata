@@ -9,18 +9,18 @@ public interface FiniteAutomata {
     public State startState();
     
     /**
-     * Returns the list of all the states in the FA
+     * Returns a copy of the list of all the states in the FA
      */
     public Set<State> allStates();
     
     /**
-     * Returns the alphabet of the finite automata
+     * Returns a copy of the alphabet of the finite automata
      */
     public Set<Character> alphabet();
     
     
     /**
-     * Returns the set of all final states in the FA
+     * Returns a copy the set of all final states in the FA
      */
     public Set<State> finalStates(); 
 }
