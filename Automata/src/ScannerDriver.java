@@ -66,6 +66,8 @@ public class ScannerDriver {
         try {
             Scanner scan = new Scanner(file);
             while (scan.hasNext()) {
+                // Uses space delimeter by default, may want to change that
+                // in the future.
                 String word = scan.next();
                 this.parse(word);
             }

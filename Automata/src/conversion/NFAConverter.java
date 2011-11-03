@@ -55,7 +55,6 @@ class NFAConverter {
     }
 
     private void completeConversion() {
-        
         // While there are still DFA states we have yet to fully explore
         while (!fringeStates.isEmpty()) {
             State currState = fringeStates.toArray(new State[0])[0];
