@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Set;
 
 public class MinimalNFA implements NFA{
-
+	 private Set<Token> tokens;
 	 private State startState;
 	 private Set<Character> alphabet;
 	 private Set<State> finalStates;
@@ -15,6 +15,7 @@ public class MinimalNFA implements NFA{
 	public MinimalNFA(){
 		this.alphabet = new HashSet<Character>();
 		this.finalStates = new HashSet<State>();
+		this.tokens = new HashSet<Token>();
 		//this.transitions = new HashMap<State, HashMap<Character,List<State>>>();
 	}
 	    
