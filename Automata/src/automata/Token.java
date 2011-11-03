@@ -48,4 +48,8 @@ public class Token {
         
         return true;
     }
+    
+    public static Token anyCharacterToken() {
+        return new Token("CHARACTER", true);
+    }
 }
