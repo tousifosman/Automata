@@ -7,6 +7,9 @@ import automata.State;
 import automata.Token;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Queue;
 import java.util.Set;
 import java.util.Stack;
 
@@ -73,10 +76,11 @@ class NFAConverter {
                 } else {
                     State nextState;
                     if (transitionStates != null) {
-                        Stack<Token> mergedTokens = new Stack<Token>();
+                        List<Stack<Token>> allTokens = new LinkedList<Stack<Token>>();
                         for (State state : transitionStates) {
-                            mergedTokens.addAll(state.getTokens());
+                            allTokens.add(state.getTokens());
                         }
+                        Stack<Token> mergedTokens = mergeTokens(allTokens);
                         nextState = new State(mergedTokens);
                         if (anyFinal(transitionStates))
                             nextState.setFinal(true);
@@ -106,5 +110,43 @@ class NFAConverter {
             if (state.isFinal()) return true;
         }
         return false;
+    }
+
+    private Stack<Token> mergeTokens(List<Stack<Token>> allTokens) {
+        /*Stack<Token> ret = new Stack<Token>();
+        for(Stack<Token> tokens: allTokens) {
+            ret.addAll(tokens);
+        }
+        
+        return ret;*/
+        Stack<Token> workStack = new Stack<Token>();
+        
+        for(Stack<Token> tokens: allTokens) {
+            Token currToken = tokens.peek();
+            while(!currToken.isStartToken()) {
+                currToken = tokens.pop();
+                if(!workStack.contains(currToken)) {
+                    workStack.push(currToken);
+                }
+                currToken = tokens.peek();
+            }
+        }
+        
+        for(Stack<Token> tokens: allTokens) {
+            while(!tokens.isEmpty()) {
+                Token currToken = tokens.pop();
+                if(!workStack.contains(currToken)) {
+                    workStack.push(currToken);
+                }
+            }
+        }
+        
+        Stack<Token> returnTokens = new Stack<Token>();
+        
+        while(!workStack.isEmpty()) {
+            returnTokens.push(workStack.pop());
+        }
+                
+        return returnTokens;
     }
 }
