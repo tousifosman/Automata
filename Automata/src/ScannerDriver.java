@@ -36,7 +36,7 @@ public class ScannerDriver {
      */
     public static void main(String[] args) {
         // TODO : Replace with generating NFA
-        NFA nfa = defaultNFA();
+        NFA nfa = testNFA();
         DFA dfa = NFAtoDFA.dfaFromNFA(nfa); //DFA dfa = defaultDFA();
         // TODO : DFA minimization
         
@@ -101,7 +101,7 @@ public class ScannerDriver {
     /**
      * A temporary DFA used for testing.
      */
-    private static DFA defaultDFA() {
+    private static DFA testDFA() {
         State startState = new State();
         MapBasedDFA dfa = new MapBasedDFA(startState);
 
@@ -252,7 +252,7 @@ public class ScannerDriver {
     /**
      * A temporary NFA used for testing.
      */
-    private static NFA defaultNFA() {
+    private static NFA testNFA() {
         State startState = new State();
         MapBasedNFA nfa = new MapBasedNFA(startState);
 
@@ -268,6 +268,40 @@ public class ScannerDriver {
         for (char letter = 'a'; letter <= 'z'; letter++) {
             nfa.addTransisition(startState, letter, small);
         }
+        
+        /* Special Strings for testing */
+        // Accept SMALLCASE (DIGIT)*
+        start = new Token("SMALLCASE", true);
+        end = new Token("SMALLCASE", false);
+        overallStart = new Token("SPECIAL", true);
+
+        stack = new Stack<Token>();
+        stack.push(overallStart);
+        stack.push(start);
+        stack.push(end);
+        State small2 = new State(stack);
+        for (char letter = 'a'; letter <= 'z'; letter++) {
+            nfa.addTransisition(startState, letter, small2);
+        }
+        
+        start = new Token("DIGIT", true);
+        end = new Token("DIGIT", false);
+        Token overallEnd = new Token("SPECIAL", false);
+        stack = new Stack<Token>();
+        stack.push(start);
+        stack.push(end);
+        stack.push(overallEnd);
+        State small2Digit = new State(stack);
+        small2Digit.setFinal(true);
+        for (char letter = '0'; letter <= '9'; letter++) {
+            nfa.addTransisition(small2, letter, small2Digit);
+        }
+        for (char letter = '0'; letter <= '9'; letter++) {
+            nfa.addTransisition(small2Digit, letter, small2Digit);
+        }
+    
+        /* End Special Strings */
+        
         start = new Token("UPPERCASE", true);
         end = new Token("UPPERCASE", false);
         overallStart = new Token("CONSTANT", true);
@@ -311,7 +345,7 @@ public class ScannerDriver {
         }
 
 
-        Token overallEnd = new Token("IDENTIFIER", false);
+        overallEnd = new Token("IDENTIFIER", false);
         start = new Token("DIGIT", true);
         end = new Token("DIGIT", false);
 
