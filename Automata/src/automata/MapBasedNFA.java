@@ -122,14 +122,20 @@ public class MapBasedNFA implements NFA {
 
     @Override
     public Set<State> transitions(Set<State> fromStates, Character letter) {
+        if(fromStates == null) return null;
+        
         Set<State> returnStates = new HashSet<State>();
-        
-        for(State currState : fromStates) {
+
+        for (State currState : fromStates) {
             Set<State> currStates = transitions(currState, letter);
-            returnStates.addAll(currStates);
+            if (currStates != null)
+                returnStates.addAll(currStates);
         }
-        
-        return returnStates;
+
+        if (!returnStates.isEmpty())
+            return returnStates;
+        else
+            return null;
     }
 
     /**
@@ -152,13 +158,13 @@ public class MapBasedNFA implements NFA {
                 Set<State> returnSet = new HashSet<State>();
                 HashSet<State> allStates = transitionsForState.get(letter);
                 returnSet.addAll(allStates);
-                
+
                 // Add all the states occuring over epsilon transitions from the
                 // transition'd states.
-                for(State currState : allStates) {
+                for (State currState : allStates) {
                     addEpsilonTransitions(returnSet, currState);
                 }
-                
+
                 return returnSet;
             } else {
                 return null;

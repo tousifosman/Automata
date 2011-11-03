@@ -37,7 +37,7 @@ public class ScannerDriver {
     public static void main(String[] args) {
         // TODO : Replace with generating NFA
         NFA nfa = defaultNFA();
-        DFA dfa = NFAtoDFA.dfaFromNFA(nfa);
+        DFA dfa = NFAtoDFA.dfaFromNFA(nfa); //DFA dfa = defaultDFA();
         // TODO : DFA minimization
         
         try {

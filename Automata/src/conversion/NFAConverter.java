@@ -31,7 +31,6 @@ class NFAConverter {
         }
         return dfa;
     }
-    
     private HashMap<Set<State>, State> nfaToDfaConversions;
     private HashMap<State, Set<State>> dfaToNfaConversions;
     private Set<State> fringeStates;
@@ -59,7 +58,7 @@ class NFAConverter {
         while (!fringeStates.isEmpty()) {
             State currState = fringeStates.toArray(new State[0])[0];
             for (Character letter : nfa.alphabet()) {
-                
+
                 // Get all of the NFA states after the transition from the states associated
                 // with the current state
                 Set<State> nfaStates = dfaToNfaConversions.get(currState);
@@ -72,18 +71,29 @@ class NFAConverter {
                     State nextState = nfaToDfaConversions.get(transitionStates);
                     dfa.addTransisition(currState, letter, nextState);
                 } else {
-                    Stack<Token> mergedTokens = new Stack<Token>();
-                    for(State state: transitionStates) {
-                        // TODO : Double check this order
-                        mergedTokens.addAll(state.getTokens());
+                    State nextState;
+                    if (transitionStates != null) {
+                        Stack<Token> mergedTokens = new Stack<Token>();
+                        for (State state : transitionStates) {
+                            mergedTokens.addAll(state.getTokens());
+                        }
+                        nextState = new State(mergedTokens);
+                        if (anyFinal(transitionStates))
+                            nextState.setFinal(true);
+                    } else {
+                        Stack<Token> tokens = new Stack<Token>();
+                        Token alphaToken = Token.anyCharacterToken();
+                        Token endAlphaToken = alphaToken.opposite();
+                        
+                        tokens.push(alphaToken);
+                        tokens.push(endAlphaToken);
+                        nextState = new State(tokens);
                     }
-                    State nextState = new State(mergedTokens);
-                    if (anyFinal(transitionStates)) nextState.setFinal(true);
 
                     nfaToDfaConversions.put(transitionStates, nextState);
                     dfaToNfaConversions.put(nextState, transitionStates);
                     fringeStates.add(nextState);
-                    
+
                     dfa.addTransisition(currState, letter, nextState);
                 }
             }
