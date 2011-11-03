@@ -56,8 +56,19 @@ public class MapBasedDFA implements DFA{
     }
     
     @Override
-    public State transition(State fromState, char letter) {
-        return transitions.get(fromState).get(letter);
+    public State transition(State fromState, Character letter) {
+        if(transitions.containsKey(fromState)) {
+            HashMap<Character, State> transitionsForState = transitions.get(fromState);
+            if(transitionsForState.containsKey(letter)) {
+                return transitionsForState.get(letter);
+            } else {
+                //Shouldn't happen if complete DFA and letter is in alphabet
+                return null;
+            }
+        } else {
+            // Shouldn't happen if complete DFA and state is in DFA
+            return null;
+        }
     }
 
     @Override

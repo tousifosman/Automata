@@ -34,13 +34,13 @@ public class MinimalNFA implements NFA{
 	}
 
 	@Override
-	public Set<State> transitions(Set<State> fromStates, char letter) {
+	public Set<State> transitions(Set<State> fromStates, Character letter) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public Set<State> transitions(State fromState, char letter) {
+	public Set<State> transitions(State fromState, Character letter) {
 		// TODO Auto-generated method stub
 		return null;
 	}
