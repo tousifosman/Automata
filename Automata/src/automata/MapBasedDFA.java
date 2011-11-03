@@ -1,7 +1,5 @@
 package automata;
 
-import automata.DFA;
-import automata.State;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
@@ -24,6 +22,7 @@ public class MapBasedDFA implements DFA{
     public MapBasedDFA(State startState) {
         this.startState = startState;
         this.alphabet = new HashSet<Character>();
+        this.finalStates = new HashSet<State>();
         this.transitions = new HashMap<State, HashMap<Character, State>>();
     }
     
