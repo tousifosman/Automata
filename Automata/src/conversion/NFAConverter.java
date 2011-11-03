@@ -4,9 +4,11 @@ import automata.MapBasedDFA;
 import automata.DFA;
 import automata.NFA;
 import automata.State;
+import automata.Token;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.Stack;
 
 /**
  * A utility class used by NFAtoDFA to perform the conversion.
@@ -71,8 +73,12 @@ class NFAConverter {
                     State nextState = nfaToDfaConversions.get(transitionStates);
                     dfa.addTransisition(currState, letter, nextState);
                 } else {
-                    // TODO : Preserve tokens inside states
-                    State nextState = new State();
+                    Stack<Token> mergedTokens = new Stack<Token>();
+                    for(State state: transitionStates) {
+                        // TODO : Double check this order
+                        mergedTokens.addAll(state.getTokens());
+                    }
+                    State nextState = new State(mergedTokens);
                     if (anyFinal(transitionStates)) nextState.setFinal(true);
 
                     nfaToDfaConversions.put(transitionStates, nextState);

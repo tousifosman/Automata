@@ -8,29 +8,58 @@ import java.io.FileNotFoundException;
 import java.util.Scanner;
 import java.util.Stack;
 
-
+/**
+ * The Main driver class. Creates a DFA based on given classes and regular
+ * expressions, then verifies that a given file contains valid tokens. 
+ * 
+ * It can also generate an XML-structure of the tokens, showing how the characters
+ * form into compounding tokens.
+ */
 public class ScannerDriver {
     private DFA dfa;
     private final File file;
     private XMLBuilder builder;
 
-    public ScannerDriver(String fileName, DFA dfa) throws FileNotFoundException {
-        this.file = new File(fileName);
-        if (!this.file.exists()) throw new FileNotFoundException();
-        this.dfa = dfa;
-        builder = new XMLBuilder();
-    }
-
+    
+    /**
+     * Creates the DFA and ScannerDriver using the files containing the regexes
+     * and the tokens.
+     * 
+     * If no arguments are supplied, the sample cases are used and are expected
+     * to be in the same directory.
+     * 
+     * @param args 1st argument is used as the name of the file containing all 
+     * of the tokens
+     */
     public static void main(String[] args) {
         // TODO : Replace with generating DFA
         DFA dfa = defaultDFA();
 
         try {
-            ScannerDriver driver = new ScannerDriver("sample_code.txt", dfa);
+            String fileName = "sample_code.txt";
+            if (args.length > 0) {
+                fileName = args[0];
+            }
+            ScannerDriver driver = new ScannerDriver(fileName, dfa);
             driver.run();
         } catch (FileNotFoundException ex) {
-            System.out.println("Error: Cannot find sample_code.txt");
+            System.out.println("Error: Cannot find file");
+            System.out.println(ex.getMessage());
         }
+    }
+    
+    
+    /**
+     * Creates and initializes the ScannerDriver
+     * @param fileName The name of the file containing all of the tokens
+     * @param dfa The DFA to use while scanning
+     * @throws FileNotFoundException thrown if the file given doesn't exist.
+     */
+    public ScannerDriver(String fileName, DFA dfa) throws FileNotFoundException {
+        this.file = new File(fileName);
+        if (!this.file.exists()) throw new FileNotFoundException();
+        this.dfa = dfa;
+        builder = new XMLBuilder();
     }
 
     public void run() {
@@ -62,6 +91,9 @@ public class ScannerDriver {
         else System.out.println(word + ": REJECT");
     }
 
+    /**
+     * A temporary DFA used for testing.
+     */
     private static DFA defaultDFA() {
         State startState = new State();
         MapBasedDFA dfa = new MapBasedDFA(startState);

@@ -5,6 +5,10 @@ import java.util.List;
 import java.util.Queue;
 import java.util.Stack;
 
+/**
+ * Generates and stores XML-like structures to represent the tokens that are 
+ * read and parsed.
+ */
 public class XMLBuilder {
     private LinkedList xml;
     private List<Token> started;
@@ -17,6 +21,11 @@ public class XMLBuilder {
         savedXML = new LinkedList<List<String>>();
     }
    
+    /**
+     * Adds the given tokens and character to the current xml tree
+     * @param character The character within the tokens
+     * @param tokens The tokens associated with the character.
+     */
     public void xmlize(char character, Stack<Token> tokens) {        
         if (tokens.size() == 0) {
             xml.offer(character);
@@ -49,11 +58,19 @@ public class XMLBuilder {
         }
     }
 
+    /**
+     * Resets all of the temporary structures. Still keeps the finalized
+     * xml structures used for printing.
+     */
     public void reset() {
         this.xml.clear();
         this.started.clear();
     }
 
+    /**
+     * Finalizes the current xml tree and saves it internally that can be
+     * printed or saved later
+     */
     public void finalizeXML() {
         List<String> xmlText = new LinkedList<String>();
         Queue xml_copy = new LinkedList();
