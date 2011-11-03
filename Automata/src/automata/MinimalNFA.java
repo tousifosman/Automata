@@ -12,6 +12,7 @@ public class MinimalNFA implements NFA{
 	 private Set<State> finalStates;
 	 //private HashMap<State, HashMap<Character, List<State>>> transitions;
 	
+	
 	public MinimalNFA(){
 		this.alphabet = new HashSet<Character>();
 		this.finalStates = new HashSet<State>();
