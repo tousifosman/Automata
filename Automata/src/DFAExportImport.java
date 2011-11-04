@@ -70,6 +70,10 @@ public class DFAExportImport {
             
             State.resetCount();
             String startStateString = scan.nextLine();
+            if(!startStateString.startsWith("Start:")) {
+                System.out.println("Error: Invalid DFA format");
+                System.exit(1);
+            }
             startStateString = startStateString.split(" ")[1];
 
             String finalStatesUnparsed = scan.nextLine();
