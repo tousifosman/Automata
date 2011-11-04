@@ -172,6 +172,5 @@ public class DFAMinimizer {
                 addStates(origNextState, dfa, stateMergeMap, alreadyChecked);
             }
         }
-        throw new UnsupportedOperationException("Not yet implemented");
     }
 }
