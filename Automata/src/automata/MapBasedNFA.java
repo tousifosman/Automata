@@ -5,8 +5,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * A HashMap based NFA. Used mainly for temporary testing before we have
- * actual table-based NFA.
+ * A HashMap based NFA.
  * 
  * An epsilon transition is represented by a transition over a "null" character
  */
