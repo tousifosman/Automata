@@ -6,6 +6,7 @@ import java.io.FileNotFoundException;
 import java.util.Stack;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
+import minimization.DFAMinimizer;
 
 public class Main {
     public static File directory;
@@ -129,18 +130,18 @@ public class Main {
         File lexSpecs = fc.getSelectedFile();
         directory = fc.getCurrentDirectory();
         // TODO : Replace with generating NFA
-        NFA nfa = testNFA();
+        NFA nfa = testNFA2();
         DFA dfa = NFAtoDFA.dfaFromNFA(nfa);
-        // TODO : DFA minimization
+        dfa = DFAMinimizer.minimize(dfa);
 
         return dfa;
     }
 
     private static DFA generateDFA(String fileName) {
         // TODO : Replace with generating NFA
-        NFA nfa = testNFA();
+        NFA nfa = testNFA2();
         DFA dfa = NFAtoDFA.dfaFromNFA(nfa);
-        // TODO : DFA minimization
+        dfa = DFAMinimizer.minimize(dfa);
 
         return dfa;
     }
@@ -174,7 +175,7 @@ public class Main {
         stack.push(end);
         State small = new State(stack);
         for (char letter = 'a'; letter <= 'z'; letter++) {
-            dfa.addTransisition(startState, letter, small);
+            dfa.addTransition(startState, letter, small);
         }
         start = new Token("UPPERCASE", true);
         end = new Token("UPPERCASE", false);
@@ -186,7 +187,7 @@ public class Main {
         stack.push(end);
         State upper = new State(stack);
         for (char letter = 'A'; letter <= 'Z'; letter++) {
-            dfa.addTransisition(startState, letter, upper);
+            dfa.addTransition(startState, letter, upper);
         }
         start = new Token("DIGIT", true);
         end = new Token("DIGIT", false);
@@ -197,17 +198,17 @@ public class Main {
 
         State fail = new State(stack);
         for (char letter = '0'; letter <= '9'; letter++) {
-            dfa.addTransisition(startState, letter, fail);
+            dfa.addTransition(startState, letter, fail);
         }
 
         for (char letter = 'a'; letter <= 'z'; letter++) {
-            dfa.addTransisition(fail, letter, fail);
+            dfa.addTransition(fail, letter, fail);
         }
         for (char letter = 'A'; letter <= 'Z'; letter++) {
-            dfa.addTransisition(fail, letter, fail);
+            dfa.addTransition(fail, letter, fail);
         }
         for (char letter = '0'; letter <= '9'; letter++) {
-            dfa.addTransisition(fail, letter, fail);
+            dfa.addTransition(fail, letter, fail);
         }
         start = new Token("LETTER", true);
         end = new Token("LETTER", false);
@@ -218,13 +219,13 @@ public class Main {
 
         State smallLetter = new State(stack);
         for (char letter = 'a'; letter <= 'z'; letter++) {
-            dfa.addTransisition(small, letter, smallLetter);
+            dfa.addTransition(small, letter, smallLetter);
         }
         for (char letter = 'A'; letter <= 'Z'; letter++) {
-            dfa.addTransisition(small, letter, smallLetter);
+            dfa.addTransition(small, letter, smallLetter);
         }
         for (char letter = '0'; letter <= '9'; letter++) {
-            dfa.addTransisition(small, letter, fail);
+            dfa.addTransition(small, letter, fail);
         }
 
         start = new Token("LETTER", true);
@@ -236,13 +237,13 @@ public class Main {
 
         State upperLetter = new State(stack);
         for (char letter = 'a'; letter <= 'z'; letter++) {
-            dfa.addTransisition(upper, letter, upperLetter);
+            dfa.addTransition(upper, letter, upperLetter);
         }
         for (char letter = 'A'; letter <= 'Z'; letter++) {
-            dfa.addTransisition(upper, letter, upperLetter);
+            dfa.addTransition(upper, letter, upperLetter);
         }
         for (char letter = '0'; letter <= '9'; letter++) {
-            dfa.addTransisition(upper, letter, fail);
+            dfa.addTransition(upper, letter, fail);
         }
 
         Token overallEnd = new Token("IDENTIFIER", false);
@@ -257,13 +258,13 @@ public class Main {
         State smallLetterDigit = new State(stack);
         smallLetterDigit.setFinal(true);
         for (char letter = 'a'; letter <= 'z'; letter++) {
-            dfa.addTransisition(smallLetter, letter, smallLetter);
+            dfa.addTransition(smallLetter, letter, smallLetter);
         }
         for (char letter = 'A'; letter <= 'Z'; letter++) {
-            dfa.addTransisition(smallLetter, letter, smallLetter);
+            dfa.addTransition(smallLetter, letter, smallLetter);
         }
         for (char letter = '0'; letter <= '9'; letter++) {
-            dfa.addTransisition(smallLetter, letter, smallLetterDigit);
+            dfa.addTransition(smallLetter, letter, smallLetterDigit);
         }
         overallEnd = new Token("CONSTANT", false);
         start = new Token("DIGIT", true);
@@ -277,33 +278,33 @@ public class Main {
         State upperLetterDigit = new State(stack);
         upperLetterDigit.setFinal(true);
         for (char letter = 'a'; letter <= 'z'; letter++) {
-            dfa.addTransisition(upperLetter, letter, upperLetter);
+            dfa.addTransition(upperLetter, letter, upperLetter);
         }
         for (char letter = 'A'; letter <= 'Z'; letter++) {
-            dfa.addTransisition(upperLetter, letter, upperLetter);
+            dfa.addTransition(upperLetter, letter, upperLetter);
         }
         for (char letter = '0'; letter <= '9'; letter++) {
-            dfa.addTransisition(upperLetter, letter, upperLetterDigit);
+            dfa.addTransition(upperLetter, letter, upperLetterDigit);
         }
 
         for (char letter = 'a'; letter <= 'z'; letter++) {
-            dfa.addTransisition(smallLetterDigit, letter, smallLetter);
+            dfa.addTransition(smallLetterDigit, letter, smallLetter);
         }
         for (char letter = 'A'; letter <= 'Z'; letter++) {
-            dfa.addTransisition(smallLetterDigit, letter, smallLetter);
+            dfa.addTransition(smallLetterDigit, letter, smallLetter);
         }
         for (char letter = '0'; letter <= '9'; letter++) {
-            dfa.addTransisition(smallLetterDigit, letter, smallLetterDigit);
+            dfa.addTransition(smallLetterDigit, letter, smallLetterDigit);
         }
 
         for (char letter = 'a'; letter <= 'z'; letter++) {
-            dfa.addTransisition(upperLetterDigit, letter, upperLetter);
+            dfa.addTransition(upperLetterDigit, letter, upperLetter);
         }
         for (char letter = 'A'; letter <= 'Z'; letter++) {
-            dfa.addTransisition(upperLetterDigit, letter, upperLetter);
+            dfa.addTransition(upperLetterDigit, letter, upperLetter);
         }
         for (char letter = '0'; letter <= '9'; letter++) {
-            dfa.addTransisition(upperLetterDigit, letter, upperLetterDigit);
+            dfa.addTransition(upperLetterDigit, letter, upperLetterDigit);
         }
         return dfa;
     }
@@ -325,7 +326,7 @@ public class Main {
         stack.push(end);
         State small = new State(stack);
         for (char letter = 'a'; letter <= 'z'; letter++) {
-            nfa.addTransisition(startState, letter, small);
+            nfa.addTransition(startState, letter, small);
         }
 
         /* Special Strings for testing */
@@ -340,7 +341,7 @@ public class Main {
         stack.push(end);
         State small2 = new State(stack);
         for (char letter = 'a'; letter <= 'z'; letter++) {
-            nfa.addTransisition(startState, letter, small2);
+            nfa.addTransition(startState, letter, small2);
         }
 
         start = new Token("DIGIT", true);
@@ -353,10 +354,10 @@ public class Main {
         State small2Digit = new State(stack);
         small2Digit.setFinal(true);
         for (char letter = '0'; letter <= '9'; letter++) {
-            nfa.addTransisition(small2, letter, small2Digit);
+            nfa.addTransition(small2, letter, small2Digit);
         }
         for (char letter = '0'; letter <= '9'; letter++) {
-            nfa.addTransisition(small2Digit, letter, small2Digit);
+            nfa.addTransition(small2Digit, letter, small2Digit);
         }
 
         /* End Special Strings */
@@ -371,7 +372,7 @@ public class Main {
         stack.push(end);
         State upper = new State(stack);
         for (char letter = 'A'; letter <= 'Z'; letter++) {
-            nfa.addTransisition(startState, letter, upper);
+            nfa.addTransition(startState, letter, upper);
         }
         start = new Token("LETTER", true);
         end = new Token("LETTER", false);
@@ -382,10 +383,10 @@ public class Main {
 
         State smallLetter = new State(stack);
         for (char letter = 'a'; letter <= 'z'; letter++) {
-            nfa.addTransisition(small, letter, smallLetter);
+            nfa.addTransition(small, letter, smallLetter);
         }
         for (char letter = 'A'; letter <= 'Z'; letter++) {
-            nfa.addTransisition(small, letter, smallLetter);
+            nfa.addTransition(small, letter, smallLetter);
         }
 
         start = new Token("LETTER", true);
@@ -397,10 +398,10 @@ public class Main {
 
         State upperLetter = new State(stack);
         for (char letter = 'a'; letter <= 'z'; letter++) {
-            nfa.addTransisition(upper, letter, upperLetter);
+            nfa.addTransition(upper, letter, upperLetter);
         }
         for (char letter = 'A'; letter <= 'Z'; letter++) {
-            nfa.addTransisition(upper, letter, upperLetter);
+            nfa.addTransition(upper, letter, upperLetter);
         }
 
 
@@ -416,13 +417,13 @@ public class Main {
         State smallLetterDigit = new State(stack);
         smallLetterDigit.setFinal(true);
         for (char letter = 'a'; letter <= 'z'; letter++) {
-            nfa.addTransisition(smallLetter, letter, smallLetter);
+            nfa.addTransition(smallLetter, letter, smallLetter);
         }
         for (char letter = 'A'; letter <= 'Z'; letter++) {
-            nfa.addTransisition(smallLetter, letter, smallLetter);
+            nfa.addTransition(smallLetter, letter, smallLetter);
         }
         for (char letter = '0'; letter <= '9'; letter++) {
-            nfa.addTransisition(smallLetter, letter, smallLetterDigit);
+            nfa.addTransition(smallLetter, letter, smallLetterDigit);
         }
         overallEnd = new Token("CONSTANT", false);
         start = new Token("DIGIT", true);
@@ -436,34 +437,98 @@ public class Main {
         State upperLetterDigit = new State(stack);
         upperLetterDigit.setFinal(true);
         for (char letter = 'a'; letter <= 'z'; letter++) {
-            nfa.addTransisition(upperLetter, letter, upperLetter);
+            nfa.addTransition(upperLetter, letter, upperLetter);
         }
         for (char letter = 'A'; letter <= 'Z'; letter++) {
-            nfa.addTransisition(upperLetter, letter, upperLetter);
+            nfa.addTransition(upperLetter, letter, upperLetter);
         }
         for (char letter = '0'; letter <= '9'; letter++) {
-            nfa.addTransisition(upperLetter, letter, upperLetterDigit);
+            nfa.addTransition(upperLetter, letter, upperLetterDigit);
         }
 
         for (char letter = 'a'; letter <= 'z'; letter++) {
-            nfa.addTransisition(smallLetterDigit, letter, smallLetter);
+            nfa.addTransition(smallLetterDigit, letter, smallLetter);
         }
         for (char letter = 'A'; letter <= 'Z'; letter++) {
-            nfa.addTransisition(smallLetterDigit, letter, smallLetter);
+            nfa.addTransition(smallLetterDigit, letter, smallLetter);
         }
         for (char letter = '0'; letter <= '9'; letter++) {
-            nfa.addTransisition(smallLetterDigit, letter, smallLetterDigit);
+            nfa.addTransition(smallLetterDigit, letter, smallLetterDigit);
         }
 
         for (char letter = 'a'; letter <= 'z'; letter++) {
-            nfa.addTransisition(upperLetterDigit, letter, upperLetter);
+            nfa.addTransition(upperLetterDigit, letter, upperLetter);
         }
         for (char letter = 'A'; letter <= 'Z'; letter++) {
-            nfa.addTransisition(upperLetterDigit, letter, upperLetter);
+            nfa.addTransition(upperLetterDigit, letter, upperLetter);
         }
         for (char letter = '0'; letter <= '9'; letter++) {
-            nfa.addTransisition(upperLetterDigit, letter, upperLetterDigit);
+            nfa.addTransition(upperLetterDigit, letter, upperLetterDigit);
         }
+        return nfa;
+    }
+
+    /**
+     * A temporary NFA used for testing.
+     */
+    private static NFA testNFA2() {
+        State startState = new State();
+        MapBasedNFA nfa = new MapBasedNFA(startState);
+
+        Token start = new Token("NUM", true);
+        Token end = new Token("NUM", false);
+        Token overallStart = new Token("ZERO_STRING", true);
+        Token overallStart2 = new Token("ONE_STRING", true);
+
+        Stack<Token> stack = new Stack<Token>();
+        stack.push(overallStart);
+        stack.push(overallStart2);
+        stack.push(start);
+        stack.push(end);
+        State actStart = new State(stack);
+        nfa.addTransition(startState, null, actStart);
+
+        nfa.addTransition(actStart, '0', actStart);
+        nfa.addTransition(actStart, '1', actStart);
+
+        start = new Token("ZERO", true);
+        end = start.opposite();
+        stack = new Stack<Token>();
+        stack.push(start);
+        stack.push(end);
+        State zero = new State(stack);
+        nfa.addTransition(actStart, '0', zero);
+
+        start = new Token("ONE", true);
+        end = start.opposite();
+        stack = new Stack<Token>();
+        stack.push(start);
+        stack.push(end);
+        State one = new State(stack);
+        nfa.addTransition(actStart, '1', one);
+
+        Token overallEnd = overallStart2.opposite();
+        start = new Token("ONE", true);
+        end = start.opposite();
+        stack = new Stack<Token>();
+        stack.push(start);
+        stack.push(end);
+        stack.push(overallEnd);
+        State zeroOne = new State(stack);
+        zeroOne.setFinal(true);
+        nfa.addTransition(zero, '1', zeroOne);
+
+        overallEnd = overallStart.opposite();
+        start = new Token("ZERO", true);
+        end = start.opposite();
+        stack = new Stack<Token>();
+        stack.push(start);
+        stack.push(end);
+        stack.push(overallEnd);
+        State oneZero = new State(stack);
+        oneZero.setFinal(true);
+        nfa.addTransition(one, '0', oneZero);
+
         return nfa;
     }
 }

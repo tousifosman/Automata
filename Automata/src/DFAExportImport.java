@@ -171,7 +171,7 @@ public class DFAExportImport {
                 stringToStateMap.put(nextStateString, nextState);
             }
             if (finalStates.contains(nextStateString)) nextState.setFinal(true);
-            dfa.addTransisition(currState, transitionLetter, nextState);
+            dfa.addTransition(currState, transitionLetter, nextState);
 
             searchAndAddStates(nextStateString, statesToBeParsed, stringToStateMap, statesTransitions, alphabet, finalStates, dfa);
         }

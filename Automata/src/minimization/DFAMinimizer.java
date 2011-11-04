@@ -32,6 +32,7 @@ public class DFAMinimizer {
         this.originalDFA = dfa;
 
         mergedStates = new HashMap<State, Set<State>>();
+        distinguishableStates = new HashMap<State, HashMap<State, Boolean>>();
     }
 
     private boolean isDistinguishable(State state1, State state2) {
@@ -165,9 +166,9 @@ public class DFAMinimizer {
         
         alreadyChecked.add(newCurrState);
         for(Character letter: alphabet) {
-            State origNextState = dfa.transition(origCurrState, letter);
+            State origNextState = originalDFA.transition(origCurrState, letter);
             State newNextState = stateMergeMap.get(origNextState);
-            dfa.addTransisition(newCurrState, letter, newNextState);
+            dfa.addTransition(newCurrState, letter, newNextState);
             if(!alreadyChecked.contains(newNextState)) {
                 addStates(origNextState, dfa, stateMergeMap, alreadyChecked);
             }

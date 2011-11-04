@@ -61,6 +61,7 @@ class NFAConverter {
         while (!fringeStates.isEmpty()) {
             State currState = fringeStates.toArray(new State[0])[0];
             for (Character letter : nfa.alphabet()) {
+                if(letter == null) continue;
 
                 // Get all of the NFA states after the transition from the states associated
                 // with the current state
@@ -72,7 +73,7 @@ class NFAConverter {
                 // and add that state to the "to-be-searched-list".
                 if (nfaToDfaConversions.containsKey(transitionStates)) {
                     State nextState = nfaToDfaConversions.get(transitionStates);
-                    dfa.addTransisition(currState, letter, nextState);
+                    dfa.addTransition(currState, letter, nextState);
                 } else {
                     State nextState;
                     if (transitionStates != null) {
@@ -98,7 +99,7 @@ class NFAConverter {
                     dfaToNfaConversions.put(nextState, transitionStates);
                     fringeStates.add(nextState);
 
-                    dfa.addTransisition(currState, letter, nextState);
+                    dfa.addTransition(currState, letter, nextState);
                 }
             }
             fringeStates.remove(currState);
