@@ -35,7 +35,11 @@ public class State {
         stack.addAll(this.tokens);
         return stack;
     }
-    
+
+    public void setTokens(Stack<Token> tokens) {
+        this.tokens = tokens;
+    }
+
     public Token topToken() {
         return tokens.peek();
     }
