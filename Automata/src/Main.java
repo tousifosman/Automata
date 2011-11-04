@@ -130,7 +130,7 @@ public class Main {
         File lexSpecs = fc.getSelectedFile();
         directory = fc.getCurrentDirectory();
         // TODO : Replace with generating NFA
-        NFA nfa = testNFA2();
+        NFA nfa = testNFA3();
         DFA dfa = NFAtoDFA.dfaFromNFA(nfa);
         dfa = DFAMinimizer.minimize(dfa);
 
@@ -139,7 +139,7 @@ public class Main {
 
     private static DFA generateDFA(String fileName) {
         // TODO : Replace with generating NFA
-        NFA nfa = testNFA2();
+        NFA nfa = testNFA3();
         DFA dfa = NFAtoDFA.dfaFromNFA(nfa);
         dfa = DFAMinimizer.minimize(dfa);
 
@@ -529,6 +529,46 @@ public class Main {
         oneZero.setFinal(true);
         nfa.addTransition(one, '0', oneZero);
 
+        return nfa;
+    }
+
+    /**
+     * A temporary NFA used for testing.
+     */
+    private static NFA testNFA3() {
+
+
+        State[] states = new State[10];
+        for (int i = 0; i < 10; i++) {
+            states[i] = new State();
+        }
+        states[7].setFinal(true);
+        MapBasedNFA nfa = new MapBasedNFA(states[9]);
+        
+
+        nfa.addTransition(states[9], null, states[8]);
+        nfa.addTransition(states[9], null, states[4]);
+
+        nfa.addTransition(states[8], null, states[0]);
+        nfa.addTransition(states[8], null, states[2]);
+
+        nfa.addTransition(states[0], 'a', states[1]);
+
+        nfa.addTransition(states[2], 'b', states[3]);
+
+        nfa.addTransition(states[1], null, states[8]);
+        nfa.addTransition(states[1], null, states[4]);
+
+        nfa.addTransition(states[3], null, states[8]);
+        nfa.addTransition(states[3], null, states[4]);
+
+        nfa.addTransition(states[4], 'a', states[5]);
+
+        nfa.addTransition(states[5], null, states[6]);
+
+        nfa.addTransition(states[6], 'b', states[7]);
+
+        nfa.addTransition(states[7], null, states[4]);
         return nfa;
     }
 }

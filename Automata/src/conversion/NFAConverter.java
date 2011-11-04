@@ -123,6 +123,7 @@ class NFAConverter {
         Stack<Token> workStack = new Stack<Token>();
         
         for(Stack<Token> tokens: allTokens) {
+            if(tokens.isEmpty()) continue;
             Token currToken = tokens.peek();
             while(!currToken.isStartToken()) {
                 currToken = tokens.pop();
