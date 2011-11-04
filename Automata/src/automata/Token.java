@@ -9,6 +9,14 @@ public class Token {
         this.value = value;
     }
     
+    /**
+     * Token constructor which assumes startToken to be false. Useful for tokens not to be added to an Automaton.
+     * @param value The literal value of the token.
+     */
+    public Token(String value) {
+        this(value, false);
+    }
+    
     public String getValue() {
         return value;
     }
