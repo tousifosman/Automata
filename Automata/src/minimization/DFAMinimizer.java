@@ -3,7 +3,6 @@ package minimization;
 import automata.DFA;
 import automata.MapBasedDFA;
 import automata.State;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
@@ -12,8 +11,12 @@ import java.util.Set;
 // TODO : Bug Check
 public class DFAMinimizer {
     public static DFA minimize(DFA dfa) {
+        System.out.println("Minimizing DFA");
+        System.out.println("Old size: " + dfa.allStates().size() + " states");
         DFAMinimizer minimizer = new DFAMinimizer(dfa);
-        return minimizer.minimize();
+        DFA minimizedDFA = minimizer.minimize();
+        System.out.println("New size: " + minimizedDFA.allStates().size() + " states");
+        return minimizedDFA;
     }
     private DFA originalDFA;
     private Set<Character> alphabet;
@@ -126,12 +129,10 @@ public class DFAMinimizer {
             }
         }
         State[] nonFinalStateArray = nonFinalStates.toArray(new State[0]);
-        System.out.println(Arrays.toString(nonFinalStateArray));
         for (int i = 0; i < nonFinalStateArray.length; i++) {
             for (int j = i + 1; j < nonFinalStateArray.length; j++) {
                 State firstState = nonFinalStateArray[i];
                 State secondState = nonFinalStateArray[j];
-                System.out.println("checking " + firstState.toString() + ", " + secondState.toString());
                 if (!isDistinguishable(firstState, secondState, 0)) {
                     setMerge(firstState, secondState);
                 }
