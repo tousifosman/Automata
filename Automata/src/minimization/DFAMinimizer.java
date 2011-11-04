@@ -3,6 +3,7 @@ package minimization;
 import automata.DFA;
 import automata.MapBasedDFA;
 import automata.State;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
@@ -35,13 +36,18 @@ public class DFAMinimizer {
         distinguishableStates = new HashMap<State, HashMap<State, Boolean>>();
     }
 
-    private boolean isDistinguishable(State state1, State state2) {
+    private boolean isDistinguishable(State state1, State state2, int level) {
         if (distinguishableStates.containsKey(state1) && distinguishableStates.get(state1).containsKey(state2)) {
             return distinguishableStates.get(state1).get(state2);
         }
 
-        //Only accept TT, FF. Not TF, FT.
-        if (!(state1.isFinal() ^ state2.isFinal())) {
+        if (state1.equals(state2)) {
+            saveDistinguishability(state1, state2, false);
+            return false;
+        }
+
+        //Only accept TF, FT. Not TT, FF.
+        if (state1.isFinal() ^ state2.isFinal()) {
             saveDistinguishability(state1, state2, true);
             return true;
         }
@@ -49,7 +55,7 @@ public class DFAMinimizer {
             State state1Trans = originalDFA.transition(state1, character);
             State state2Trans = originalDFA.transition(state2, character);
 
-            boolean subdistinguishable = isDistinguishable(state1Trans, state2Trans);
+            boolean subdistinguishable = isDistinguishable(state1Trans, state2Trans, level + 1);
 
             if (subdistinguishable) {
                 saveDistinguishability(state1, state2, true);
@@ -84,7 +90,7 @@ public class DFAMinimizer {
                 Set<State> oldMerges1 = mergedStates.get(state1);
                 Set<State> oldMerges2 = mergedStates.get(state2);
                 oldMerges1.addAll(oldMerges2);
-                for(State state: oldMerges2) {
+                for (State state : oldMerges2) {
                     mergedStates.put(state, oldMerges1);
                 }
             } else {
@@ -106,7 +112,7 @@ public class DFAMinimizer {
     }
 
     private DFA minimize() {
-        
+
         // Find needed merges
         State[] finalStateArray = finalStates.toArray(new State[0]);
         for (int i = 0; i < finalStateArray.length; i++) {
@@ -114,37 +120,39 @@ public class DFAMinimizer {
                 State firstState = finalStateArray[i];
                 State secondState = finalStateArray[j];
 
-                if (!isDistinguishable(firstState, secondState)) {
+                if (!isDistinguishable(firstState, secondState, 0)) {
                     setMerge(firstState, secondState);
                 }
             }
         }
         State[] nonFinalStateArray = nonFinalStates.toArray(new State[0]);
+        System.out.println(Arrays.toString(nonFinalStateArray));
         for (int i = 0; i < nonFinalStateArray.length; i++) {
             for (int j = i + 1; j < nonFinalStateArray.length; j++) {
                 State firstState = nonFinalStateArray[i];
                 State secondState = nonFinalStateArray[j];
-
-                if (!isDistinguishable(firstState, secondState)) {
+                System.out.println("checking " + firstState.toString() + ", " + secondState.toString());
+                if (!isDistinguishable(firstState, secondState, 0)) {
                     setMerge(firstState, secondState);
                 }
             }
         }
-        
+
         // Create new states for the merges
         // Map old states being merged to the new state (or just the old state)
         HashMap<State, State> stateMergeMap = new HashMap<State, State>();
         HashMap<Set<State>, State> mergeMap = new HashMap<Set<State>, State>();
 
-        for(State currState: originalDFA.allStates()) {
-            if(mergedStates.containsKey(currState)) {
+        for (State currState : originalDFA.allStates()) {
+            if (mergedStates.containsKey(currState)) {
                 Set<State> mergingStates = mergedStates.get(currState);
-                if(mergeMap.containsKey(mergingStates)) {
+                if (mergeMap.containsKey(mergingStates)) {
                     State newState = mergeMap.get(mergingStates);
+                    stateMergeMap.put(currState, newState);
                 } else {
                     // TODO : token merging
                     State newState = new State();
-                    if(currState.isFinal()) newState.setFinal(true);
+                    if (currState.isFinal()) newState.setFinal(true);
                     mergeMap.put(mergingStates, newState);
                     stateMergeMap.put(currState, newState);
                 }
@@ -152,7 +160,7 @@ public class DFAMinimizer {
                 stateMergeMap.put(currState, currState);
             }
         }
-        
+
         State startState = stateMergeMap.get(originalDFA.startState());
         MapBasedDFA dfa = new MapBasedDFA(startState);
 
@@ -163,13 +171,13 @@ public class DFAMinimizer {
 
     private void addStates(State origCurrState, MapBasedDFA dfa, HashMap<State, State> stateMergeMap, Set<State> alreadyChecked) {
         State newCurrState = stateMergeMap.get(origCurrState);
-        
+
         alreadyChecked.add(newCurrState);
-        for(Character letter: alphabet) {
+        for (Character letter : alphabet) {
             State origNextState = originalDFA.transition(origCurrState, letter);
             State newNextState = stateMergeMap.get(origNextState);
             dfa.addTransition(newCurrState, letter, newNextState);
-            if(!alreadyChecked.contains(newNextState)) {
+            if (!alreadyChecked.contains(newNextState)) {
                 addStates(origNextState, dfa, stateMergeMap, alreadyChecked);
             }
         }
