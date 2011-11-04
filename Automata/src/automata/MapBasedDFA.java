@@ -5,8 +5,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * A HashMap based DFA. Used mainly for temporary testing before we have
- * actual table-based DFA.
+ * A HashMap based DFA.
  */
 public class MapBasedDFA implements DFA{
     private State startState;
