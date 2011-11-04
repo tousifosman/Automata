@@ -1,17 +1,9 @@
 
 import automata.DFA;
-import automata.MapBasedDFA;
-import automata.MapBasedNFA;
-import automata.NFA;
 import automata.State;
-import automata.Token;
-import conversion.NFAtoDFA;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
-import java.util.Stack;
-import javax.swing.JFileChooser;
-import javax.swing.JOptionPane;
 
 /**
  * Takes in a DFA then verifies that a given file contains valid tokens. 
@@ -52,9 +44,6 @@ public class ScannerDriver {
             }
         } catch (FileNotFoundException ex) {
         }
-
-        System.out.println();
-        System.out.println(builder.toString());
     }
 
     public void parse(String word) {
@@ -68,7 +57,8 @@ public class ScannerDriver {
         }
         builder.finalizeXML();
 
-        if (currState.isFinal()) System.out.println(word + ": ACCEPT");
+        if (currState.isFinal())
+            System.out.println(word + ": ACCEPT (" + currState.topToken().getValue() + ")");
         else System.out.println(word + ": REJECT");
     }
 }

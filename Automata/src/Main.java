@@ -130,7 +130,7 @@ public class Main {
         directory = fc.getCurrentDirectory();
         // TODO : Replace with generating NFA
         NFA nfa = testNFA();
-        DFA dfa = NFAtoDFA.dfaFromNFA(nfa); //DFA dfa = defaultDFA();
+        DFA dfa = NFAtoDFA.dfaFromNFA(nfa);
         // TODO : DFA minimization
 
         return dfa;
@@ -139,7 +139,7 @@ public class Main {
     private static DFA generateDFA(String fileName) {
         // TODO : Replace with generating NFA
         NFA nfa = testNFA();
-        DFA dfa = NFAtoDFA.dfaFromNFA(nfa); //DFA dfa = defaultDFA();
+        DFA dfa = NFAtoDFA.dfaFromNFA(nfa);
         // TODO : DFA minimization
 
         return dfa;
