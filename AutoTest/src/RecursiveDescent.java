@@ -48,16 +48,16 @@ public class RecursiveDescent {
 		
 	}
 	
-	private void regex(){
+	private RecursiveDescentInterState regex(){
 		rexp();
 	}
 	
-	private void rexp(){
+	private RecursiveDescentInterState rexp(){
 		rexp1();
 		rexpPrime();
 	}
 	
-	private void rexpPrime(){
+	private RecursiveDescentInterState rexpPrime(){
 		Token token = scanner.peek(); 
 		if(token.equals(new Token("|", false))){
 			scanner.matchToken(token);
@@ -69,20 +69,20 @@ public class RecursiveDescent {
 		}
 	}
 	
-	private void rexp1(){
+	private RecursiveDescentInterState rexp1(){
 		rexp2();
 		rexp1Prime();
 	}
 	
 
 	
-	private void rexp1Prime(){
+	private RecursiveDescentInterState rexp1Prime(){
 		rexp2();
 		rexp1Prime();
 		return;
 	}
 	
-	private void rexp2(){
+	private RecursiveDescentInterState rexp2(){
 		Token token= scanner.peek();
 		if(token.equals(new Token("(", false))){
 			scanner.matchToken(token);
@@ -100,7 +100,7 @@ public class RecursiveDescent {
 			
 	}
 	
-	private void rexp2Tail(){
+	private RecursiveDescentInterState rexp2Tail(){
 		Token token = scanner.peek();
 		if(token.equals(new Token("*", false))){
 			scanner.matchToken(token);
@@ -113,12 +113,12 @@ public class RecursiveDescent {
 		}
 	}
 	
-	private void rexp3(){
+	private RecursiveDescentInterState rexp3(){
 		charClass();
 		return;
 	}
 
-	private void charClass(){
+	private RecursiveDescentInterState charClass(){
 		Token token = scanner.peek();
 		if(token.equals(new Token(".", false))){
 			scanner.matchToken(token);
@@ -135,12 +135,12 @@ public class RecursiveDescent {
 		}
 	}
 	
-	private void charClass1(){
+	private RecursiveDescentInterState charClass1(){
 		charSetList();
 		excludeSet();
 	}
 	
-	private void charSetList(){
+	private RecursiveDescentInterState charSetList(){
 		Token token = scanner.peek();
 		if(token.equals(new Token("]", false))){
 			scanner.matchToken(token);
@@ -151,7 +151,7 @@ public class RecursiveDescent {
 		}
 	}
 	
-	private void charSet(){
+	private RecursiveDescentInterState charSet(){
 		Token token = scanner.peek();
 		if(clsCharList.contains(token.getValue())){
 			scanner.matchToken(token);
@@ -162,22 +162,29 @@ public class RecursiveDescent {
 		}
 	}
 	
-	private void charSetTail(){
+	private RecursiveDescentInterState charSetTail(){
 		Token token = scanner.peek();
-		if(clsCharList.contains(token.getValue())){
+		if(token.equals(new Token("-", false))){
 			scanner.matchToken(token);
+			Token token1 = scanner.peek();
+			if(clsCharList.contains(token.getValue())){
+				scanner.matchToken(token1);
+			}
+			else{
+				throw new SyntaxErrorException();
+			}
 		}
 		else{
-			return;
+			return null;
 		}
 	}
-	private void excludeSet(){
+	private RecursiveDescentInterState excludeSet(){
 		scanner.matchToken(new Token("^", false));
 		charSet();
-		Token token1 = scanner.matchToken(new Token("IN", false));
+		scanner.matchToken(new Token("IN", false));
 		excludetSetTail();
 	}
-	private void excludetSetTail(){
+	private RecursiveDescentInterState excludetSetTail(){
 		Token token = scanner.peek();
 		if(token.equals(new Token("["))){
 			scanner.matchToken(token);
