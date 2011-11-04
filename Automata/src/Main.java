@@ -8,6 +8,8 @@ import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 
 public class Main {
+    public static File directory;
+
     /**
      * Creates the DFA and ScannerDriver using the files containing the regexes
      * and the tokens.
@@ -18,29 +20,57 @@ public class Main {
      * of the tokens
      */
     public static void main(String[] args) {
-        Object[] options = {"Generate DFA",
-            "Use Existing DFA"};
-        int n = JOptionPane.showOptionDialog(null,
-                "Would you like to generate a DFA from lexical specifications or "
-                + "use an existing DFA from export?",
-                "DFA Source",
-                JOptionPane.YES_NO_CANCEL_OPTION,
-                JOptionPane.QUESTION_MESSAGE,
-                null,
-                options,
-                null);
+        checkArgs(args);
 
         DFA dfa;
-        if (n == 0) {
-            dfa = generateDFA();
+        if (args.length == 0) {
+            Object[] options = {"Generate DFA",
+                "Use Existing DFA"};
+            int n = JOptionPane.showOptionDialog(null,
+                    "Would you like to generate a DFA from lexical specifications or "
+                    + "use an existing DFA from export?",
+                    "DFA Source",
+                    JOptionPane.YES_NO_CANCEL_OPTION,
+                    JOptionPane.QUESTION_MESSAGE,
+                    null,
+                    options,
+                    null);
+            if (n == 0) {
+                dfa = generateDFA();
+            } else {
+                dfa = loadDFA();
+            }
         } else {
-            dfa = loadDFA();
+            if (args[0].equalsIgnoreCase("--createDFA") || args[0].equalsIgnoreCase("--run")) {
+                dfa = generateDFA(args[1]);
+            } else {
+                dfa = loadDFA(args[1]);
+            }
         }
 
-        JOptionPane.showMessageDialog(null, "Next, choose the test cases to examine.");
-        JFileChooser fc = new JFileChooser();
-        fc.showOpenDialog(null);
-        File inputFile = fc.getSelectedFile();
+        if (args.length == 0) {
+            int save = JOptionPane.showConfirmDialog(null, "Do you want to save the DFA?", "DFA Exporter",
+                    JOptionPane.YES_NO_OPTION);
+            if (save == 0) {
+                saveDFA(dfa);
+            }
+        } else if (args.length > 0 && args[0].equalsIgnoreCase("--createDFA")) {
+            saveDFA(dfa, args[2]);
+            System.exit(0);
+        } else if (args.length > 3 && args[3].equalsIgnoreCase("--saveDFA")) {
+            saveDFA(dfa, args[4]);
+        }
+
+        File inputFile;
+
+        if (args.length == 0) {
+            JOptionPane.showMessageDialog(null, "Next, choose the test cases to examine.");
+            JFileChooser fc = new JFileChooser(directory);
+            fc.showOpenDialog(null);
+            inputFile = fc.getSelectedFile();
+        } else {
+            inputFile = new File(args[2]);
+        }
 
         try {
             ScannerDriver driver = new ScannerDriver(inputFile, dfa);
@@ -51,26 +81,79 @@ public class Main {
         }
     }
 
+    private static void checkArgs(String[] args) {
+        if (args.length == 0) return;
+        if (args[0].equalsIgnoreCase("help") || args[0].equalsIgnoreCase("?")) {
+            System.out.println("Main --run 'specs' 'tests' --saveDFA 'dfa'");
+            System.out.println(" - Takes the input specs and runs it against tests, printing results");
+            System.out.println(" - --saveDFA 'dfa' is optional");
+            System.out.println(" - 'specs', 'tests' and 'dfa' can be any filename");
+            System.out.println();
+            System.out.println("Main --createDFA 'input' 'output'");
+            System.out.println(" - Takes 'input' lex. specs and saves the resulting DFA to 'output'");
+            System.out.println(" - 'input' and 'output' can be any filename");
+            System.out.println();
+            System.out.println("Main --runDFA 'dfa' 'tests'");
+            System.out.println(" - Takes the input dfa and runs it against tests, printing results");
+            System.out.println(" - 'dfa' and 'tests' can be any filename");
+            System.exit(0);
+        }
+        if (args.length == 3) {
+            if (args[0].equalsIgnoreCase("--createDFA") || args[0].equalsIgnoreCase("--runDFA") || args[0].equalsIgnoreCase("--run"))
+                return;
+        }
+        if (args.length == 5) {
+            if (args[0].equalsIgnoreCase("--run") && args[3].equalsIgnoreCase("--saveDFA"))
+                return;
+        }
+        System.out.println("Incorrect arguments. If you don't know them run 'Main help' or use no args for GUI-mode");
+        System.exit(1);
+    }
+
     private static DFA loadDFA() {
         JFileChooser fc = new JFileChooser();
         fc.showOpenDialog(null);
-        File file = fc.getSelectedFile();
+        File dfaFile = fc.getSelectedFile();
+        directory = fc.getCurrentDirectory();
+        return DFAExportImport.importDFA(dfaFile);
+    }
+
+    private static DFA loadDFA(String fileName) {
+        File file = new File(fileName);
         return DFAExportImport.importDFA(file);
     }
 
     private static DFA generateDFA() {
+        JFileChooser fc = new JFileChooser();
+        fc.showOpenDialog(null);
+        File lexSpecs = fc.getSelectedFile();
+        directory = fc.getCurrentDirectory();
         // TODO : Replace with generating NFA
         NFA nfa = testNFA();
         DFA dfa = NFAtoDFA.dfaFromNFA(nfa); //DFA dfa = defaultDFA();
         // TODO : DFA minimization
 
-        saveDFA(dfa);
+        return dfa;
+    }
+
+    private static DFA generateDFA(String fileName) {
+        // TODO : Replace with generating NFA
+        NFA nfa = testNFA();
+        DFA dfa = NFAtoDFA.dfaFromNFA(nfa); //DFA dfa = defaultDFA();
+        // TODO : DFA minimization
 
         return dfa;
     }
 
     private static void saveDFA(DFA dfa) {
-        File exportDFA = new File("dfa.txt");
+        JFileChooser fileSaver = new JFileChooser(directory);
+        fileSaver.showSaveDialog(null);
+        File exportDFA = fileSaver.getSelectedFile();
+        DFAExportImport.exportDFA(dfa, exportDFA);
+    }
+
+    private static void saveDFA(DFA dfa, String fileName) {
+        File exportDFA = new File(fileName);
         DFAExportImport.exportDFA(dfa, exportDFA);
     }
 
