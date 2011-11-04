@@ -57,8 +57,11 @@ public class ScannerDriver {
         }
         builder.finalizeXML();
 
-        if (currState.isFinal())
-            System.out.println(word + ": ACCEPT (" + currState.topToken().getValue() + ")");
-        else System.out.println(word + ": REJECT");
+        if (currState.isFinal()) {
+            if (!currState.getTokens().isEmpty())
+                System.out.println(word + ": ACCEPT (" + currState.topToken().getValue() + ")");
+            else
+                System.out.println(word + ": ACCEPT");
+        } else System.out.println(word + ": REJECT");
     }
 }
