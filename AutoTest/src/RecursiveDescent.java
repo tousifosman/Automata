@@ -1,6 +1,9 @@
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 
 public class RecursiveDescent {
@@ -24,7 +27,9 @@ public class RecursiveDescent {
 	//List<Token> OperatroList;
 	List<String> reCharList;
 	List<String> clsCharList;
-	List<String> definedClasses;
+	List<String> definedClassesNames;
+	Map<String, CharToken> definedClasses;
+	TempScanner scanner;
 	
 	public RecursiveDescent(String fileName){
 		//TODO JW initialize the scanner;
@@ -36,8 +41,14 @@ public class RecursiveDescent {
 		reCharList = Arrays.asList(RE_CHAR);
 		clsCharList = Arrays.asList(CLS_CHAR);
 		
+		//JW TODO replace with real defined classes
+		definedClasses = new HashMap<String, CharToken>();	
+		definedClassesNames = new ArrayList<String>();
+		//JW TODO replace with real scanner
+		scanner = new TempScanner();
 		
-		definedClasses = new ArrayList<String>();
+		
+		
 		
 //		OperatroList = new ArrayList<Token>();
 //		for(int i=0; i< OPERATORS.length; i++){
@@ -127,7 +138,7 @@ public class RecursiveDescent {
 			scanner.matchToken(token);
 			charClass1();
 		}
-		else if(definedClasses.contains(token.getValue())){
+		else if(definedClassesNames.contains(token.getValue())){
 			scanner.matchToken(token);
 		}
 		else{
@@ -162,7 +173,8 @@ public class RecursiveDescent {
 		}
 	}
 	
-	private RecursiveDescentInterState charSetTail(){
+	
+	private RecursiveDescentInterState charSetTail() throws SyntaxErrorException{
 		Token token = scanner.peek();
 		if(token.equals(new Token("-", false))){
 			scanner.matchToken(token);
@@ -178,24 +190,78 @@ public class RecursiveDescent {
 			return null;
 		}
 	}
-	private RecursiveDescentInterState excludeSet(){
+	
+	
+	private RecursiveDescentInterState excludeSet() throws SyntaxErrorException{
 		scanner.matchToken(new Token("^", false));
-		charSet();
+		RecursiveDescentInterState charSetSate = charSet();
 		scanner.matchToken(new Token("IN", false));
-		excludetSetTail();
-	}
-	private RecursiveDescentInterState excludetSetTail(){
-		Token token = scanner.peek();
-		if(token.equals(new Token("["))){
-			scanner.matchToken(token);
-			charSet();
-			scanner.matchToken(new Token("]", false));
+			
+		Set<Character> toRemoveChars = charSetSate.getCurrentNFA().alphabet();		
+		RecursiveDescentInterState exSetTailState = excludetSetTail();
+		Set<Character> allChars = exSetTailState.getCurrentNFA().alphabet();
+		
+		for(Character c : toRemoveChars){
+			allChars.remove(c);
 		}
-		else if(definedClasses.contains(token.getValue())) {
+		
+		State startState = new State();
+		MapBasedNFA nfa = new MapBasedNFA(startState);
+		State finalState = new State();
+		
+		for(Character c: allChars){
+			nfa.addTransisition(startState, c, finalState);
+		}
+		String newRegexString  = "^"+charSetSate.getCurrentRegex()+"IN"+exSetTailState.getCurrentRegex();
+		RecursiveDescentInterState interState = new RecursiveDescentInterState(newRegexString, nfa);
+		return interState;
+	}
+
+	
+	
+	private RecursiveDescentInterState excludetSetTail() throws SyntaxErrorException{
+		Token token = scanner.peek();
+		if(token.equals(new Token("[", false))){
 			scanner.matchToken(token);
+			RecursiveDescentInterState charSetSate = charSet();
+			scanner.matchToken(new Token("]", false));
+			
+			State startState = new State();
+			MapBasedNFA nfa = new MapBasedNFA(startState);
+			State finalState = new State();
+			finalState.setFinal(true);
+			
+			NFA charSetNFA = charSetSate.getCurrentNFA();
+			
+			Set<Character> chars = charSetNFA.alphabet();
+			
+			for(Character c : chars){
+				nfa.addTransisition(startState, c, finalState);
+			}
+			
+			String newRegexString = "["+charSetSate.getCurrentRegex()+"]";
+			RecursiveDescentInterState interState = new RecursiveDescentInterState(newRegexString, nfa);
+			return interState;
+		
+		}
+
+		else if(definedClassesNames.contains(token.getValue())) {
+			scanner.matchToken(token);
+			
+			State startState = new State();
+			MapBasedNFA nfa = new MapBasedNFA(startState);
+			State finalState = new State();
+			finalState.setFinal(true);
+			
+			Set<Character> transitions= definedClasses.get(token.getValue()).chars;
+			
+			for(Character c : transitions){
+				nfa.addTransisition(startState, c, finalState);
+			}
+			RecursiveDescentInterState interState = new RecursiveDescentInterState(token.getValue(), nfa);
+			return interState;	
 		}
 		else{
-			
 			throw new SyntaxErrorException();
 		}
 		
