@@ -28,16 +28,16 @@ public class Constants {
 	public static List<Character>specialCharsList = Arrays.asList(specialChars);
         
         /* Static Tokens for Recognition by Scanner */
-        public static Token UNION = new Token("|",false);
-        public static Token EPSILON = new Token("",false);
-        public static Token LPAREN = new Token("(",false);
-        public static Token RPAREN = new Token(")",false);
-        public static Token ASTERISK = new Token("*",false);
-        public static Token PLUS = new Token("+",false);
-        public static Token FULLSTOP = new Token("(",false);
-        public static Token CARAT = new Token("^",false);
-        public static Token LBRACKET = new Token("[",false);
-        public static Token RBRACKET = new Token("]",false);
-        public static Token QUESTION = new Token("?",false);
+        public static Token UNION = new Token("|");
+        public static Token EPSILON = new Token("");
+        public static Token LPAREN = new Token("(");
+        public static Token RPAREN = new Token(")");
+        public static Token ASTERISK = new Token("*");
+        public static Token PLUS = new Token("+");
+        public static Token FULLSTOP = new Token("(");
+        public static Token CARAT = new Token("^");
+        public static Token LBRACKET = new Token("[");
+        public static Token RBRACKET = new Token("]");
+        public static Token QUESTION = new Token("?");
 	
 }
