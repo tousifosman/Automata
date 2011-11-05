@@ -17,11 +17,13 @@ public class Constants {
     public static Character[] digits = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9'};
     public static Character[] operators = {'*', '+', '(', ')', '[', ']', '|', '.'};
     public static Character[] specialChars = {'*', '+', '(', ')', '[', ']', '|', '.', ' ', '\\'};
+    public static Character[] specialChars2 = {'$', '*', '+', '(', ')', '[', ']', '|', '.', ' ', '\\'};
     public static List<Character> lowerCaseList = Arrays.asList(lowerCase);
     public static List<Character> upperCaseList = Arrays.asList(upperCase);
     public static List<Character> digitsList = Arrays.asList(digits);
     public static List<Character> operatorList = Arrays.asList(operators);
     public static List<Character> specialCharsList = Arrays.asList(specialChars);
+    public static List<Character> specialCharsList2 = Arrays.asList(specialChars2);
     /* Static Tokens for Recognition by Scanner */
     public static Token UNION = new Token("|");
     public static Token EPSILON = new Token("");
