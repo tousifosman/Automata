@@ -70,6 +70,7 @@ public class SpecFileScanner {
             while (jScanner.hasNextLine()) {
                 line++;
                 curr = jScanner.nextLine();
+                System.out.println(curr);
                 log("Line " + line + ": " + curr);
                 if (curr.charAt(0) != '$' || curr.charAt(0) == '%') {
                     break;
@@ -87,6 +88,7 @@ public class SpecFileScanner {
             while (jScanner.hasNextLine()) {
                 line++;
                 curr = jScanner.nextLine();
+                System.out.println(curr);
                 log("Line " + line + ": " + curr);
                 if (curr.charAt(0) != '$') {
                     throw new SyntaxErrorException("Improper formatting in identifier region.");

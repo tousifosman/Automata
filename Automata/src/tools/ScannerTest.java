@@ -8,6 +8,8 @@ import java.util.Map;
 import automata.CharToken;
 import automata.Token;
 import exceptions.SyntaxErrorException;
+import generateNFA.FinalNFA;
+
 import java.util.LinkedList;
 
 
@@ -21,7 +23,7 @@ public class ScannerTest {
 
     public static void main(String[] args) throws java.io.FileNotFoundException, java.io.IOException, SyntaxErrorException {
         System.out.println("Scanner instantiated.");
-        scanner = new SpecFileScanner("C:\\Scanner.txt");
+        scanner = new SpecFileScanner("sample_input_specification.txt");
         System.out.println("Done scanning.");
 
         System.out.println("charClassDefs--------------------------------");
@@ -56,5 +58,11 @@ public class ScannerTest {
             System.out.println(a.getKey() + ": " + a.getValue());
         }
         System.out.println("____________________________________________|");
+        
+        
+        FinalNFA finalNFA = new FinalNFA();
+        finalNFA.generate("sample_input_specification.txt");
+        
+        
     }
 }

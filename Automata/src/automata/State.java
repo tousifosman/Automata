@@ -51,8 +51,14 @@ public class State {
     public void setFinal(boolean finalState) {
         this.finalState = finalState;
     }
+    
+    
 
-    @Override
+    public String getName() {
+		return name;
+	}
+
+	@Override
     public boolean equals(Object o) {
         return (o instanceof State && ((State) o).id == this.id);
     }
