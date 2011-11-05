@@ -18,7 +18,17 @@ import java.util.Set;
 import java.util.Stack;
 
 // TODO : Document me.
+/**
+ * Contains functions to manage exporting and importing of DFA files in a defined xml schema.
+ * @author 
+ */
 public class DFAExportImport {
+    
+    /**
+     * Performs the export of a DFA to a file.
+     * @param dfa DFA to be saved.
+     * @param file Destination file.
+     */
     public static void exportDFA(DFA dfa, File file) {
         try {
             FileWriter fstream = new FileWriter(file);
@@ -75,6 +85,11 @@ public class DFAExportImport {
         out.flush();
     }
 
+    /**
+     * Performs the import of a DFA from a file.
+     * @param file Origination file.
+     * @return Loaded DFA.
+     */
     public static DFA importDFA(File file) {
         try {
             Scanner scan = new Scanner(file);
