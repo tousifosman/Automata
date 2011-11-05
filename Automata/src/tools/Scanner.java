@@ -1,3 +1,11 @@
+//             ___   ____   _____  ___   _        ___  ______    ___            
+//            /   \ |    \ / ___/ /   \ | T      /  _]|      T  /  _]           
+// _____     Y     Y|  o  )   \_ Y     Y| |     /  [_ |      | /  [_      _____ 
+//|     |    |  O  ||     T\__  T|  O  || l___ Y    _]l_j  l_jY    _]    |     |
+//l_____j    |     ||  O  |/  \ ||     ||     T|   [_   |  |  |   [_     l_____j
+//           l     !|     |\    |l     !|     ||     T  |  |  |     T           
+//            \___/ l_____j \___j \___/ l_____jl_____j  l__j  l_____j           
+
 package tools;
 
 import automata.Token;
@@ -23,12 +31,13 @@ public class Scanner {
 
 // <editor-fold defaultstate="collapsed" desc="Field Definitions">
     public static Map<String, CharToken> charClasses;
-    public static Map<String, NFA> identifiers;
     //private Set<Token> tokenList = new HashSet<Token>();
-    private String currentLine, buffer;
+    public String currentLine = "";
     private FileReader file;
     private BufferedReader reader;
-    private Token currentToken;
+    private Token currentToken = new Token("");
+    private boolean enabled;
+    public boolean EOF;
 
     private class LLPlus extends LinkedList<Character> {
 
@@ -39,9 +48,16 @@ public class Scanner {
             }
             return t.reverse().toString();
         }
+        public String traverseFlip() {
+            StringBuilder t = new StringBuilder();
+            for (Character u : this) {
+                t.append(u);
+            }
+            return t.toString();
+        }
     }
     private LLPlus tokenBuffer = new LLPlus();
-    private Deque<Character> lookAhead = new LinkedList<Character>();
+    private LLPlus lookAhead = new LLPlus();
     private boolean busy;
 // </editor-fold>
 
@@ -52,28 +68,63 @@ public class Scanner {
     public boolean isBusy() {
         return this.busy;
     }
+    
+    public String restOfLine() {
+        String t = lookAhead.traverseFlip().trim();
+        lookAhead.clear();
+        return t;
+    }
+
+    public void enable() {
+        enabled = true;
+    }
+
+    public void disable() {
+        enabled = false;
+    }
+
+    public void loadRegex(String regex) {
+        lookAhead.clear();
+        for (char a : regex.toCharArray()) {
+            lookAhead.add(a);
+        }
+    }
 
     public Scanner(String filename) throws FileNotFoundException, IOException {
+        this.enabled = true;
         this.busy = true;
         /* Open file */
         file = new FileReader(filename);
         reader = new BufferedReader(file);
-
+        
         scanCharClasses();
 
         this.busy = false;
     }
 
-    private void scanLine() throws IOException {
+    /**
+     * Reads the next line from the file and sets the value of currentLine to this.
+     * @throws IOException 
+     */
+    private void scanLine() {
         /* Keep scanning while lines remain */
-        if ((currentLine = reader.readLine()) == null) {
-            // End of File
+        try {
+            if ((currentLine = reader.readLine()) == null) {
+                // End of File
+                EOF = true;
+            }
+        } catch (IOException e) {
+            EOF = true;
         }
     }
 
+    /**
+     * Scans the section of the file containing character classes and stores these in the CharClasses object.
+     * @throws IOException 
+     */
     private void scanCharClasses() throws IOException {
         /* Ignore line comments in beginning of file */
-        while (currentLine.startsWith("%")) {
+        while (!currentLine.isEmpty() && currentLine.startsWith("%")) {
             scanLine();
         }
 
@@ -170,7 +221,7 @@ public class Scanner {
                 }
                 String className = builder.toString().trim();
                 Set<Character> newCharSet = new HashSet<Character>();
-                for (Character c : charClasses.get(className).chars) {
+                for (Character c : charClasses.get(className).chars()) {
                     newCharSet.add(c);
                 }
                 for (Character c : charSet) {
@@ -191,57 +242,56 @@ public class Scanner {
 
     }
 
+    /**
+     * Scans by character until a complete token is found.
+     * @return
+     * @throws IOException 
+     */
     private Token scanToken() throws IOException {
-        if (lookAhead.isEmpty()) {
-            // Starting a new line
-            scanLine();
-            for (int i = 0; i < currentLine.length(); i++) {
-                lookAhead.addLast(currentLine.toCharArray()[i]);
-            }
-            /* We are reading an identifier */
-            return newIdentifier();
-        } else {
-            try {
-                /* Starting at some random point */
-                // If lookAhead is empty, either detect an epsilon token or a syntax error
-                if (pop() == null) {
-                    if (tokenBuffer.isEmpty()) {
-                        return Constants.EPSILON;
-                    } else {
-                        throw new SyntaxErrorException("Unexpected end of line!");
-                    }
-                }
-                switch (tokenBuffer.peek()) {
-                    case '\\':
-                        /* Escaped character token */
-                        return new Token("\\".concat(pop().toString()));
-                    case '$':
-                        /* Character class */
-                        while (!Constants.specialCharsList.contains(pop())) {
-                        }
-                        unpop();
-                        return new Token(tokenBuffer.traverse());
-                    default:
-                        /* Single Character */
-                        return new Token(tokenBuffer.peek().toString());
-                }
-            } catch (SyntaxErrorException e) {
-            }
+        if (!enabled || lookAhead.isEmpty()) {
+            return null;
         }
+        try {
+            /* Starting at some random point */
+            // If lookAhead is empty, either detect an epsilon token or a syntax error
+            if (pop() == null) {
+                if (tokenBuffer.isEmpty()) {
+                    return Constants.EPSILON;
+                } else {
+                    throw new SyntaxErrorException("Unexpected end of line!");
+                }
+            }
+            switch (tokenBuffer.peek()) {
+                case '\\':
+                    /* Escaped character token */
+                    return new Token("\\".concat(pop().toString()));
+                case '$':
+                    /* Character class */
+                    while (!Constants.specialCharsList.contains(pop())) {
+                    }
+                    unpop();
+                    return new Token(tokenBuffer.traverse());
+                default:
+                    /* Single Character */
+                    return new Token(tokenBuffer.peek().toString());
+            }
+        } catch (SyntaxErrorException e) {
+        }
+
         return null;
     }
 
-    private Token newIdentifier() {
+    public String newIdentifier() {
         try {
-            if (pop() != '$') {
+            if (pop() == null || tokenBuffer.peek() != '$') {
                 throw new SyntaxErrorException("Missing '$' leading Identifier!");
             }
         } catch (SyntaxErrorException e) {
         }
-        while (lookAhead.pollFirst() != ' ' && popVerbatim() != '\t') {
+        while (lookAhead.pollFirst() != null && lookAhead.pollFirst() != ' ' && popVerbatim() != '\t') {
         }
         /* Space marks the end of an identifier */
-        return new Token(tokenBuffer.traverse());
+        return tokenBuffer.traverse();
     }
 
     /**
@@ -250,7 +300,7 @@ public class Scanner {
      */
     private Character pop() {
         Character t = popVerbatim();
-        if (java.lang.Character.isWhitespace(t)) {
+        if (t != null && java.lang.Character.isWhitespace(t)) {
             tokenBuffer.poll();
             return pop();
         } else {
@@ -272,7 +322,11 @@ public class Scanner {
     }
 
     public Token peekToken() throws IOException {
-        return (currentToken = scanToken());
+        if (currentToken == null || currentToken.equals(new Token(""))) {
+            return (currentToken = scanToken());
+        } else {
+            return currentToken;
+        }
     }
 
     /**

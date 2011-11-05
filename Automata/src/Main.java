@@ -9,6 +9,7 @@ import javax.swing.JOptionPane;
 import minimization.DFAMinimizer;
 
 public class Main {
+
     public static File directory;
 
     /**
@@ -83,7 +84,9 @@ public class Main {
     }
 
     private static void checkArgs(String[] args) {
-        if (args.length == 0) return;
+        if (args.length == 0) {
+            return;
+        }
         if (args[0].equalsIgnoreCase("help") || args[0].equalsIgnoreCase("?")) {
             System.out.println("Main --run 'specs' 'tests' --saveDFA 'dfa'");
             System.out.println(" - Takes the input specs and runs it against tests, printing results");
@@ -100,12 +103,14 @@ public class Main {
             System.exit(0);
         }
         if (args.length == 3) {
-            if (args[0].equalsIgnoreCase("--createDFA") || args[0].equalsIgnoreCase("--runDFA") || args[0].equalsIgnoreCase("--run"))
+            if (args[0].equalsIgnoreCase("--createDFA") || args[0].equalsIgnoreCase("--runDFA") || args[0].equalsIgnoreCase("--run")) {
                 return;
+            }
         }
         if (args.length == 5) {
-            if (args[0].equalsIgnoreCase("--run") && args[3].equalsIgnoreCase("--saveDFA"))
+            if (args[0].equalsIgnoreCase("--run") && args[3].equalsIgnoreCase("--saveDFA")) {
                 return;
+            }
         }
         System.out.println("Incorrect arguments. If you don't know them run 'Main help' or use no args for GUI-mode");
         System.exit(1);
@@ -544,7 +549,7 @@ public class Main {
         }
         states[7].setFinal(true);
         MapBasedNFA nfa = new MapBasedNFA(states[9]);
-        
+
 
         nfa.addTransition(states[9], null, states[8]);
         nfa.addTransition(states[9], null, states[4]);
