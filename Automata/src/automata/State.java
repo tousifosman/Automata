@@ -30,6 +30,10 @@ public class State {
         count++;
     }
 
+    /**
+     * Reads the entire set of Tokens for this State.
+     * @return the set of Tokens.
+     */
     public Stack<Token> getTokens() {
         Stack<Token> stack = new Stack<Token>();
         stack.addAll(this.tokens);
@@ -91,6 +95,9 @@ public class State {
         return name;
     }
 
+    /**
+     * Resets the count to zero.
+     */
     public static void resetCount() {
         count = 0;
     }

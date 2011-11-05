@@ -19,24 +19,24 @@ public class RegexScanner {
 
     private Token currentToken;
     private Queue<Token> tokens;
-    
+
     /**
      * 
      * @param idEntries Map entry containing the name and Tokens (in order) of the identifier string to be matched against.
      */
     public RegexScanner(Map.Entry<String, LinkedList<Token>> idEntries) {
-    	tokens = new LinkedList<Token>();
-    	
+        tokens = new LinkedList<Token>();
+
         for (Token a : idEntries.getValue()) {
             tokens.add(a);
         }
         currentToken = new Token("null");
     }
-    
-    public RegexScanner (String identifier, Map<String,LinkedList<Token>> identifiers) {
+
+    public RegexScanner(String identifier, Map<String, LinkedList<Token>> identifiers) {
         this(identifiers.get(identifier));
     }
-    
+
     public RegexScanner(LinkedList<Token> tokens) {
         currentToken = new Token("null");
         this.tokens = tokens;
@@ -49,47 +49,41 @@ public class RegexScanner {
      * @throws SyntaxErrorException 
      */
     public boolean matchToken(Token token) throws SyntaxErrorException {
-    	Token pollToken = tokens.poll();
-		if(token.equals(pollToken)){
-			//System.out.println("Matched Token: "+ pollToken.getValue());
-			return true;
-		}
-		else {
-			//System.out.println("Mis-matched token: "+ pollToken.getValue()+"\nTrying to match: "+token.getValue());
-			throw new SyntaxErrorException();
-		}
+        Token pollToken = tokens.poll();
+        if (token.equals(pollToken)) {
+            //System.out.println("Matched Token: "+ pollToken.getValue());
+            return true;
+        } else {
+            //System.out.println("Mis-matched token: "+ pollToken.getValue()+"\nTrying to match: "+token.getValue());
+            throw new SyntaxErrorException();
+        }
     }
 
     /**
      * Clears the token buffer if token matches.
      * @param token The token to be compared against.
      */
-    
     /*public void matchToken() throws java.io.IOException {
-        currentToken = currentToken.equals(new Token("null")) ? new Token("null") : nextToken();
+    currentToken = currentToken.equals(new Token("null")) ? new Token("null") : nextToken();
     }*/
-    
     /**
      * Returns, but does not remove, the current Token.
      * @return Token currently loaded in the token queue, otherwise a Token containing a "null" String.
      */
     public Token peek() {
-		Token token =tokens.peek();
-		if(token ==null){
-			token = new Token("null", false);
-		}
-		//if(token.)
-		return token; 
+        Token token = tokens.peek();
+        if (token == null) {
+            token = new Token("null", false);
+        }
+        //if(token.)
+        return token;
     }
-    
     /*
     private Token nextToken() {
-        if (!tokens.isEmpty())
-            return tokens.poll();
-        else
-            return new Token("null");
+    if (!tokens.isEmpty())
+    return tokens.poll();
+    else
+    return new Token("null");
     }
-    */
-    
+     */
 }
-
