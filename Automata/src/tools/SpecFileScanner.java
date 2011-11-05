@@ -99,7 +99,9 @@ public class SpecFileScanner {
                 curr = jScanner.nextLine();
                 System.out.println(curr);
                 log("Line " + line + ": " + curr);
-                if (curr.length() <=0) continue;
+                if (curr.length() <= 0) {
+                    continue;
+                }
                 if (curr.charAt(0) != '$' || curr.charAt(0) == '%') {
                     break;
                 }
@@ -119,7 +121,9 @@ public class SpecFileScanner {
                 curr = jScanner.nextLine();
                 System.out.println(curr);
                 log("Line " + line + ": " + curr);
-                if (curr.length() <=0) continue;
+                if (curr.length() <= 0) {
+                    continue;
+                }
                 if (curr.charAt(0) != '$') {
                     throw new SyntaxErrorException("Improper formatting in identifier region.");
                 }
@@ -191,21 +195,22 @@ public class SpecFileScanner {
                 }
                 if (charClasses.keySet().contains(excClass.toString())) {
                     Set<Character> superSet = new TreeSet<Character>();
-                    for (Character b : charClasses.get(excClass.toString()).chars()){
+                    for (Character b : charClasses.get(excClass.toString()).chars()) {
                         superSet.add(new Character(b.charValue()));
                     }
                     for (Character b : currClass) {
                         superSet.remove(b);
                     }
                     currClass = superSet;
-                } else throw new SyntaxErrorException();
+                } else {
+                    throw new SyntaxErrorException();
+                }
             }
-            charClasses.put(a.getKey(), new CharToken(a.getKey(),currClass));
+            charClasses.put(a.getKey(), new CharToken(a.getKey(), currClass));
         }
     }
 
-    
-/**
+    /**
      * Parser-lexer combination procedure which processes the token definition section of the input specification file.
      */
     private void scanIdentifiers() {
