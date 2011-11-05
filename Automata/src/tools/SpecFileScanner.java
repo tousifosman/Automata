@@ -9,7 +9,6 @@ import java.util.Scanner;
 import exceptions.SyntaxErrorException;
 import java.util.Map;
 import java.util.TreeMap;
-import java.util.TreeMap;
 import java.util.Set;
 import java.util.Deque;
 import java.util.LinkedList;
@@ -72,6 +71,7 @@ public class SpecFileScanner {
                 curr = jScanner.nextLine();
                 System.out.println(curr);
                 log("Line " + line + ": " + curr);
+                if (curr.length() <=0) continue;
                 if (curr.charAt(0) != '$' || curr.charAt(0) == '%') {
                     break;
                 }
@@ -84,12 +84,14 @@ public class SpecFileScanner {
                 def = new StringBuilder();
             }
             identifiers = new TreeMap<String, String>();
-            StringBuilder regex = new StringBuilder();
+            StringBuilder regex;
             while (jScanner.hasNextLine()) {
+                regex = new StringBuilder();
                 line++;
                 curr = jScanner.nextLine();
                 System.out.println(curr);
                 log("Line " + line + ": " + curr);
+                if (curr.length() <=0) continue;
                 if (curr.charAt(0) != '$') {
                     throw new SyntaxErrorException("Improper formatting in identifier region.");
                 }
