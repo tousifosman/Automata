@@ -1,1 +1,1 @@
-student1  Num  3bytes  PI  modula3	456
+student1  Num  3bytes  PI  modula3	456*123
