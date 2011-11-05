@@ -221,6 +221,7 @@ public class SpecFileScanner {
             for (char b : a.getValue().toCharArray()) {
                 curr.add(b);
             }
+            curr.add(' ');
             StringBuilder temp;
             LinkedList<Token> tokens = new LinkedList<Token>();
             while (!curr.isEmpty()) {
