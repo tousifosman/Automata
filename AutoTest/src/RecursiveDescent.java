@@ -32,31 +32,17 @@ public class RecursiveDescent {
 	List<String> definedClassesNames;
 	Map<String, CharToken> definedClasses;
 	TempScanner scanner;
+	String nfaName;
 	
-	public RecursiveDescent(String fileName){
-		//TODO JW initialize the scanner;
-//		ReCharTokens = new ArrayList<Token>();
-//		for(int i=0; i<RE_CHAR.length; i++){
-//			ReCharTokens.add(new Token(RE_CHAR[i], false));
-//		}
-		
+	public RecursiveDescent(TempScanner scanner, HashMap<String, CharToken> definedClasses, String nfaName){		
 		reCharList = Arrays.asList(RE_CHAR);
 		clsCharList = Arrays.asList(CLS_CHAR);
 		
 		//JW TODO replace with real defined classes
-		definedClasses = new HashMap<String, CharToken>();	
-		definedClassesNames = new ArrayList<String>();
+		this.definedClasses = definedClasses;
+		definedClassesNames = new ArrayList<String>(this.definedClasses.keySet());
 		//JW TODO replace with real scanner
-		scanner = new TempScanner();
-		
-		
-		
-		
-//		OperatroList = new ArrayList<Token>();
-//		for(int i=0; i< OPERATORS.length; i++){
-//			OperatroList.add(new Token(OPERATORS[i], false));
-//			
-//		}
+		this.scanner = scanner;
 		
 		
 	}
@@ -74,7 +60,10 @@ public class RecursiveDescent {
 	}
 
 	private RecursiveDescentInterState rexpPrime() throws SyntaxErrorException{
-		Token token = scanner.peek(); 
+		Token token = scanner.peek();
+		if(token == null){
+			return null;
+		}
 		if(token.equals(new Token("|", false))){
 			scanner.matchToken(token);
 			RecursiveDescentInterState rexp1State = rexp1();
@@ -109,8 +98,11 @@ public class RecursiveDescent {
 	
 	}
 	
-	private RecursiveDescentInterState rexp2()throws SyntaxErrorException{
+	private RecursiveDescentInterState rexp2() throws SyntaxErrorException{
 		Token token= scanner.peek();
+		if(token ==null){
+			throw new SyntaxErrorException();
+		}
 		if(token.equals(new Token("(", false))){
 			scanner.matchToken(token);
 			RecursiveDescentInterState rexpState = rexp();
@@ -128,7 +120,7 @@ public class RecursiveDescent {
 				startState.setFinal(true);
 				Set<State> finalStates = nfa.finalStates();
 				for(State fState : finalStates){
-					nfa.addTransisition(fState, null, startState);
+					nfa.addTransition(fState, null, startState);
 				}
 				String newRegex = rexpState.getCurrentRegex()+"*";
 				RecursiveDescentInterState interState = new RecursiveDescentInterState(newRegex, nfa);
@@ -140,7 +132,7 @@ public class RecursiveDescent {
 				State startState = nfa.startState();
 				Set<State> finalStates = nfa.finalStates();
 				for(State fState:finalStates){
-					nfa.addTransisition(fState, null, startState);
+					nfa.addTransition(fState, null, startState);
 				}
 				String newRegex = rexpState.getCurrentRegex()+"+";
 				RecursiveDescentInterState interState = new RecursiveDescentInterState(newRegex, nfa);
@@ -161,22 +153,22 @@ public class RecursiveDescent {
 			Character c = getCharFromString(token.getValue());
 			
 			if(rexp2TailState == null){
-				nfa.addTransisition(startState, c, finalState);
+				nfa.addTransition(startState, c, finalState);
 				String newRegex = Character.toString(c);
 				RecursiveDescentInterState interState = new RecursiveDescentInterState(newRegex, nfa);
 				return interState;
 			}
 			else if(rexp2TailState.getCurrentRegex().equals("*")){
 				startState.setFinal(true);
-				nfa.addTransisition(startState, c, finalState);
-				nfa.addTransisition(finalState, null, startState);
+				nfa.addTransition(startState, c, finalState);
+				nfa.addTransition(finalState, null, startState);
 				String newRegex = Character.toString(c)+"*";
 				RecursiveDescentInterState interState = new RecursiveDescentInterState(newRegex, nfa);
 				return interState;
 			}
 			else{
-				nfa.addTransisition(startState, c, finalState);
-				nfa.addTransisition(finalState, null, startState);
+				nfa.addTransition(startState, c, finalState);
+				nfa.addTransition(finalState, null, startState);
 				String newRegex = Character.toString(c)+"+";
 				RecursiveDescentInterState interState = new RecursiveDescentInterState(newRegex, nfa);
 				return interState;
@@ -190,6 +182,9 @@ public class RecursiveDescent {
 	
 	private RecursiveDescentInterState rexp2Tail() throws SyntaxErrorException{
 		Token token = scanner.peek();
+		if(token == null){
+			throw new SyntaxErrorException();
+		}
 		if(token.equals(new Token("*", false))){
 			scanner.matchToken(token);
 			RecursiveDescentInterState interState= new RecursiveDescentInterState("*", null);
@@ -205,18 +200,22 @@ public class RecursiveDescent {
 		}
 	}
 	
-	private RecursiveDescentInterState rexp3(){
+	private RecursiveDescentInterState rexp3() throws SyntaxErrorException{
 		try{
 			return charClass();
 		}catch (SyntaxErrorException e) {
 			System.out.println("<char-class> failed at <rexp3>\nreturning null");
-			return null;
+			throw new SyntaxErrorException();
+			//return null;
 		}
 		
 	}
 
 	private RecursiveDescentInterState charClass() throws SyntaxErrorException{
 		Token token = scanner.peek();
+		if(token == null){
+			throw new SyntaxErrorException();
+		}
 		if(token.equals(new Token(".", false))){
 			scanner.matchToken(token);
 			Set<Character> allChars = new HashSet<Character>();
@@ -241,7 +240,7 @@ public class RecursiveDescent {
 			
 			
 			for(Character c: allChars){
-				nfa.addTransisition(startState, c, finalState);
+				nfa.addTransition(startState, c, finalState);
 			}
 			String newRegexString = ".";
 			
@@ -267,7 +266,7 @@ public class RecursiveDescent {
 			Set<Character> transitions= definedClasses.get(token.getValue()).chars;
 			
 			for(Character c : transitions){
-				nfa.addTransisition(startState, c, finalState);
+				nfa.addTransition(startState, c, finalState);
 			}
 			RecursiveDescentInterState interState = new RecursiveDescentInterState(token.getValue(), nfa);
 			return interState;	
@@ -295,6 +294,9 @@ public class RecursiveDescent {
 	
 	private RecursiveDescentInterState charSetList() throws SyntaxErrorException{
 		Token token = scanner.peek();
+		if(token == null){
+			throw new SyntaxErrorException();
+		}
 		if(token.equals(new Token("]", false))){
 			scanner.matchToken(token);
 			String newRegexString  = "]";
@@ -311,6 +313,9 @@ public class RecursiveDescent {
 	
 	private RecursiveDescentInterState charSet() throws SyntaxErrorException{
 		Token token = scanner.peek();
+		if(token == null){
+			throw new SyntaxErrorException();
+		}
 		if(clsCharList.contains(token.getValue())){
 			scanner.matchToken(token);
 			RecursiveDescentInterState charSetTailState = charSetTail();
@@ -322,7 +327,7 @@ public class RecursiveDescent {
 				State finalState = new State();
 				finalState.setFinal(true);
 				
-				nfa.addTransisition(startState, c, finalState);
+				nfa.addTransition(startState, c, finalState);
 				
 				String newRegexString = token.getValue();
 				RecursiveDescentInterState interState = new RecursiveDescentInterState(newRegexString, nfa);
@@ -344,7 +349,7 @@ public class RecursiveDescent {
 				State finalState = new State();
 				finalState.setFinal(true);
 				for(Character c : chars){
-					nfa.addTransisition(startState, c, finalState);
+					nfa.addTransition(startState, c, finalState);
 				}
 				
 				String newRegexString  = token.getValue() + charSetTailState.getCurrentRegex();
@@ -363,6 +368,9 @@ public class RecursiveDescent {
 	
 	private RecursiveDescentInterState charSetTail() throws SyntaxErrorException{
 		Token token = scanner.peek();
+		if(token == null){
+			throw new SyntaxErrorException();
+		}
 		if(token.equals(new Token("-", false))){
 			scanner.matchToken(token);
 			Token token1 = scanner.peek();
@@ -377,7 +385,7 @@ public class RecursiveDescent {
 				State finalState = new State(); 
 				finalState.setFinal(true);
 				
-				nfa.addTransisition(startState, c, finalState);
+				nfa.addTransition(startState, c, finalState);
 				
 				String newRegexString  = "-"+ Character.toString(c);
 				RecursiveDescentInterState interState = new RecursiveDescentInterState(newRegexString, nfa);
@@ -411,7 +419,7 @@ public class RecursiveDescent {
 		State finalState = new State();
 		
 		for(Character c: allChars){
-			nfa.addTransisition(startState, c, finalState);
+			nfa.addTransition(startState, c, finalState);
 		}
 		String newRegexString  = "^"+charSetSate.getCurrentRegex()+"IN"+exSetTailState.getCurrentRegex();
 		RecursiveDescentInterState interState = new RecursiveDescentInterState(newRegexString, nfa);
@@ -422,6 +430,9 @@ public class RecursiveDescent {
 	
 	private RecursiveDescentInterState excludetSetTail() throws SyntaxErrorException{
 		Token token = scanner.peek();
+		if(token ==null){
+			throw new SyntaxErrorException();
+		}
 		if(token.equals(new Token("[", false))){
 			scanner.matchToken(token);
 			RecursiveDescentInterState charSetSate = charSet();
@@ -437,7 +448,7 @@ public class RecursiveDescent {
 			Set<Character> chars = charSetNFA.alphabet();
 			
 			for(Character c : chars){
-				nfa.addTransisition(startState, c, finalState);
+				nfa.addTransition(startState, c, finalState);
 			}
 			
 			String newRegexString = "["+charSetSate.getCurrentRegex()+"]";
@@ -457,7 +468,7 @@ public class RecursiveDescent {
 			Set<Character> transitions= definedClasses.get(token.getValue()).chars;
 			
 			for(Character c : transitions){
-				nfa.addTransisition(startState, c, finalState);
+				nfa.addTransition(startState, c, finalState);
 			}
 			RecursiveDescentInterState interState = new RecursiveDescentInterState(token.getValue(), nfa);
 			return interState;	
@@ -481,19 +492,22 @@ public class RecursiveDescent {
 		if(leftNFA == null){
 			String newRegexString = state1.getCurrentRegex()+ state2.getCurrentRegex();
 			RecursiveDescentInterState interState = new RecursiveDescentInterState(newRegexString, state2.getCurrentNFA());
+			System.out.println(newRegexString);
 			return interState;
 		}
 		if(rightNFA == null){
 			String newRegexString = state1.getCurrentRegex()+ state2.getCurrentRegex();
 			RecursiveDescentInterState interState = new RecursiveDescentInterState(newRegexString, state1.getCurrentNFA());
+			System.out.println(newRegexString);
 			return interState;
 		}
 		Set<State> leftFinal = leftNFA.finalStates();
 		State rightStartState = rightNFA.startState();
 		
 		for(State finalState : leftFinal){
+			//leftFinal.remove(finalState);
 			finalState.setFinal(false);
-			leftNFA.addTransisition(finalState, null, rightStartState);
+			leftNFA.addTransition(finalState, null, rightStartState);
 		}
 		//appending rightNFA to leftNFA
 		HashMap<State, HashMap<Character, HashSet<State>>> allTransitions = rightNFA.getTransitions();
@@ -504,11 +518,12 @@ public class RecursiveDescent {
 			for(Character c : charSet){
 				HashSet<State> toStates = currentTransitions.get(c);
 				for(State toState : toStates){
-					leftNFA.addTransisition(currState, c, toState);
+					leftNFA.addTransition(currState, c, toState);
 				}
 			}			
 		}		
 		String newRegexString = state1.getCurrentRegex()+ state2.getCurrentRegex();
+		System.out.println(newRegexString);
 		RecursiveDescentInterState interState = new RecursiveDescentInterState(newRegexString, leftNFA);
 		return interState;
 	}
@@ -536,7 +551,7 @@ public class RecursiveDescent {
 		
 		State leftStartState = leftNFA.startState();
 		State rigthStartState = rightNFA.startState();
-		leftNFA.addTransisition(leftStartState, null, rigthStartState);
+		leftNFA.addTransition(leftStartState, null, rigthStartState);
 		
 		HashMap<State, HashMap<Character, HashSet<State>>> allTransitions = rightNFA.getTransitions();
 		Set<State> allStates = rightNFA.allStates();
@@ -546,7 +561,7 @@ public class RecursiveDescent {
 			for(Character c : charSet){
 				HashSet<State> toStates = currentTransitions.get(c);
 				for(State toState : toStates){
-					leftNFA.addTransisition(currState, c, toState);
+					leftNFA.addTransition(currState, c, toState);
 				}
 			}			
 		}		

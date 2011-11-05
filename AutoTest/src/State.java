@@ -36,6 +36,10 @@ public class State {
         stack.addAll(this.tokens);
         return stack;
     }
+    
+    public String getName(){
+    	return this.name;
+    }
    
     public boolean isFinal() {
         return finalState;

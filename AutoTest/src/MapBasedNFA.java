@@ -42,7 +42,7 @@ public class MapBasedNFA implements NFA {
      * @param letter The character the transition is over
      * @param toState  The state the transition goes to
      */
-    public void addTransisition(State fromState, Character character, State toState) {
+    public void addTransition(State fromState, Character character, State toState) {
         alphabet.add(character);
         if (toState.isFinal()) finalStates.add(toState);
 
@@ -96,8 +96,15 @@ public class MapBasedNFA implements NFA {
 
         return startStates;
     }
+    
+    public HashMap<State, HashMap<Character, HashSet<State>>> getTransitions() {
+		return transitions;
+	}
+    
+    
+    
 
-    /**
+	/**
      * A recursive helper function that adds all the states coming from a given
      * state over epsilon transitions.
      * @param set The set to add all the states to
