@@ -495,14 +495,22 @@ public class RecursiveDescent {
 			finalState.setFinal(false);
 			leftNFA.addTransisition(finalState, null, rightStartState);
 		}
-		
-		
-		
-		
-		
-		//TODO JW concatenate States
-		
-		return null;
+		//appending rightNFA to leftNFA
+		HashMap<State, HashMap<Character, HashSet<State>>> allTransitions = rightNFA.getTransitions();
+		Set<State> allStates = rightNFA.allStates();
+		for(State currState : allStates){
+			HashMap<Character, HashSet<State>> currentTransitions = allTransitions.get(currState);
+			HashSet<Character> charSet = new HashSet<Character>(currentTransitions.keySet());
+			for(Character c : charSet){
+				HashSet<State> toStates = currentTransitions.get(c);
+				for(State toState : toStates){
+					leftNFA.addTransisition(currState, c, toState);
+				}
+			}			
+		}		
+		String newRegexString = state1.getCurrentRegex()+ state2.getCurrentRegex();
+		RecursiveDescentInterState interState = new RecursiveDescentInterState(newRegexString, leftNFA);
+		return interState;
 	}
 	
 	
@@ -526,17 +534,25 @@ public class RecursiveDescent {
 			return interState;
 		}
 		
+		State leftStartState = leftNFA.startState();
+		State rigthStartState = rightNFA.startState();
+		leftNFA.addTransisition(leftStartState, null, rigthStartState);
 		
-		
-		
-		
-		
-		
-		
-		
-		
-		// TODO JW union States
-		return null;
+		HashMap<State, HashMap<Character, HashSet<State>>> allTransitions = rightNFA.getTransitions();
+		Set<State> allStates = rightNFA.allStates();
+		for(State currState : allStates){
+			HashMap<Character, HashSet<State>> currentTransitions = allTransitions.get(currState);
+			HashSet<Character> charSet = new HashSet<Character>(currentTransitions.keySet());
+			for(Character c : charSet){
+				HashSet<State> toStates = currentTransitions.get(c);
+				for(State toState : toStates){
+					leftNFA.addTransisition(currState, c, toState);
+				}
+			}			
+		}		
+		String newRegexString = state1.getCurrentRegex()+ state2.getCurrentRegex();
+		RecursiveDescentInterState interState = new RecursiveDescentInterState(newRegexString, leftNFA);
+		return interState;
 	}
 	
 	
