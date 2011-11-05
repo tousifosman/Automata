@@ -188,7 +188,7 @@ public class Main {
         //NFA nfa = testNFA3();
         
         DFA dfa = NFAtoDFA.dfaFromNFA(nfa);
-        dfa = DFAMinimizer.minimize(dfa);
+        //dfa = DFAMinimizer.minimize(dfa);
 
         return dfa;
     }
