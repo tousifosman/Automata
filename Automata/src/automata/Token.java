@@ -1,9 +1,18 @@
 package automata;
 
+/**
+ * A token object. This is used for passing Strings between the tools.Scanner and RecusiveDescent classes, as well as for construction of automata.Automata.
+ * @author 
+ */
 public class Token {
     private boolean startToken;
     private String value;
     
+    /**
+     * Token constructor.
+     * @param value The literal value of the token.
+     * @param startToken Indicates this token is a starting token when true.
+     */
     public Token(String value, boolean startToken) {
         this.startToken = startToken;
         this.value = value;
