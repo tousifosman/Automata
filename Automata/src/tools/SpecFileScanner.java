@@ -17,7 +17,7 @@ import automata.CharToken;
 import automata.Token;
 
 /**
- *
+ * A Scanner for performing lexical analysis, and limited parsing, of language specification input files. Validates and parses character classes and tokens into Map data structures. Breaks apart token definitions into regex tokens, to be fed into the RecursiveDescent parser by the RegexScanner class.
  * @author Paul
  */
 public class SpecFileScanner {
@@ -27,28 +27,56 @@ public class SpecFileScanner {
     private Map<String, LinkedList<Token>> identifierDefs;
     private Scanner jScanner, jScanner2;
 
+    /**
+     * A tree map of all defined character classes.
+     * @return A map with entries of the form <Class Name, Unparsed Token>.
+     */
     public TreeMap<String, CharToken> charClasses() {
         return charClasses;
     }
 
+    /**
+     * A map of defined tokens.
+     * @return A map with entries of the form <Token Name, Definition as List of Regex Tokens>.
+     */
     public Map<String, LinkedList<Token>> identifierDefs() {
         return identifierDefs;
     }
 
+    /**
+     * A map of character class definitions.
+     * @return A map with entries containing the raw Strings as read from the input specification file.
+     */
     public Map<String, String> charClassDefs() {
         return charClassDefs;
     }
 
+    /**
+     * A map of token definitions.
+     * @return A map with entries containing the raw Strings as read from the input specification file.
+     */
     public Map<String, String> identifiers() {
         return identifiers;
     }
 
+    /**
+     * 
+     * @param fileName
+     * @throws FileNotFoundException
+     * @throws IOException
+     * @throws SyntaxErrorException 
+     */
     public SpecFileScanner(String fileName) throws FileNotFoundException, IOException, SyntaxErrorException {
         jScanner = new Scanner(new FileInputStream(fileName));
         log("Scanner Object successfully instantiated, scan process commencing...");
         scan();
     }
 
+    /**
+     * Contains the scanning procedure. Processes both the character class section and token definitions, then calling the respective parser function for each.
+     * @throws IOException
+     * @throws SyntaxErrorException 
+     */
     private void scan() throws IOException, SyntaxErrorException {
         StringBuilder text = new StringBuilder();
         String newline = System.getProperty("line.separator");
@@ -112,6 +140,10 @@ public class SpecFileScanner {
         }
     }
 
+    /**
+     * Parser-lexer combination procedure which processes the character class section of the input specification file.
+     * @throws SyntaxErrorException 
+     */
     private void scanCharClasses() throws SyntaxErrorException {
         charClasses = new TreeMap<String, CharToken>();
         for (Map.Entry<String, String> a : charClassDefs.entrySet()) {
@@ -173,7 +205,9 @@ public class SpecFileScanner {
     }
 
     
-
+/**
+     * Parser-lexer combination procedure which processes the token definition section of the input specification file.
+     */
     private void scanIdentifiers() {
         Deque<Character> tokenBuffer = new LinkedList<Character>(), curr = new LinkedList<Character>();
         identifierDefs = new TreeMap<String, LinkedList<Token>>();
@@ -221,6 +255,10 @@ public class SpecFileScanner {
         }
     }
 
+    /**
+     * Generic logging function. Suppresses output by default, but can be manually edited to enable verbose console output or logging.
+     * @param message Message to be recorded.
+     */
     private void log(String message) {
         /* Uncomment the following line for verbose console output. */
         //System.out.println("> [" + System.nanoTime() / 60000000 + "] " + message);
