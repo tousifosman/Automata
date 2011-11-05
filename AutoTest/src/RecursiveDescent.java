@@ -293,22 +293,28 @@ public class RecursiveDescent {
 	}
 	
 	private RecursiveDescentInterState charSetList() throws SyntaxErrorException{
-		Token token = scanner.peek();
-		if(token == null){
-			throw new SyntaxErrorException();
-		}
-		if(token.equals(new Token("]", false))){
-			scanner.matchToken(token);
-			String newRegexString  = "]";
-			RecursiveDescentInterState interState = new RecursiveDescentInterState(newRegexString, null);
-			return interState;
-		}
-		else{
+		
+		try{
 			RecursiveDescentInterState charSetState= charSet();
 			RecursiveDescentInterState charSetListState= charSetList();
 			RecursiveDescentInterState newInterState = concaInterStates(charSetState, charSetListState);
 			return newInterState;
-		}
+		}catch(SyntaxErrorException e){
+			Token token = scanner.peek();
+			if(token == null){
+				throw new SyntaxErrorException();
+			}
+			if(token.equals(new Token("]", false))){
+				scanner.matchToken(token);
+				String newRegexString  = "]";
+				RecursiveDescentInterState interState = new RecursiveDescentInterState(newRegexString, null);
+				return interState;
+			}
+			else{
+				throw new SyntaxErrorException();
+			}			
+		}	
+		
 	}
 	
 	private RecursiveDescentInterState charSet() throws SyntaxErrorException{
@@ -337,7 +343,7 @@ public class RecursiveDescent {
 				
 				int startIndex = clsCharList.indexOf(token.getValue());
 				Character endChar = (Character) charSetTailState.getCurrentNFA().alphabet().toArray()[0];
-				int endIndex = clsCharList.indexOf(Character.toString(endChar));
+				int endIndex = clsCharList.indexOf(Character.toString(endChar))+1;
 				List<Character> chars = new ArrayList<Character>();
 				for(int i=startIndex; i<endIndex; i++){
 					Character c = getCharFromString(clsCharList.get(i));
@@ -374,7 +380,7 @@ public class RecursiveDescent {
 		if(token.equals(new Token("-", false))){
 			scanner.matchToken(token);
 			Token token1 = scanner.peek();
-			if(clsCharList.contains(token.getValue())){
+			if(clsCharList.contains(token1.getValue())){
 				scanner.matchToken(token1);
 				
 				Character c = getCharFromString(token1.getValue());
@@ -501,17 +507,87 @@ public class RecursiveDescent {
 			System.out.println(newRegexString);
 			return interState;
 		}
+		
+		
+		
+		
+		
+		
+		// start debugging printout
+		System.out.println(state1.getCurrentRegex());
+		HashMap<State, HashMap<Character, HashSet<State>>> allTransitions = ((MapBasedNFA)(state1.getCurrentNFA())).getTransitions();
+		Set<State> allStates = state1.getCurrentNFA().allStates();
+		for(State currState : allStates){
+			HashMap<Character, HashSet<State>> currentTransitions = allTransitions.get(currState);
+			HashSet<Character> charSet = new HashSet<Character>(currentTransitions.keySet());
+			for(Character c : charSet){
+				HashSet<State> toStates = currentTransitions.get(c);
+				for(State toState : toStates){
+					String transitionChar;
+					if(c==null){
+						transitionChar = "null";
+					}
+					else {
+						transitionChar = Character.toString(c);
+					}
+					System.out.println(currState.getName()+"---" + transitionChar+"--->"+toState.getName());
+				}
+			}			
+		}		
+		System.out.println("Final States:");
+		Set<State> finalStates = ((MapBasedNFA)(state1.getCurrentNFA())).finalStates();
+		for(State s: finalStates){
+			System.out.println(s.getName());
+		}
+		
+		
+		System.out.println(state2.getCurrentRegex());
+		allTransitions = ((MapBasedNFA)(state2.getCurrentNFA())).getTransitions();
+		allStates = state2.getCurrentNFA().allStates();
+		for(State currState : allStates){
+			HashMap<Character, HashSet<State>> currentTransitions = allTransitions.get(currState);
+			HashSet<Character> charSet = new HashSet<Character>(currentTransitions.keySet());
+			for(Character c : charSet){
+				HashSet<State> toStates = currentTransitions.get(c);
+				for(State toState : toStates){
+					String transitionChar;
+					if(c==null){
+						transitionChar = "null";
+					}
+					else {
+						transitionChar = Character.toString(c);
+					}
+					System.out.println(currState.getName()+"---" + transitionChar+"--->"+toState.getName());
+				}
+			}			
+		}		
+		System.out.println("Final States:");
+		finalStates = ((MapBasedNFA)(state2.getCurrentNFA())).finalStates();
+		for(State s: finalStates){
+			System.out.println(s.getName());
+		}
+		// end debugging printout
+		
+		
+		
+		
+		
+		
+		//Set<State> newLeftFinals = new HashSet<State>();
+		
+		
 		Set<State> leftFinal = leftNFA.finalStates();
 		State rightStartState = rightNFA.startState();
-		
+		leftNFA.setFinalStates(new HashSet<State>());
 		for(State finalState : leftFinal){
-			//leftFinal.remove(finalState);
 			finalState.setFinal(false);
 			leftNFA.addTransition(finalState, null, rightStartState);
 		}
 		//appending rightNFA to leftNFA
-		HashMap<State, HashMap<Character, HashSet<State>>> allTransitions = rightNFA.getTransitions();
-		Set<State> allStates = rightNFA.allStates();
+		//HashMap<State, HashMap<Character, HashSet<State>>> 
+		allTransitions = rightNFA.getTransitions();
+		//Set<State> allStates = 
+		rightNFA.allStates();
 		for(State currState : allStates){
 			HashMap<Character, HashSet<State>> currentTransitions = allTransitions.get(currState);
 			HashSet<Character> charSet = new HashSet<Character>(currentTransitions.keySet());
@@ -523,7 +599,7 @@ public class RecursiveDescent {
 			}			
 		}		
 		String newRegexString = state1.getCurrentRegex()+ state2.getCurrentRegex();
-		System.out.println(newRegexString);
+		//System.out.println(newRegexString);
 		RecursiveDescentInterState interState = new RecursiveDescentInterState(newRegexString, leftNFA);
 		return interState;
 	}

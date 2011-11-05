@@ -86,7 +86,11 @@ public class MapBasedNFA implements NFA {
         return new HashSet<State>(finalStates);
     }
 
-    @Override
+    public void setFinalStates(Set<State> finalStates) {
+		this.finalStates = finalStates;
+	}
+
+	@Override
     public Set<State> startStates() {
         Set<State> startStates = new HashSet<State>();
         State startState = this.startState();
