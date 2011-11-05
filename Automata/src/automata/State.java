@@ -36,6 +36,10 @@ public class State {
         return stack;
     }
 
+    public void addToken(Token tok){
+    	this.tokens.push(tok);
+    }
+     
     public void setTokens(Stack<Token> tokens) {
         this.tokens = tokens;
     }

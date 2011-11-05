@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.Stack;
 
 import tools.RegexScanner;
 
@@ -52,11 +53,24 @@ public class RecursiveDescent {
 		definedClassesNames = new ArrayList<String>(this.definedClasses.keySet());
 		//JW TODO replace with real scanner
 		this.scanner = scanner;
-		
+		this.nfaName = nfaName;
 	}
 	
 	public RecursiveDescentInterState regex() throws SyntaxErrorException{
 		RecursiveDescentInterState rexpState = rexp();
+		MapBasedNFA nfa = (MapBasedNFA) rexpState.getCurrentNFA();
+		Token startToken = new Token(nfaName, true);
+		Token endToken = new Token(nfaName, false);
+		
+		State startState = nfa.startState();
+		startState.addToken(startToken);
+		
+		Set<State> finalStates = nfa.finalStates();
+		for(State fState : finalStates){
+			fState.addToken(endToken);
+		}
+		nfa.setFinalStates(finalStates);
+		
 		return rexpState;
 	}
 	
@@ -154,9 +168,16 @@ public class RecursiveDescent {
 			
 			RecursiveDescentInterState rexp2TailState = rexp2Tail();
 			
+			Token start = new Token("RE_CHAR", true);
+	        Token end = new Token("RE_CHAR", false);
+			Stack<Token> stack = new Stack<Token>();
+			stack.push(start);
+			stack.push(end);
+			
+			
 			State startState = new State();
 			MapBasedNFA nfa = new MapBasedNFA(startState);
-			State finalState = new State();
+			State finalState = new State(stack);
 			finalState.setFinal(true);
 			Character c = getCharFromString(token.getValue());
 			
@@ -241,11 +262,17 @@ public class RecursiveDescent {
 					allChars.add(c);
 				}
 			}
+			
+			Token start = new Token("DOT", true);
+	        Token end = new Token("DOT", false);
+			Stack<Token> stack = new Stack<Token>();
+			stack.push(start);
+			stack.push(end);
+					
 			State startState = new State();
 			MapBasedNFA nfa = new MapBasedNFA(startState);
-			State finalState = new State();
+			State finalState = new State(stack);
 			finalState.setFinal(true);
-			
 			
 			for(Character c: allChars){
 				nfa.addTransition(startState, c, finalState);
@@ -336,9 +363,17 @@ public class RecursiveDescent {
 			if(charSetTailState == null){
 				Character c = getCharFromString(token.getValue());
 				
+				
+				Token start = new Token("CLS_CHAR", true);
+		        Token end = new Token("CLS_CHAR", false);
+				Stack<Token> stack = new Stack<Token>();
+				stack.push(start);
+				stack.push(end);
+				
+				
 				State startState = new State();
 				MapBasedNFA nfa = new MapBasedNFA(startState);
-				State finalState = new State();
+				State finalState = new State(stack);
 				finalState.setFinal(true);
 				
 				nfa.addTransition(startState, c, finalState);
@@ -358,9 +393,15 @@ public class RecursiveDescent {
 					chars.add(c);
 				}
 				
+				Token start = new Token("CLS_CHAR", true);
+		        Token end = new Token("CLS_CHAR", false);
+				Stack<Token> stack = new Stack<Token>();
+				stack.push(start);
+				stack.push(end);
+				
 				State startState = new State();
 				MapBasedNFA nfa = new MapBasedNFA(startState);
-				State finalState = new State();
+				State finalState = new State(stack);
 				finalState.setFinal(true);
 				for(Character c : chars){
 					nfa.addTransition(startState, c, finalState);
@@ -391,12 +432,16 @@ public class RecursiveDescent {
 			if(clsCharList.contains(token1.getValue())){
 				scanner.matchToken(token1);
 				
-				Character c = getCharFromString(token1.getValue());
+				Token start = new Token("CLS_CHAR", true);
+		        Token end = new Token("CLS_CHAR", false);
+				Stack<Token> stack = new Stack<Token>();
+				stack.push(start);
+				stack.push(end);
 				
-				
+				Character c = getCharFromString(token1.getValue());				
 				State startState = new State();
 				MapBasedNFA nfa = new MapBasedNFA(startState);
-				State finalState = new State(); 
+				State finalState = new State(stack); 
 				finalState.setFinal(true);
 				
 				nfa.addTransition(startState, c, finalState);
@@ -424,13 +469,34 @@ public class RecursiveDescent {
 		RecursiveDescentInterState exSetTailState = excludetSetTail();
 		Set<Character> allChars = exSetTailState.getCurrentNFA().alphabet();
 		
+		
+		Token start;
+        Token end;
+		Stack<Token> stack = new Stack<Token>();
+	
+		
+		
+		String allCharRegex = exSetTailState.getCurrentRegex();
+		if(allCharRegex.contains("[")){
+			start = new Token("CLS_CHAR", true);
+			end = new Token("CLS_CHAR", false);
+		}
+		else {
+			start = new Token(allCharRegex, true);
+			end = new Token(allCharRegex, false);
+		}
+		
+		stack.push(start);
+		stack.push(end);		
+		
 		for(Character c : toRemoveChars){
 			allChars.remove(c);
 		}
 		
 		State startState = new State();
 		MapBasedNFA nfa = new MapBasedNFA(startState);
-		State finalState = new State();
+		State finalState = new State(stack);
+		finalState.setFinal(true);
 		
 		for(Character c: allChars){
 			nfa.addTransition(startState, c, finalState);
@@ -452,7 +518,7 @@ public class RecursiveDescent {
 			RecursiveDescentInterState charSetSate = charSet();
 			scanner.matchToken(new Token("]", false));
 			
-			State startState = new State();
+			/*State startState = new State();
 			MapBasedNFA nfa = new MapBasedNFA(startState);
 			State finalState = new State();
 			finalState.setFinal(true);
@@ -463,8 +529,10 @@ public class RecursiveDescent {
 			
 			for(Character c : chars){
 				nfa.addTransition(startState, c, finalState);
-			}
+			}*/
 			
+			
+			NFA nfa = charSetSate.getCurrentNFA();
 			String newRegexString = "["+charSetSate.getCurrentRegex()+"]";
 			RecursiveDescentInterState interState = new RecursiveDescentInterState(newRegexString, nfa);
 			return interState;
@@ -474,9 +542,15 @@ public class RecursiveDescent {
 		else if(definedClassesNames.contains(token.getValue())) {
 			scanner.matchToken(token);
 			
+			Token start = new Token(token.getValue(), true);
+	        Token end = new Token(token.getValue(), false);
+			Stack<Token> stack = new Stack<Token>();
+			stack.push(start);
+			stack.push(end);
+			
 			State startState = new State();
 			MapBasedNFA nfa = new MapBasedNFA(startState);
-			State finalState = new State();
+			State finalState = new State(stack);
 			finalState.setFinal(true);
 			
 			Set<Character> transitions= definedClasses.get(token.getValue()).chars;
