@@ -239,7 +239,7 @@ public class SpecFileScanner {
                         /* Character class */
                         do {
                             tokenBuffer.push(curr.pop());
-                        } while (!Constants.specialCharsList.contains(tokenBuffer.peek()) && !Character.isWhitespace(tokenBuffer.peek()) && tokenBuffer.peek() != ' ');
+                        } while (!Constants.specialCharsList2.contains(tokenBuffer.peek()) && !Character.isWhitespace(tokenBuffer.peek()) && tokenBuffer.peek() != ' ');
                         curr.push(tokenBuffer.pop()); //Reverses the extra lookAhead
                         while (!tokenBuffer.isEmpty()) {
                             temp.append(tokenBuffer.pollLast());
