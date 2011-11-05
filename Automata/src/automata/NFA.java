@@ -2,6 +2,10 @@ package automata;
 
 import java.util.Set;
 
+/**
+ * A basic interface for an NFA.
+ * @author 
+ */
 public interface NFA extends FiniteAutomata {    
     /**
      * Returns the start state, in addition to any states reachable from the start state after epislon transitions.
