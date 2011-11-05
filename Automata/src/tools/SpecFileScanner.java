@@ -9,6 +9,7 @@ import java.util.Scanner;
 import exceptions.SyntaxErrorException;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.TreeMap;
 import java.util.Set;
 import java.util.Deque;
 import java.util.LinkedList;
@@ -22,24 +23,24 @@ import automata.Token;
  */
 public class SpecFileScanner {
 
-    private TreeMap<String, String> charClassDefs, identifiers;
+    private Map<String, String> charClassDefs, identifiers;
     private TreeMap<String, CharToken> charClasses;
-    private TreeMap<String, LinkedList<Token>> identifierDefs;
+    private Map<String, LinkedList<Token>> identifierDefs;
     private Scanner jScanner, jScanner2;
 
     public TreeMap<String, CharToken> charClasses() {
         return charClasses;
     }
 
-    public TreeMap<String, LinkedList<Token>> identifierDefs() {
+    public Map<String, LinkedList<Token>> identifierDefs() {
         return identifierDefs;
     }
 
-    public TreeMap<String, String> charClassDefs() {
+    public Map<String, String> charClassDefs() {
         return charClassDefs;
     }
 
-    public TreeMap<String, String> identifiers() {
+    public Map<String, String> identifiers() {
         return identifiers;
     }
 

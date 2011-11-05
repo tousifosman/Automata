@@ -19,30 +19,12 @@ import tools.*;
  */
 public class finalNFA {
 
-    private Scanner scanner;
+    private SpecFileScanner scan;
     private Map<String, String> regexes;
     private Map<String, NFA> miniNFAs;
 
-    public finalNFA(String filename) {
-        try {
-            scanner = new Scanner(filename);
-        } catch (java.io.FileNotFoundException e) {
-        } catch (java.io.IOException ee) {
-        }
-        while (scanner.isBusy()) {
-        }
-         scanner.enable();
-        miniNFAs = new HashMap<String, NFA>();
-        while(!scanner.EOF) {
-            scanner.disable();
-            regexes.put(scanner.newIdentifier(), scanner.restOfLine());
-            scanner.enable();
-        }
-        scanner.EOF = false;
-        for (String a : regexes.keySet()) {
-            scanner.currentLine = regexes.get(a);
-            miniNFAs.put(a, /*TODO: Call Recurive Descent Here*/ new MapBasedNFA(new State()));
-        }
+    public finalNFA(String filename) throws java.io.FileNotFoundException, java.io.IOException, exceptions.SyntaxErrorException {
+        scan = new SpecFileScanner(filename);
         
     }
 }
