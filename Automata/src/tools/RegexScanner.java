@@ -56,7 +56,7 @@ public class RegexScanner {
         currentToken = currentToken.equals(new Token("null")) ? new Token("null") : nextToken();
     }
     
-    public Token peekToken() throws java.io.IOException {
+    public Token peek() {
         if (currentToken.equals(new Token("null"))) {
             return (currentToken = nextToken());
         } else {
