@@ -4,7 +4,7 @@ import java.util.Set;
 
 public class CharToken {
 	String name;
-	Set<Character> chars;
+	public Set<Character> chars;
         
         public String name() {
             return name;

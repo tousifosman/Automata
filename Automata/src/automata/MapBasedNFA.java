@@ -1,12 +1,12 @@
 package automata;
 
 
-import java.util.TreeMap;
-import java.util.TreeSet;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Set;
 
 /**
- * A TreeMap based NFA.
+ * A HashMap based NFA.
  * 
  * An epsilon transition is represented by a transition over a "null" character
  */
@@ -14,7 +14,7 @@ public class MapBasedNFA implements NFA {
     private State startState;
     private Set<Character> alphabet;
     private Set<State> finalStates;
-    private TreeMap<State, TreeMap<Character, TreeSet<State>>> transitions;
+    private HashMap<State, HashMap<Character, HashSet<State>>> transitions;
 
     /**
      * Must start out with a given start state.
@@ -22,9 +22,9 @@ public class MapBasedNFA implements NFA {
      */
     public MapBasedNFA(State startState) {
         this.startState = startState;
-        this.alphabet = new TreeSet<Character>();
-        this.finalStates = new TreeSet<State>();
-        this.transitions = new TreeMap<State, TreeMap<Character, TreeSet<State>>>();
+        this.alphabet = new HashSet<Character>();
+        this.finalStates = new HashSet<State>();
+        this.transitions = new HashMap<State, HashMap<Character, HashSet<State>>>();
     }
 
     /**
@@ -48,19 +48,19 @@ public class MapBasedNFA implements NFA {
         if (toState.isFinal()) finalStates.add(toState);
 
         if (transitions.containsKey(fromState)) {
-            TreeMap<Character, TreeSet<State>> transitionsForState = transitions.get(fromState);
+            HashMap<Character, HashSet<State>> transitionsForState = transitions.get(fromState);
 
             if (transitionsForState.containsKey(character)) {
-                TreeSet<State> statesOverCharacter = transitionsForState.get(character);
+                HashSet<State> statesOverCharacter = transitionsForState.get(character);
                 statesOverCharacter.add(toState);
             } else {
-                TreeSet<State> statesOverCharacter = new TreeSet<State>();
+                HashSet<State> statesOverCharacter = new HashSet<State>();
                 statesOverCharacter.add(toState);
                 transitionsForState.put(character, statesOverCharacter);
             }
         } else {
-            TreeMap<Character, TreeSet<State>> transitionsForState = new TreeMap<Character, TreeSet<State>>();
-            TreeSet<State> statesOverCharacter = new TreeSet<State>();
+            HashMap<Character, HashSet<State>> transitionsForState = new HashMap<Character, HashSet<State>>();
+            HashSet<State> statesOverCharacter = new HashSet<State>();
             statesOverCharacter.add(toState);
             transitionsForState.put(character, statesOverCharacter);
             transitions.put(fromState, transitionsForState);
@@ -74,22 +74,28 @@ public class MapBasedNFA implements NFA {
 
     @Override
     public Set<State> allStates() {
-        return new TreeSet<State>(transitions.keySet());
+        return new HashSet<State>(transitions.keySet());
     }
 
     @Override
     public Set<Character> alphabet() {
-        return new TreeSet<Character>(alphabet);
+        return new HashSet<Character>(alphabet);
     }
 
     @Override
     public Set<State> finalStates() {
-        return new TreeSet<State>(finalStates);
+        return new HashSet<State>(finalStates);
     }
+    
+    
 
-    @Override
+    public void setFinalStates(Set<State> finalStates) {
+		this.finalStates = finalStates;
+	}
+
+	@Override
     public Set<State> startStates() {
-        Set<State> startStates = new TreeSet<State>();
+        Set<State> startStates = new HashSet<State>();
         State startState = this.startState();
         startStates.add(startState);
 
@@ -98,7 +104,7 @@ public class MapBasedNFA implements NFA {
         return startStates;
     }
     
-    public TreeMap<State, TreeMap<Character, TreeSet<State>>> getTransitions() {
+    public HashMap<State, HashMap<Character, HashSet<State>>> getTransitions() {
 		return transitions;
 	}
     
@@ -114,7 +120,7 @@ public class MapBasedNFA implements NFA {
      */
     private void addEpsilonTransitions(Set<State> set, State currState) {
         if (transitions.containsKey(currState)) {
-            TreeMap<Character, TreeSet<State>> transitionsForState = transitions.get(currState);
+            HashMap<Character, HashSet<State>> transitionsForState = transitions.get(currState);
             if (transitionsForState.containsKey(null)) {
                 Set<State> states = transitionsForState.get(null);
                 for (State childState : states) {
@@ -131,7 +137,7 @@ public class MapBasedNFA implements NFA {
     public Set<State> transitions(Set<State> fromStates, Character letter) {
         if(fromStates == null) return null;
         
-        Set<State> returnStates = new TreeSet<State>();
+        Set<State> returnStates = new HashSet<State>();
 
         for (State currState : fromStates) {
             Set<State> currStates = transitions(currState, letter);
@@ -159,11 +165,11 @@ public class MapBasedNFA implements NFA {
     @Override
     public Set<State> transitions(State fromState, Character letter) {
         if (transitions.containsKey(fromState)) {
-            TreeMap<Character, TreeSet<State>> transitionsForState = transitions.get(fromState);
+            HashMap<Character, HashSet<State>> transitionsForState = transitions.get(fromState);
             if (transitionsForState.containsKey(letter)) {
                 //Get all of the normally occuring states over the transition
-                Set<State> returnSet = new TreeSet<State>();
-                TreeSet<State> allStates = transitionsForState.get(letter);
+                Set<State> returnSet = new HashSet<State>();
+                HashSet<State> allStates = transitionsForState.get(letter);
                 returnSet.addAll(allStates);
 
                 // Add all the states occuring over epsilon transitions from the

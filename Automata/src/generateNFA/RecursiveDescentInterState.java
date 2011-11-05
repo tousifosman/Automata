@@ -1,6 +1,7 @@
 package generateNFA;
 
-import .*;
+import automata.NFA;
+
 
 
 public class RecursiveDescentInterState {
