@@ -6,6 +6,10 @@ import java.util.Arrays;
 import java.util.List;
 import automata.Token;
 
+/**
+ * Contains useful Character Class constants and static Tokens.
+ * @author 
+ */
 public class Constants {
 	
 	public static Character[] lowerCase = {'a', 'b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v',
