@@ -78,14 +78,25 @@ public class RecursiveDescent {
 
         State startState = nfa.startState();
         startState.addToken(startToken);
-
-        Set<State> finalStates = nfa.finalStates();
-        for (State fState : finalStates) {
-            fState.addToken(endToken);
+        
+        Stack<Token> endStack = new Stack<Token>();
+        endStack.push(endToken);
+        
+        State nfaFinalState = new State(endStack);
+        nfaFinalState.setFinal(true);
+        MapBasedNFA endNFA = new MapBasedNFA(nfaFinalState);
+        
+        RecursiveDescentInterState endInter = new RecursiveDescentInterState("", endNFA);
+        
+        RecursiveDescentInterState finalNFA = concaInterStates(rexpState, endInter);
+        
+        for(State s : finalNFA.getCurrentNFA().allStates()){
+        	Stack<Token> tokens = s.getTokens();
+        	System.out.print("a");
         }
-        nfa.setFinalStates(finalStates);
-
-        return rexpState;
+        
+        
+        return finalNFA;
     }
 
     private RecursiveDescentInterState rexp() throws SyntaxErrorException {
