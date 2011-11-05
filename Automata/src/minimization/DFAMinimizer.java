@@ -9,6 +9,10 @@ import java.util.Set;
 
 // TODO : Document me.
 // TODO : Bug Check
+/**
+ * Performs algorithmic minimization of a table-based DFA.
+ * @author 
+ */
 public class DFAMinimizer {
     public static DFA minimize(DFA dfa) {
         System.out.println("Minimizing DFA");
