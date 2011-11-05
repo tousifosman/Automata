@@ -144,7 +144,7 @@ public class RecursiveDescent {
 				for(State fState : finalStates){
 					nfa.addTransition(fState, null, startState);
 				}
-				String newRegex = rexpState.getCurrentRegex()+"*";
+				String newRegex = "("+rexpState.getCurrentRegex()+")*";
 				RecursiveDescentInterState interState = new RecursiveDescentInterState(newRegex, nfa);
 				return interState;
 				
@@ -156,7 +156,7 @@ public class RecursiveDescent {
 				for(State fState:finalStates){
 					nfa.addTransition(fState, null, startState);
 				}
-				String newRegex = rexpState.getCurrentRegex()+"+";
+				String newRegex = "("+rexpState.getCurrentRegex()+")+";
 				RecursiveDescentInterState interState = new RecursiveDescentInterState(newRegex, nfa);
 				return interState;
 				
@@ -569,6 +569,7 @@ public class RecursiveDescent {
 	
 	
 	private RecursiveDescentInterState concaInterStates(RecursiveDescentInterState state1, RecursiveDescentInterState state2){
+		
 		if(state1==null){
 			return state2;
 		}
@@ -686,6 +687,7 @@ public class RecursiveDescent {
 	
 	
 	private RecursiveDescentInterState unionStates(RecursiveDescentInterState state1, RecursiveDescentInterState state2) {
+		
 		if(state1==null){
 			return state2;
 		}
@@ -721,7 +723,7 @@ public class RecursiveDescent {
 				}
 			}			
 		}		
-		String newRegexString = state1.getCurrentRegex()+ state2.getCurrentRegex();
+		String newRegexString = state1.getCurrentRegex()+"|"+ state2.getCurrentRegex();
 		RecursiveDescentInterState interState = new RecursiveDescentInterState(newRegexString, leftNFA);
 		return interState;
 	}
