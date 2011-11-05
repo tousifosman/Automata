@@ -293,9 +293,17 @@ public class RecursiveDescent {
 		}
 		else if(definedClassesNames.contains(token.getValue())){
 			scanner.matchToken(token);
+			
+			
+			Token start = new Token(token.getValue(), true);
+	        Token end = new Token(token.getValue(), false);
+			Stack<Token> stack = new Stack<Token>();
+			stack.push(start);
+			stack.push(end);
+			
 			State startState = new State();
 			MapBasedNFA nfa = new MapBasedNFA(startState);
-			State finalState = new State();
+			State finalState = new State(stack);
 			finalState.setFinal(true);
 			
 			Set<Character> transitions= definedClasses.get(token.getValue()).chars;
@@ -303,6 +311,7 @@ public class RecursiveDescent {
 			for(Character c : transitions){
 				nfa.addTransition(startState, c, finalState);
 			}
+
 			RecursiveDescentInterState interState = new RecursiveDescentInterState(token.getValue(), nfa);
 			return interState;	
 			

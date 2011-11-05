@@ -53,8 +53,13 @@ public class MapBasedDFA implements DFA{
             transitions.put(fromState, transitionForState);
         }
     }
+      
     
-    @Override
+    public HashMap<State, HashMap<Character, State>> getTransitions() {
+		return transitions;
+	}
+
+	@Override
     public State transition(State fromState, Character letter) {
         if(transitions.containsKey(fromState)) {
             HashMap<Character, State> transitionsForState = transitions.get(fromState);

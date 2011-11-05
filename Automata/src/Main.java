@@ -1,11 +1,19 @@
 
 import automata.*;
 import conversion.NFAtoDFA;
+import generateNFA.FinalNFA;
+
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.Stack;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
+
+import exceptions.SyntaxErrorException;
 import minimization.DFAMinimizer;
 
 public class Main {
@@ -20,8 +28,11 @@ public class Main {
      * 
      * @param args 1st argument is used as the name of the file containing all 
      * of the tokens
+     * @throws SyntaxErrorException 
+     * @throws IOException 
+     * @throws FileNotFoundException 
      */
-    public static void main(String[] args) {
+    public static void main(String[] args) throws FileNotFoundException, IOException, SyntaxErrorException {
         checkArgs(args);
 
         DFA dfa;
@@ -129,22 +140,64 @@ public class Main {
         return DFAExportImport.importDFA(file);
     }
 
-    private static DFA generateDFA() {
+    private static DFA generateDFA() throws FileNotFoundException, IOException, SyntaxErrorException {
         JFileChooser fc = new JFileChooser();
         fc.showOpenDialog(null);
         File lexSpecs = fc.getSelectedFile();
         directory = fc.getCurrentDirectory();
         // TODO : Replace with generating NFA
-        NFA nfa = testNFA3();
+        
+    	FinalNFA NFAgen = new FinalNFA();
+    	NFA nfa  = NFAgen.generate(lexSpecs.getAbsolutePath());
+        
+    	
+    	System.out.println("\n\n\nCOMBINED NFA STARTS HERE");
+    	
+    	
+        HashMap<State, HashMap<Character, HashSet<State>>> allTransitions = ((MapBasedNFA) (nfa)).getTransitions();
+        Set<State> allStates = nfa.allStates();
+        for (State currState : allStates) {
+            HashMap<Character, HashSet<State>> currentTransitions = allTransitions.get(currState);
+            HashSet<Character> charSet = new HashSet<Character>(currentTransitions.keySet());
+            for (Character c : charSet) {
+                HashSet<State> toStates = currentTransitions.get(c);
+                for (State toState : toStates) {
+                    String transitionChar;
+                    if (c == null) {
+                        transitionChar = "null";
+                    } else {
+                        transitionChar = Character.toString(c);
+                    }
+                    System.out.println(currState.getName() + "---" + transitionChar + "--->" + toState.getName());
+                }
+            }
+        }
+        System.out.println("Final States:");
+        Set<State> finalStates = ((MapBasedNFA) (nfa)).finalStates();
+        for (State s : finalStates) {
+            System.out.println(s.getName());
+        }
+    	
+    	
+    	
+    	
+    	
+    	
+    	
+    	
+        //NFA nfa = testNFA3();
+        
         DFA dfa = NFAtoDFA.dfaFromNFA(nfa);
         dfa = DFAMinimizer.minimize(dfa);
 
         return dfa;
     }
 
-    private static DFA generateDFA(String fileName) {
+    private static DFA generateDFA(String fileName) throws FileNotFoundException, IOException, SyntaxErrorException {
         // TODO : Replace with generating NFA
-        NFA nfa = testNFA3();
+        //NFA nfa = testNFA3();
+    	FinalNFA NFAgen = new FinalNFA();
+    	NFA nfa  = NFAgen.generate(fileName);
         DFA dfa = NFAtoDFA.dfaFromNFA(nfa);
         dfa = DFAMinimizer.minimize(dfa);
 
