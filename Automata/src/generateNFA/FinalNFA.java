@@ -18,8 +18,8 @@ import automata.State;
 import automata.Token;
 
 /**
- *
- * @author Paul
+ *A wrapper class to manage the entire process of generating an NFA for a given lexical specification.
+ * @author 
  */
 public class FinalNFA {
 
@@ -29,6 +29,14 @@ public class FinalNFA {
     private RegexScanner scanner;
     private RecursiveDescent parser;
 
+    /**
+     * A function to manage the entire process of generating an NFA for a given lexical specification.
+     * @param filename File name of a valid lexical specification input file.
+     * @return The completed NFA.
+     * @throws java.io.FileNotFoundException
+     * @throws java.io.IOException
+     * @throws exceptions.SyntaxErrorException 
+     */
     public NFA generate(String filename) throws java.io.FileNotFoundException, java.io.IOException, exceptions.SyntaxErrorException {
         scan = new SpecFileScanner(filename);
         miniNFAs = new HashMap<String, NFA>();
