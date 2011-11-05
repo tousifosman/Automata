@@ -29,47 +29,87 @@ public class FinalNFA {
     private RegexScanner scanner;
     private RecursiveDescent parser;
 
-    public MapBasedNFA generate(String filename) throws java.io.FileNotFoundException, java.io.IOException, exceptions.SyntaxErrorException {
+    public NFA generate(String filename) throws java.io.FileNotFoundException, java.io.IOException, exceptions.SyntaxErrorException {
         scan = new SpecFileScanner(filename);
         miniNFAs = new HashMap<String, NFA>();
         identifiers = scan.identifierDefs();
+        RecursiveDescentInterState NFABuilder = null;
         for (Map.Entry<String, LinkedList<Token>> a : identifiers.entrySet()) {
             scanner = new RegexScanner(a);
-            parser = new RecursiveDescent(scanner, scan.charClasses(),a.getKey());
-            
+            parser = new RecursiveDescent(scanner, scan.charClasses(), a.getKey());
 
-    		RecursiveDescentInterState state = parser.regex();
 
-    		System.out.println("Final regex: "+state.getCurrentRegex());
-    		HashMap<State, HashMap<Character, HashSet<State>>> allTransitions = ((MapBasedNFA)(state.getCurrentNFA())).getTransitions();
-    		Set<State> allStates = state.getCurrentNFA().allStates();
-    		for(State currState : allStates){
-    			HashMap<Character, HashSet<State>> currentTransitions = allTransitions.get(currState);
-    			HashSet<Character> charSet = new HashSet<Character>(currentTransitions.keySet());
-    			for(Character c : charSet){
-    				HashSet<State> toStates = currentTransitions.get(c);
-    				for(State toState : toStates){
-    					String transitionChar;
-    					if(c==null){
-    						transitionChar = "null";
-    					}
-    					else {
-    						transitionChar = Character.toString(c);
-    					}
-    					System.out.println(currState.getName()+"---" + transitionChar+"--->"+toState.getName());
-    				}
-    			}			
-    		}		
-    		System.out.println("Final States:");
-    		Set<State> finalStates = ((MapBasedNFA)(state.getCurrentNFA())).finalStates();
-    		for(State s: finalStates){
-    			System.out.println(s.getName());
-    		}
-             
-            miniNFAs.put(a.getKey(),state.getCurrentNFA());
+            RecursiveDescentInterState state = parser.regex();
+
+            System.out.println("Final regex: " + state.getCurrentRegex());
+            HashMap<State, HashMap<Character, HashSet<State>>> allTransitions = ((MapBasedNFA) (state.getCurrentNFA())).getTransitions();
+            Set<State> allStates = state.getCurrentNFA().allStates();
+            for (State currState : allStates) {
+                HashMap<Character, HashSet<State>> currentTransitions = allTransitions.get(currState);
+                HashSet<Character> charSet = new HashSet<Character>(currentTransitions.keySet());
+                for (Character c : charSet) {
+                    HashSet<State> toStates = currentTransitions.get(c);
+                    for (State toState : toStates) {
+                        String transitionChar;
+                        if (c == null) {
+                            transitionChar = "null";
+                        } else {
+                            transitionChar = Character.toString(c);
+                        }
+                        System.out.println(currState.getName() + "---" + transitionChar + "--->" + toState.getName());
+                    }
+                }
+            }
+            System.out.println("Final States:");
+            Set<State> finalStates = ((MapBasedNFA) (state.getCurrentNFA())).finalStates();
+            for (State s : finalStates) {
+                System.out.println(s.getName());
+            }
+            miniNFAs.put(a.getKey(), state.getCurrentNFA());
+            NFABuilder = unionStates(NFABuilder, state);
         }
-        
-        return null;
+
+        return NFABuilder.getCurrentNFA();
     }
     
+    private RecursiveDescentInterState unionStates(RecursiveDescentInterState state1, RecursiveDescentInterState state2) {
+		if(state1==null){
+			return state2;
+		}
+		if(state2 == null){
+			return state1;
+		}
+		MapBasedNFA leftNFA = (MapBasedNFA) state1.getCurrentNFA();
+		MapBasedNFA rightNFA = (MapBasedNFA) state2.getCurrentNFA();
+		if(leftNFA == null){
+			String newRegexString = state1.getCurrentRegex()+ state2.getCurrentRegex();
+			RecursiveDescentInterState interState = new RecursiveDescentInterState(newRegexString, state2.getCurrentNFA());
+			return interState;
+		}
+		if(rightNFA == null){
+			String newRegexString = state1.getCurrentRegex()+ state2.getCurrentRegex();
+			RecursiveDescentInterState interState = new RecursiveDescentInterState(newRegexString, state1.getCurrentNFA());
+			return interState;
+		}
+		
+		State leftStartState = leftNFA.startState();
+		State rigthStartState = rightNFA.startState();
+		leftNFA.addTransition(leftStartState, null, rigthStartState);
+		
+		HashMap<State, HashMap<Character, HashSet<State>>> allTransitions = rightNFA.getTransitions();
+		Set<State> allStates = rightNFA.allStates();
+		for(State currState : allStates){
+			HashMap<Character, HashSet<State>> currentTransitions = allTransitions.get(currState);
+			HashSet<Character> charSet = new HashSet<Character>(currentTransitions.keySet());
+			for(Character c : charSet){
+				HashSet<State> toStates = currentTransitions.get(c);
+				for(State toState : toStates){
+					leftNFA.addTransition(currState, c, toState);
+				}
+			}			
+		}		
+		String newRegexString = state1.getCurrentRegex()+ state2.getCurrentRegex();
+		RecursiveDescentInterState interState = new RecursiveDescentInterState(newRegexString, leftNFA);
+		return interState;
+	}
 }
