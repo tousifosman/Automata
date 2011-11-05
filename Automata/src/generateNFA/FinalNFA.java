@@ -33,7 +33,12 @@ public class FinalNFA {
         scan = new SpecFileScanner(filename);
         miniNFAs = new HashMap<String, NFA>();
         identifiers = scan.identifierDefs();
-        RecursiveDescentInterState NFABuilder = null;
+        
+        State mergeStartState = new State();
+        MapBasedNFA mergeStartNFA = new MapBasedNFA(mergeStartState);
+        
+        
+        RecursiveDescentInterState NFABuilder = new RecursiveDescentInterState("", mergeStartNFA);
         for (Map.Entry<String, LinkedList<Token>> a : identifiers.entrySet()) {
             scanner = new RegexScanner(a);
             parser = new RecursiveDescent(scanner, scan.charClasses(), a.getKey());
