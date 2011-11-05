@@ -36,14 +36,26 @@ public class State {
         return stack;
     }
 
+    /**
+     * Adds a Token to this State's Token stack.
+     * @param tok Token to be added.
+     */
     public void addToken(Token tok){
     	this.tokens.push(tok);
     }
      
+    /**
+     * Defines the entire set of Tokens for this State.
+     * @param tokens Stack of tokens to be set.
+     */
     public void setTokens(Stack<Token> tokens) {
         this.tokens = tokens;
     }
 
+    /**
+     * Returns, but does not remove the top element on the Token stack.
+     * @return The first Token.
+     */
     public Token topToken() {
         return tokens.peek();
     }

@@ -2,6 +2,10 @@ package automata;
 
 import java.util.Set;
 
+/**
+ * A basic interface for a finite automaton.
+ * @author 
+ */
 public interface FiniteAutomata {
     /**
      * The start state of this FA

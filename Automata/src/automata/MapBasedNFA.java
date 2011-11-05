@@ -1,6 +1,5 @@
 package automata;
 
-
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
@@ -11,6 +10,7 @@ import java.util.Set;
  * An epsilon transition is represented by a transition over a "null" character
  */
 public class MapBasedNFA implements NFA {
+
     private State startState;
     private Set<Character> alphabet;
     private Set<State> finalStates;
@@ -45,7 +45,9 @@ public class MapBasedNFA implements NFA {
      */
     public void addTransition(State fromState, Character character, State toState) {
         alphabet.add(character);
-        if (toState.isFinal()) finalStates.add(toState);
+        if (toState.isFinal()) {
+            finalStates.add(toState);
+        }
 
         if (transitions.containsKey(fromState)) {
             HashMap<Character, HashSet<State>> transitionsForState = transitions.get(fromState);
@@ -86,14 +88,16 @@ public class MapBasedNFA implements NFA {
     public Set<State> finalStates() {
         return new HashSet<State>(finalStates);
     }
-    
-    
 
+    /**
+     * Defines the set of final states for the NFA.
+     * @param finalStates States to be declared final.
+     */
     public void setFinalStates(Set<State> finalStates) {
-		this.finalStates = finalStates;
-	}
+        this.finalStates = finalStates;
+    }
 
-	@Override
+    @Override
     public Set<State> startStates() {
         Set<State> startStates = new HashSet<State>();
         State startState = this.startState();
@@ -103,15 +107,16 @@ public class MapBasedNFA implements NFA {
 
         return startStates;
     }
-    
-    public HashMap<State, HashMap<Character, HashSet<State>>> getTransitions() {
-		return transitions;
-	}
-    
-    
-    
 
-	/**
+    /**
+     * Getter for a HashMap of transitions existing in the NFA.
+     * @return HashMap of all transitions.
+     */
+    public HashMap<State, HashMap<Character, HashSet<State>>> getTransitions() {
+        return transitions;
+    }
+
+    /**
      * A recursive helper function that adds all the states coming from a given
      * state over epsilon transitions.
      * @param set The set to add all the states to
@@ -135,20 +140,24 @@ public class MapBasedNFA implements NFA {
 
     @Override
     public Set<State> transitions(Set<State> fromStates, Character letter) {
-        if(fromStates == null) return null;
-        
+        if (fromStates == null) {
+            return null;
+        }
+
         Set<State> returnStates = new HashSet<State>();
 
         for (State currState : fromStates) {
             Set<State> currStates = transitions(currState, letter);
-            if (currStates != null)
+            if (currStates != null) {
                 returnStates.addAll(currStates);
+            }
         }
 
-        if (!returnStates.isEmpty())
+        if (!returnStates.isEmpty()) {
             return returnStates;
-        else
+        } else {
             return null;
+        }
     }
 
     /**
