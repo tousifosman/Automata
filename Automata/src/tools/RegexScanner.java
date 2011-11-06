@@ -75,6 +75,10 @@ public class RegexScanner {
         if (token == null) {
             token = new Token("null", false);
         }
+        if(token.equals(new Token("\\-"))){
+        	System.out.println();
+        }
+        
         //if(token.)
         return token;
     }

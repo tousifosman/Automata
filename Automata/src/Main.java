@@ -151,7 +151,7 @@ public class Main {
     	NFA nfa  = NFAgen.generate(lexSpecs.getAbsolutePath());
         
     	
-    	System.out.println("\n\n\nCOMBINED NFA STARTS HERE");
+    	System.out.println("\n\n\nCOMBINED NFA STARTS HERE\nStart State: "+nfa.startState().getName());
     	
     	
         HashMap<State, HashMap<Character, HashSet<State>>> allTransitions = ((MapBasedNFA) (nfa)).getTransitions();
@@ -199,7 +199,7 @@ public class Main {
     	FinalNFA NFAgen = new FinalNFA();
     	NFA nfa  = NFAgen.generate(fileName);
         DFA dfa = NFAtoDFA.dfaFromNFA(nfa);
-        dfa = DFAMinimizer.minimize(dfa);
+        //dfa = DFAMinimizer.minimize(dfa);
 
         return dfa;
     }

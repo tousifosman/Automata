@@ -62,15 +62,21 @@ public class ScannerDriver {
 
         for (char character : word.toCharArray()) {
             currState = dfa.transition(currState, character);
-            builder.xmlize(character, currState.getTokens());
+            if(currState != null){
+            	builder.xmlize(character, currState.getTokens());
+            }
         }
         builder.finalizeXML();
-
-        if (currState.isFinal()) {
-            if (!currState.getTokens().isEmpty())
-                System.out.println(word + ": ACCEPT (" + currState.topToken().getValue() + ")");
-            else
-                System.out.println(word + ": ACCEPT");
-        } else System.out.println(word + ": REJECT");
+        if(currState != null){
+	        if (currState.isFinal()) {
+	            if (!currState.getTokens().isEmpty())
+	                System.out.println(word + ": ACCEPT (" + currState.topToken().getValue() + ")");
+	            else
+	                System.out.println(word + ": ACCEPT");
+	        } else System.out.println(word + ": REJECT");
+        }
+        else {
+        	System.out.println(word + ": REJECT");
+        }
     }
 }

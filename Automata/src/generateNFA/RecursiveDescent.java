@@ -186,8 +186,10 @@ public class RecursiveDescent {
 
             RecursiveDescentInterState rexp2TailState = rexp2Tail();
 
-            Token start = new Token("RE_CHAR", true);
-            Token end = new Token("RE_CHAR", false);
+            Token start = new Token(nfaName, true);
+            //new Token("RE_CHAR", true);
+            Token end = new Token(nfaName, false);
+            //new Token("RE_CHAR", false);
             Stack<Token> stack = new Stack<Token>();
             stack.push(start);
             stack.push(end);
@@ -276,8 +278,10 @@ public class RecursiveDescent {
                 }
             }
 
-            Token start = new Token("DOT", true);
-            Token end = new Token("DOT", false);
+            Token start = new Token(nfaName, true);
+            		//new Token("DOT", true);
+            Token end = new Token(nfaName, false);
+            //new Token("DOT", false);
             Stack<Token> stack = new Stack<Token>();
             stack.push(start);
             stack.push(end);
@@ -306,8 +310,10 @@ public class RecursiveDescent {
             scanner.matchToken(token);
 
 
-            Token start = new Token(token.getValue(), true);
-            Token end = new Token(token.getValue(), false);
+            Token start = new Token(nfaName, true);
+            		//new Token(token.getValue(), true);
+            Token end = new Token(nfaName, false);
+            		//new Token(token.getValue(), false);
             Stack<Token> stack = new Stack<Token>();
             stack.push(start);
             stack.push(end);
@@ -380,8 +386,10 @@ public class RecursiveDescent {
                 Character c = getCharFromString(token.getValue());
 
 
-                Token start = new Token("CLS_CHAR", true);
-                Token end = new Token("CLS_CHAR", false);
+                Token start = new Token(nfaName, true);
+                		//new Token("CLS_CHAR", true);
+                Token end = new Token(nfaName, false);
+                		//new Token("CLS_CHAR", false);
                 Stack<Token> stack = new Stack<Token>();
                 stack.push(start);
                 stack.push(end);
@@ -408,8 +416,10 @@ public class RecursiveDescent {
                     chars.add(c);
                 }
 
-                Token start = new Token("CLS_CHAR", true);
-                Token end = new Token("CLS_CHAR", false);
+                Token start = new Token(nfaName, true);
+                		//Token("CLS_CHAR", true);
+                Token end = new Token(nfaName, false);
+                		//new Token("CLS_CHAR", false);
                 Stack<Token> stack = new Stack<Token>();
                 stack.push(start);
                 stack.push(end);
@@ -445,8 +455,10 @@ public class RecursiveDescent {
             if (clsCharList.contains(token1.getValue())) {
                 scanner.matchToken(token1);
 
-                Token start = new Token("CLS_CHAR", true);
-                Token end = new Token("CLS_CHAR", false);
+                Token start = new Token(nfaName, true);
+                		//Token("CLS_CHAR", true);
+                Token end = new Token(nfaName, false);
+                		//Token("CLS_CHAR", false);
                 Stack<Token> stack = new Stack<Token>();
                 stack.push(start);
                 stack.push(end);
@@ -488,8 +500,10 @@ public class RecursiveDescent {
 
         String allCharRegex = exSetTailState.getCurrentRegex();
         if (allCharRegex.contains("[")) {
-            start = new Token("CLS_CHAR", true);
-            end = new Token("CLS_CHAR", false);
+            start = new Token(nfaName, true);
+            		//Token("CLS_CHAR", true);
+            end = new Token(nfaName, false);
+            		//Token("CLS_CHAR", false);
         } else {
             start = new Token(allCharRegex, true);
             end = new Token(allCharRegex, false);
@@ -547,8 +561,10 @@ public class RecursiveDescent {
         } else if (definedClassesNames.contains(token.getValue())) {
             scanner.matchToken(token);
 
-            Token start = new Token(token.getValue(), true);
-            Token end = new Token(token.getValue(), false);
+            Token start = new Token(nfaName, true);
+            		//Token(token.getValue(), true);
+            Token end = new Token(nfaName, false);
+            		//Token(token.getValue(), false);
             Stack<Token> stack = new Stack<Token>();
             stack.push(start);
             stack.push(end);
