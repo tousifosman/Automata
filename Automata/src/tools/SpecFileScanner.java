@@ -218,7 +218,7 @@ public class SpecFileScanner {
         identifierDefs = new TreeMap<String, LinkedList<Token>>();
         for (Map.Entry<String, String> a : identifiers.entrySet()) {
             /* Convert regex String into a Linked List of constituent characters */
-            for (char b : a.getValue().toCharArray()) {
+        	for (char b : a.getValue().toCharArray()) {
                 curr.add(b);
             }
             curr.add(' ');
@@ -234,7 +234,9 @@ public class SpecFileScanner {
                         while (!tokenBuffer.isEmpty()) {
                             temp.append(tokenBuffer.pollLast());
                         }
-                        tokens.add(new Token(temp.toString()));
+                        if(!temp.toString().trim().equals("\\")){
+                        	tokens.add(new Token(temp.toString().trim()));
+                        }
                         break;
                     case '$':
                         /* Character class */
@@ -245,7 +247,7 @@ public class SpecFileScanner {
                         while (!tokenBuffer.isEmpty()) {
                             temp.append(tokenBuffer.pollLast());
                         }
-                        tokens.add(new Token(temp.toString()));
+                        tokens.add(new Token(temp.toString().trim()));
                         break;
                     default:
                         /* Single Character */
@@ -253,7 +255,7 @@ public class SpecFileScanner {
                             while (!tokenBuffer.isEmpty()) {
                                 temp.append(tokenBuffer.pollLast());
                             }
-                            tokens.add(new Token(temp.toString()));
+                            tokens.add(new Token(temp.toString().trim()));
                         }
                 }
             }
