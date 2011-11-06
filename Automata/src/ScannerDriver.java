@@ -3,6 +3,7 @@ import automata.DFA;
 import automata.State;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.Scanner;
 
 /**
@@ -51,7 +52,11 @@ public class ScannerDriver {
                 String word = scan.next();
                 this.parse(word);
             }
+            
+            builder.exportXML(file.getName().substring(0, file.getName().lastIndexOf('.')));
         } catch (FileNotFoundException ex) {
+        } catch (IOException ex) {
+            System.out.println("Unable to write out xml files.");
         }
     }
 

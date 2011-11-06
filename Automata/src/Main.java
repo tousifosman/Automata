@@ -176,17 +176,7 @@ public class Main {
         Set<State> finalStates = ((MapBasedNFA) (nfa)).finalStates();
         for (State s : finalStates) {
             System.out.println(s.getName());
-        }
-    	
-    	
-    	
-    	
-    	
-    	
-    	
-    	
-        //NFA nfa = testNFA3();
-        
+        }       
         DFA dfa = NFAtoDFA.dfaFromNFA(nfa);
         //dfa = DFAMinimizer.minimize(dfa);
 
@@ -194,8 +184,6 @@ public class Main {
     }
 
     private static DFA generateDFA(String fileName) throws FileNotFoundException, IOException, SyntaxErrorException {
-        // TODO : Replace with generating NFA
-        //NFA nfa = testNFA3();
     	FinalNFA NFAgen = new FinalNFA();
     	NFA nfa  = NFAgen.generate(fileName);
         DFA dfa = NFAtoDFA.dfaFromNFA(nfa);
