@@ -10,6 +10,8 @@ import java.util.LinkedList;
 import java.util.Map;
 import java.util.Set;
 
+import exceptions.SyntaxErrorException;
+
 import tools.RegexScanner;
 import tools.SpecFileScanner;
 import automata.MapBasedNFA;
@@ -38,7 +40,7 @@ public class FinalNFA {
      * @throws exceptions.SyntaxErrorException 
      */
     public NFA generate(String filename) throws java.io.FileNotFoundException, java.io.IOException, exceptions.SyntaxErrorException {
-        scan = new SpecFileScanner(filename);
+    	scan = new SpecFileScanner(filename);
         miniNFAs = new HashMap<String, NFA>();
         identifiers = scan.identifierDefs();
         
@@ -48,36 +50,54 @@ public class FinalNFA {
         
         RecursiveDescentInterState NFABuilder = new RecursiveDescentInterState("", mergeStartNFA);
         for (Map.Entry<String, LinkedList<Token>> a : identifiers.entrySet()) {
-            scanner = new RegexScanner(a);
+        	
+        	String regexString = scan.identifiers().get(a.getKey()); 
+        	char[] regexArray = regexString.toCharArray();
+        	
+        	StringBuilder regexBuilder = new StringBuilder();
+        	char prev = 0;
+        	for(int i=0; i<regexArray.length; i++){
+        		if(regexArray[i] != '\\'){
+        			regexBuilder.append(Character.toString(regexArray[i]));
+        		}
+        		else {
+        			if(regexArray[i+1] == '\\'){
+        				regexBuilder.append(Character.toString(regexArray[i+1]));
+        				i++;
+        			}
+        		}
+        	}
+        	
+        	regexString = regexBuilder.toString();
+        	
+        	
+        	//System.out.println(regexString);
+        
+        	
+        	scanner = new RegexScanner(a);
             parser = new RecursiveDescent(scanner, scan.charClasses(), a.getKey());
 
 
             RecursiveDescentInterState state = parser.regex();
-
-//            System.out.println("Final regex: " + state.getCurrentRegex());
-//            HashMap<State, HashMap<Character, HashSet<State>>> allTransitions = ((MapBasedNFA) (state.getCurrentNFA())).getTransitions();
-//            Set<State> allStates = state.getCurrentNFA().allStates();
-//            for (State currState : allStates) {
-//                HashMap<Character, HashSet<State>> currentTransitions = allTransitions.get(currState);
-//                HashSet<Character> charSet = new HashSet<Character>(currentTransitions.keySet());
-//                for (Character c : charSet) {
-//                    HashSet<State> toStates = currentTransitions.get(c);
-//                    for (State toState : toStates) {
-//                        String transitionChar;
-//                        if (c == null) {
-//                            transitionChar = "null";
-//                        } else {
-//                            transitionChar = Character.toString(c);
-//                        }
-//                        System.out.println(currState.getName() + "---" + transitionChar + "--->" + toState.getName());
-//                    }
-//                }
-//            }
-//            System.out.println("Final States:");
-//            Set<State> finalStates = ((MapBasedNFA) (state.getCurrentNFA())).finalStates();
-//            for (State s : finalStates) {
-//                System.out.println(s.getName());
-//            }
+            
+            String newString = state.getCurrentRegex();
+            char[] newArray = newString.toCharArray();
+            
+            StringBuilder newBuilder = new StringBuilder();
+        	prev = 0;
+        	for(int i=0; i<newArray.length; i++){
+        		if(newArray[i] != '\\'){
+        			newBuilder.append(Character.toString(newArray[i]));
+        		}
+        		else {
+        			if(newArray[i+1] == '\\'){
+        				newBuilder.append(Character.toString(newArray[i+1]));
+        				i++;
+        			}
+        		}
+        	}
+        	newString = newBuilder.toString();
+            
             miniNFAs.put(a.getKey(), state.getCurrentNFA());
             NFABuilder = unionStates(NFABuilder, state);
         }

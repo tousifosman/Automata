@@ -89,13 +89,7 @@ public class RecursiveDescent {
         RecursiveDescentInterState endInter = new RecursiveDescentInterState("", endNFA);
         
         RecursiveDescentInterState finalNFA = concaInterStates(rexpState, endInter);
-        
-        for(State s : finalNFA.getCurrentNFA().allStates()){
-        	Stack<Token> tokens = s.getTokens();
-        	System.out.print("a");
-        }
-        
-        
+          
         return finalNFA;
     }
 
