@@ -1,5 +1,9 @@
 
 import automata.Token;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
@@ -126,5 +130,21 @@ public class XMLBuilder {
             builder.append("\n");
         }
         return builder.toString();
+    }
+
+    public void exportXML(String fileStart) throws IOException {
+        for (List<String> xml : savedXML) {
+            File xmlFile = new File(fileStart + "_" + savedXML.indexOf(xml) + ".xml");
+            FileWriter fstream = new FileWriter(xmlFile);
+            BufferedWriter out = new BufferedWriter(fstream);
+            
+            for(String str: xml) {
+                out.write(str);
+                out.write("\n");
+            }
+            
+            out.close();
+            fstream.close();
+        }
     }
 }
