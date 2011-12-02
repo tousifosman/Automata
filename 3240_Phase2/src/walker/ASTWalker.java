@@ -1,24 +1,37 @@
 package walker;
 
+import walker.exceptions.InvalidStatementTypeException;
+import walker.exceptions.ASTExecutionException;
+import walker.exceptions.NonExecutableNodeException;
 import ast.*;
 import java.io.PrintStream;
+import java.util.HashMap;
+import java.util.Map;
+import walker.executions.*;
 
 public class ASTWalker {
-    private AbstractSyntaxTree tree;
+    private Map<String, NodeExecution> executionMap;
+    private Map<String, Object> idMap;
 
-    public ASTWalker(AbstractSyntaxTree tree) {
-        this.tree = tree;
+    public ASTWalker(PrintStream out) {
+        this.idMap = new HashMap<String, Object>();
+        this.executionMap = new HashMap<String, NodeExecution>();
+
+        executionMap.put("ID = <exp> ;", new Assign1Statement(idMap));
+        executionMap.put("ID = # <exp> ; ", new Assign2Statement(idMap));
+        executionMap.put("ID = maxfreqstring (ID);", new Assign3Statement(idMap));
+        executionMap.put("replace REGEX with ASCII-STR in  <file-names> ;", new ReplaceStatement());
+        executionMap.put("recursivereplace REGEX with ASCII-STR in  <file-names> ;", new RecursiveReplaceStatement());
+        executionMap.put("print ( <exp-list> ) ;", new PrintStatement(out));
     }
-    private PrintStream out;
 
-    public void walk(PrintStream out) throws ASTExecutionException {
-        this.out = out;
+    public void walk(AbstractSyntaxTree tree) throws ASTExecutionException {
         expandExecution(tree.getHead());
     }
 
-    private void expandExecution(Node node) throws NonExecutableNodeException {
+    private void expandExecution(Node node) throws ASTExecutionException {
         if (node instanceof StatementNode) {
-            execute((StatementNode)node);
+            execute((StatementNode) node);
         } else { //expression nodes can't be executed
             throw new NonExecutableNodeException(node);
         }
@@ -27,7 +40,13 @@ public class ASTWalker {
         }
     }
 
-    private void execute(StatementNode node) {
-        
-    } 
+    private void execute(StatementNode node) throws InvalidStatementTypeException {
+        NodeExecution executor = executionMap.get(node.type());
+
+        if (executor == null) {
+            throw new InvalidStatementTypeException(node);
+        } else {
+            executor.execute(node);
+        }
+    }
 }
