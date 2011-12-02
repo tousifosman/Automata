@@ -7,15 +7,15 @@ import ast.*;
 import java.io.PrintStream;
 import java.util.HashMap;
 import java.util.Map;
-import walker.executions.*;
+import walker.statements.*;
 
 public class ASTWalker {
-    private Map<String, NodeExecution> executionMap;
+    private Map<String, StatementExecutor> executionMap;
     private Map<String, Object> idMap;
 
     public ASTWalker(PrintStream out) {
         this.idMap = new HashMap<String, Object>();
-        this.executionMap = new HashMap<String, NodeExecution>();
+        this.executionMap = new HashMap<String, StatementExecutor>();
 
         executionMap.put("ID = <exp> ;", new Assign1Statement(idMap));
         executionMap.put("ID = # <exp> ; ", new Assign2Statement(idMap));
@@ -41,7 +41,7 @@ public class ASTWalker {
     }
 
     private void execute(StatementNode node) throws InvalidStatementTypeException {
-        NodeExecution executor = executionMap.get(node.type());
+        StatementExecutor executor = executionMap.get(node.type());
 
         if (executor == null) {
             throw new InvalidStatementTypeException(node);
