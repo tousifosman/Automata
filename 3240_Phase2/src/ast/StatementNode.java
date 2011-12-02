@@ -6,23 +6,28 @@ import java.util.List;
 public class StatementNode extends Node{
 
     @Override
-    public Object getType() {
+    public String type() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public Object getToken() {
+    public boolean hasNextNode() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public Node getNextNode() {
+    public Node nextNode() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public List<Node> getSubNodes() {
+    public List<Node> subNodes() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
-    
+
+    @Override
+    public String value() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
 }
