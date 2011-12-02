@@ -1,4 +1,4 @@
-package walker;
+package walker.exceptions;
 
 import ast.Node;
 
