@@ -41,7 +41,9 @@ public class TermExpression implements ExpressionExpander {
             List<String> wordList = new LinkedList<String>();
             while(scan.hasNext()) {
                 String input = scan.next();
-                input.matches(regex);
+                if(input.matches(regex)) {
+                    wordList.add(input);
+                }
             }
             return wordList;
 
