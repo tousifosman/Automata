@@ -1,4 +1,4 @@
-package testing;
+package walker;
 
 import ast.*;
 import walker.ASTWalker;
