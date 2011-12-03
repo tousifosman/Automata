@@ -6,7 +6,6 @@ import java.util.List;
 import walker.ExpressionDelegate;
 import walker.exceptions.ExpressionExpansionException;
 
-
 public class ParenExpression implements ExpressionExpander {
     @Override
     public Object expand(ExpressionNode node, ExpressionDelegate delegate) throws ExpressionExpansionException {
@@ -18,5 +17,9 @@ public class ParenExpression implements ExpressionExpander {
         }
 
         return delegate.expand((ExpressionNode) subnodes.get(0));
+    }
+
+    public static String type() {
+        return "( <exp> )";
     }
 }

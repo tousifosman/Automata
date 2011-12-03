@@ -28,13 +28,12 @@ public class ASTWalker implements ExpressionDelegate {
         executionMap.put("print ( <exp-list> ) ;", new PrintStatement(out));
 
         this.expansionMap = new HashMap<String, ExpressionExpander>();
-        expansionMap.put("ID", new IdExpression(idMap));
-        expansionMap.put("( <exp> )", new ParenExpression());
-        expansionMap.put("exp_tail", new ExpTailExpression());
-        expansionMap.put("<term>", new TermExpression());
-        expansionMap.put("<bin-op>", new BinopExpression());
-        expansionMap.put("# <exp>", new SizeExpression());
-        expansionMap.put("maxfreqstring (ID);", new MaxFreqExpression(idMap));
+        expansionMap.put(IdExpression.type(), new IdExpression(idMap));
+        expansionMap.put(ParenExpression.type(), new ParenExpression());
+        expansionMap.put(TermExpression.type(), new TermExpression());
+        expansionMap.put(BinopExpression.type(), new BinopExpression());
+        expansionMap.put(SizeExpression.type(), new SizeExpression());
+        expansionMap.put(MaxFreqExpression.type(), new MaxFreqExpression(idMap));
         
     }
 
