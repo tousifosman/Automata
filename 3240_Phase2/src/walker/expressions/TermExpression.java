@@ -17,5 +17,8 @@ public class TermExpression implements ExpressionExpander {
     public Object expand(ExpressionNode node, ExpressionDelegate delegate) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
-    
+ 
+    public static String type() {
+        return "<term>";
+    }
 }

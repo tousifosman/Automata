@@ -21,9 +21,13 @@ public class SizeExpression implements ExpressionExpander {
             // Taylor TODO - better exception
             throw new ExpressionExpansionException("Can only take size of lists");
         }
-        
-        Integer result = ((List)subResult).size();
-        
+
+        Integer result = ((List) subResult).size();
+
         return result;
+    }
+
+    public static String type() {
+        return "# <exp>";
     }
 }
