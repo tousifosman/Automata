@@ -20,7 +20,7 @@ public class IdExpression implements ExpressionExpander {
         }
         String id = (String)node.value();
 
-        Object value = idMap.get(id);
+        Object value = idMap.get(id); // TODO - pass by reference, or value?
         if (value == null) {
             // Taylor TODO - Better exception
             throw new ExpressionExpansionException("Undeclared ID");
