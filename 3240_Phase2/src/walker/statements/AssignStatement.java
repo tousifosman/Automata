@@ -40,4 +40,8 @@ public class AssignStatement implements StatementExecutor {
 
         idMap.put(id, result);
     }
+
+    public static String type() {
+        return "assign";
+    }
 }

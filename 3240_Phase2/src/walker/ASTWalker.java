@@ -22,10 +22,10 @@ public class ASTWalker implements ExpressionDelegate {
         this.idMap = new HashMap<String, Object>();
 
         this.executionMap = new HashMap<String, StatementExecutor>();
-        executionMap.put("assign", new AssignStatement(idMap));
+        executionMap.put(AssignStatement.type(), new AssignStatement(idMap));
         executionMap.put("replace REGEX with ASCII-STR in  <file-names> ;", new ReplaceStatement());
         executionMap.put("recursivereplace REGEX with ASCII-STR in  <file-names> ;", new RecursiveReplaceStatement());
-        executionMap.put("print ( <exp-list> ) ;", new PrintStatement(out));
+        executionMap.put(PrintStatement.type(), new PrintStatement(out));
 
         this.expansionMap = new HashMap<String, ExpressionExpander>();
         expansionMap.put(IdExpression.type(), new IdExpression(idMap));
