@@ -26,7 +26,7 @@ public class StatementNode extends Node{
     }
 
     @Override
-    public String value() {
+    public Object value() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 

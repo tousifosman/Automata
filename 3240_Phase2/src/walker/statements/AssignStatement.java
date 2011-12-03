@@ -24,7 +24,12 @@ public class AssignStatement implements StatementExecutor {
     @Override
     public void execute(StatementNode node, ExpressionDelegate delegate) throws ASTExecutionException {
         List<Node> subnodes = node.subnodes();
-        String id = node.value();
+        if (!(node.value() instanceof String)) {
+            // Taylor TODO - Better exception
+            throw new StatementExecutionException("Value must be ID");
+        }
+
+        String id = (String) node.value();
 
         if (subnodes.size() != 1 || !(subnodes.get(0) instanceof ExpressionNode)) {
             // Taylor TODO - Better exception

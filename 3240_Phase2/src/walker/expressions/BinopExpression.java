@@ -1,4 +1,3 @@
-
 package walker.expressions;
 
 import ast.ExpressionNode;
@@ -10,13 +9,12 @@ import walker.exceptions.ExpressionExpansionException;
 
 public class BinopExpression implements ExpressionExpander {
     @Override
-    public List<String> expand(ExpressionNode node, ExpressionDelegate delegate) throws ExpressionExpansionException {
+    public List expand(ExpressionNode node, ExpressionDelegate delegate) throws ExpressionExpansionException {
         List<Node> subnodes = node.subnodes();
 
 
         if (subnodes.isEmpty()
-                || !(subnodes.get(0) instanceof ExpressionNode)
-                || !subnodes.get(0).type().equals(TermExpression.type())) {
+                || !(subnodes.get(0) instanceof ExpressionNode)) {
             // Taylor TODO - Better exception
             throw new ExpressionExpansionException("Invalid Binop subnodes");
         }
@@ -31,10 +29,12 @@ public class BinopExpression implements ExpressionExpander {
 
             return (List) result;
         } else if (subnodes.size() == 2
-                && (subnodes.get(0) instanceof ExpressionNode)
-                && subnodes.get(0).type().equals(BinopExpression.type())) {
-
-            BinopType binopType = BinopType.toBinop(node.value());
+                && (subnodes.get(0) instanceof ExpressionNode)) {
+            if (!(node.value() instanceof String)) {
+                // Taylor TODO - Better exception
+                throw new ExpressionExpansionException("Value must be binop type");
+            }
+            BinopType binopType = BinopType.toBinop((String) node.value());
 
             Object firstList = delegate.expand((ExpressionNode) subnodes.get(0));
             Object secondList = delegate.expand((ExpressionNode) subnodes.get(1));

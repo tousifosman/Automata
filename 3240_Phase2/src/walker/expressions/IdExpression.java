@@ -14,7 +14,11 @@ public class IdExpression implements ExpressionExpander {
 
     @Override
     public Object expand(ExpressionNode node, ExpressionDelegate delegate) throws ExpressionExpansionException {
-        String id = node.value();
+        if (!(node.value() instanceof String)) {
+            // Taylor TODO - Better exception
+            throw new ExpressionExpansionException("Value must be ID");
+        }
+        String id = (String)node.value();
 
         Object value = idMap.get(id);
         if (value == null) {

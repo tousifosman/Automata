@@ -5,7 +5,7 @@ import java.util.List;
 public abstract class Node {
     public abstract String type();
     
-    public abstract String value();
+    public abstract Object value();
 
     public abstract boolean hasNextNode();
 
