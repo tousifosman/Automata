@@ -14,7 +14,7 @@ public class ExpressionNode extends Node {
     }
 
     @Override
-    public List<Node> subNodes() {
+    public List<Node> subnodes() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 

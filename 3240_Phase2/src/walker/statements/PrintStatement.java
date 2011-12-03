@@ -4,8 +4,9 @@
  */
 package walker.statements;
 
-import ast.Node;
+import ast.StatementNode;
 import java.io.PrintStream;
+import walker.ExpressionDelegate;
 
 /**
  *
@@ -19,7 +20,7 @@ public class PrintStatement implements StatementExecutor {
     }
 
     @Override
-    public void execute(Node node) {
+    public void execute(StatementNode node, ExpressionDelegate delegate) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 }
