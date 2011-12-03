@@ -1,7 +1,9 @@
 package walker.expressions;
 
-import ast.Node;
+import ast.ExpressionNode;
+import walker.ExpressionDelegate;
+import walker.exceptions.ExpressionExpansionException;
 
 public interface ExpressionExpander {
-    public Object expand(Node node);
+    public Object expand(ExpressionNode node, ExpressionDelegate delegate) throws ExpressionExpansionException;
 }

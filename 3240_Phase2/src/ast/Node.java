@@ -11,5 +11,5 @@ public abstract class Node {
 
     public abstract Node nextNode();
 
-    public abstract List<Node> subNodes();
+    public abstract List<Node> subnodes();
 }
