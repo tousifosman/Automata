@@ -10,15 +10,14 @@ public class LLParserHelper {
 		if(tokenName.contains("MiniRE-program")){
 			return RULE_NUMER.MINIRE;
 		}
-		else if(tokenName.contains("statement-list")){
-			return RULE_NUMER.STATEMENT_LIST;
-		}
-		
 		else if(tokenName.contains("statement-list-tail1")){
 			return RULE_NUMER.STATEMENT_LIST_TAIL1;
 		}
 		else if(tokenName.contains("statement-list-tail2")){
 			return RULE_NUMER.STATEMENT_LIST_TAIL2;
+		}
+		else if(tokenName.contains("statement-list")){
+			return RULE_NUMER.STATEMENT_LIST;
 		}
 		else if(tokenName.contains("statement1")){
 			return RULE_NUMER.STATEMENT1;
@@ -52,12 +51,21 @@ public class LLParserHelper {
 			return RULE_NUMER.DESTINATION_FILE;
 		}
 		
-		else if(tokenName.contains("exp-list")){
-			return RULE_NUMER.EXP_LIST;
-		}
 		else if(tokenName.contains("exp-list-tail")){
 			return RULE_NUMER.EXP_LIST_TAIL;
 		}
+		
+		else if(tokenName.contains("exp-tail1")){
+			return RULE_NUMER.EXP_TAIL1;
+		}
+		else if(tokenName.contains("exp-tail2")){
+			return RULE_NUMER.EXP_TAIL2;
+		}
+		
+		else if(tokenName.contains("exp-list")){
+			return RULE_NUMER.EXP_LIST;
+		}
+
 		else if(tokenName.contains("exp1")){
 			return RULE_NUMER.EXP1;
 		}
@@ -67,12 +75,7 @@ public class LLParserHelper {
 		else if(tokenName.contains("exp3")){
 			return RULE_NUMER.EXP3;
 		}
-		else if(tokenName.contains("exp-tail1")){
-			return RULE_NUMER.EXP_TAIL1;
-		}
-		else if(tokenName.contains("exp-tail2")){
-			return RULE_NUMER.EXP_TAIL2;
-		}
+
 		else if(tokenName.contains("term")){
 			return RULE_NUMER.TERM;
 		}
@@ -100,6 +103,10 @@ public static TOKEN_TYPE getTokenType(String token){
 		else if(token.contains("REGEX")){
 			return TOKEN_TYPE.REGEX;
 		}
+		else if(token.contains("empty")){
+			return TOKEN_TYPE.EMPTY;
+		}
+		
 		else if(token.equals("replace")){
 			return TOKEN_TYPE.REPLACE;
 		}
@@ -157,17 +164,24 @@ public static TOKEN_TYPE getTokenType(String token){
 			return TOKEN_TYPE.END;
 		}
 		
+		else if(token.equals("print")){
+			return TOKEN_TYPE.PRINT;
+		}
+		
 		
 		else if (token.contains("MiniRE-program")){
 			return TOKEN_TYPE.MINIRE;
-		}
-		else if(token.contains("statement-list")){
-			return TOKEN_TYPE.STATEMENT_LIST;
 		}
 		
 		else if(token.contains("statement-list-tail")){
 			return TOKEN_TYPE.STATEMENT_LIST_TAIL;
 		}
+		
+		else if(token.contains("statement-list")){
+			return TOKEN_TYPE.STATEMENT_LIST;
+		}
+		
+
 
 		else if(token.contains("statement")){
 			return TOKEN_TYPE.STATEMENT;
@@ -186,14 +200,16 @@ public static TOKEN_TYPE getTokenType(String token){
 		else if(token.contains("destination-file")){
 			return TOKEN_TYPE.DESTINATION_FILE;
 		}
-		
-		else if(token.contains("exp-list")){
-			return TOKEN_TYPE.EXP_LIST;
-		}
 		else if(token.contains("exp-list-tail")){
 			return TOKEN_TYPE.EXP_LIST_TAIL;
 		}
-		
+		else if(token.contains("exp-list")){
+			return TOKEN_TYPE.EXP_LIST;
+		}
+	
+		else if(token.contains("exp-tail")){
+			return TOKEN_TYPE.EXP_TAIL;
+		}
 		else if(token.contains("exp")){
 			return TOKEN_TYPE.EXP;
 		}
@@ -201,9 +217,7 @@ public static TOKEN_TYPE getTokenType(String token){
 		else if(token.equals("end")){
 			return TOKEN_TYPE.END;
 		}
-		else if(token.contains("exp-tail")){
-			return TOKEN_TYPE.EXP_TAIL;
-		}
+	
 		else if(token.contains("term")){
 			return TOKEN_TYPE.TERM;
 		}
