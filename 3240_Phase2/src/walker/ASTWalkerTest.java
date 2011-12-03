@@ -13,7 +13,7 @@ public class ASTWalkerTest {
         ExpressionNode term = new ExpressionNode(TermExpression.type(), new String[]{"[A-Z a-z]*ment[A-Z a-z]*", "file1.txt"});
 
         ExpressionNode binop2 = new ExpressionNode(BinopExpression.type(), null);
-        ExpressionNode term2 = new ExpressionNode(TermExpression.type(), new String[]{"(A|a)[A-Z a-z]*", "file2.txt"});
+        ExpressionNode term2 = new ExpressionNode(TermExpression.type(), new String[]{"(A|a) [A-Z a-z]*", "file2.txt"});
 
         binop.addSubnode(term);
         binop.addSubnode(binop2);

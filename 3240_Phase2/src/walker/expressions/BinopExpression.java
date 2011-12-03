@@ -5,6 +5,8 @@ import ast.Node;
 import java.util.ArrayList;
 import java.util.List;
 import walker.ExpressionDelegate;
+import walker.datastructs.StringList;
+import walker.datastructs.StringWithMetaData;
 import walker.exceptions.ExpressionExpansionException;
 
 public class BinopExpression implements ExpressionExpander {
@@ -69,30 +71,26 @@ public class BinopExpression implements ExpressionExpander {
             }
         }
 
-        private List apply(List firstList, List secondList) {
+        private List apply(List<StringWithMetaData> firstList, List<StringWithMetaData> secondList) {
             List newList;
             switch (this) {
                 case INTERSECT:
-                    newList = new ArrayList(firstList.size() / 2);
-                    for (Object o : secondList) {
-                        if (firstList.contains(o)) newList.add(o);
-                    }
+                    newList = new StringList();
+                    newList.addAll(firstList);
+                    newList.retainAll(secondList);
                     return newList;
                 case UNION:
-                    newList = new ArrayList(firstList.size() + secondList.size() / 2);
+                    newList = new StringList();
                     newList.addAll(firstList);
-                    for (Object o : secondList) {
-                        if (!newList.contains(o)) newList.add(o);
-                    }
+                    newList.addAll(secondList);
                     return newList;
                 case DIFFERENCE:
-                    newList = new ArrayList(firstList.size() / 2);
-                    for (Object o : firstList) {
-                        if (!secondList.contains(o)) newList.add(o);
-                    }
+                    newList = new StringList();
+                    newList.addAll(firstList);
+                    newList.removeAll(secondList);
                     return newList;
                 default:
-                    return new ArrayList();
+                    return new StringList();
             }
 
         }

@@ -7,6 +7,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Scanner;
 import walker.ExpressionDelegate;
+import walker.datastructs.StringList;
+import walker.datastructs.StringWithMetaData;
 import walker.exceptions.ExpressionExpansionException;
 
 public class TermExpression implements ExpressionExpander {
@@ -23,7 +25,7 @@ public class TermExpression implements ExpressionExpander {
             throw new ExpressionExpansionException("TermExpressions require two arguments");
         }
 
-        String regex = values[0];
+        String regex = values[0].replace(" ", "");
         String fileName = values[1];
 
         File file = new File(fileName);
@@ -34,16 +36,27 @@ public class TermExpression implements ExpressionExpander {
         return listFromFile(file, regex);
     }
 
-    private List<String> listFromFile(File file, String regex) throws ExpressionExpansionException {
+    private List<StringWithMetaData> listFromFile(File file, String regex) throws ExpressionExpansionException {
         try {
             Scanner scan = new Scanner(file);
-            
-            List<String> wordList = new LinkedList<String>();
-            while(scan.hasNext()) {
-                String input = scan.next();
-                if(input.matches(regex)) {
-                    wordList.add(input);
+
+            List<StringWithMetaData> wordList = new StringList();
+            int lineNumber = 0; // TODO -  Start at 0 or 1 for line numbers?
+
+            while (scan.hasNextLine()) {
+                String line = scan.nextLine();
+
+                Scanner lineScanner = new Scanner(line);
+                while (lineScanner.hasNext()) {
+                    String input = lineScanner.next();
+                    if (input.matches(regex)) {
+                        int startIndex = line.indexOf(input);
+                        int endIndex = startIndex + input.length();
+                        wordList.add(new StringWithMetaData(input, file.getName(), lineNumber, startIndex, endIndex));
+                    }
                 }
+
+                lineNumber++;
             }
             return wordList;
 
