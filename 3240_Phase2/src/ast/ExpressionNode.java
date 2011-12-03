@@ -24,7 +24,7 @@ public class ExpressionNode extends Node {
     }
 
     @Override
-    public String value() {
+    public Object value() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 }
