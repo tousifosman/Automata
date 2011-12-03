@@ -26,10 +26,17 @@ public class ParserTest {
 
 		
 //		Test Case 3
+//		String[] idTokens  = {"myID", "myID1"};
+//		String[] regexTokens = {"'regex'"};
+//		String [] testTokens = {"begin", "replace", "'regex'", "with" , "asdf", "in", "file1", ">!", "file2", ";", 
+//				"myID", "=", "maxfreqstring" , "(", "myID1", ")", ";", "end"};
+		
+
+//		TestCase 4
 		String[] idTokens  = {"myID", "myID1"};
 		String[] regexTokens = {"'regex'"};
-		String [] testTokens = {"begin", "replace", "'regex'", "with" , "asdf", "in", "file1", ">!", "file2", ";", 
-				"myID", "=", "maxfreqstring" , "(", "myID1", ")", ";", "end"};
+		String [] testTokens = {"begin", "myID", "=", "(", "find", "'regex'", "in", "file1", ")" , ";", "end"};
+			
 		
 		
 		
