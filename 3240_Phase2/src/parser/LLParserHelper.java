@@ -128,7 +128,7 @@ public static TOKEN_TYPE getTokenType(String token){
 		else if(token.equals("with")){
 			return TOKEN_TYPE.WITH;
 		}
-		else if(token.equals("!")){
+		else if(token.equals(">!")){
 			return TOKEN_TYPE.EXC_MARK;
 		}
 		else if(token.equals("diff")){

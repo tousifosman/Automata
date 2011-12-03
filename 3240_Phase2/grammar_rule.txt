@@ -3,12 +3,12 @@
 <statement-list-tail1> <statement> <statement-list-tail> 
 <statement-list-tail2> empty
 <statement1> ID = <id-exp> ;
-<id-exp1> <exp> ;
-<id-exp2> # <exp> ; 
-<id-exp3> maxfreqstring ( ID ) ;
+<id-exp1> <exp>
+<id-exp2> # <exp> 
+<id-exp3> maxfreqstring ( ID )
 <statement2> replace REGEX with ASCII-STR in <file-names> ;
 <statement3> recursivereplace REGEX with ASCII-STR in <file-names> ;
-<file-names> <source-file> ! <destination-file>
+<file-names> <source-file> >! <destination-file>
 <source-file> ASCII-STR  
 <destination-file> ASCII-STR
 <statement4> print ( <exp-list> ) ;

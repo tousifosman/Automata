@@ -84,7 +84,7 @@ public class LLParser {
 		
 		
 		//Statment-List-Tail Row
-		currTokenType = TOKEN_TYPE.STATEMENT_LIST;
+		currTokenType = TOKEN_TYPE.STATEMENT_LIST_TAIL;
 		tableRow = new HashMap<LLParser.TOKEN_TYPE, LLParser.RULE_NUMER>();
 		tableRow.put(TOKEN_TYPE.ID, RULE_NUMER.STATEMENT_LIST_TAIL1);
 		tableRow.put(TOKEN_TYPE.REPLACE, RULE_NUMER.STATEMENT_LIST_TAIL1);
@@ -94,7 +94,7 @@ public class LLParser {
 		parseTable.put(currTokenType, tableRow);
 		
 		//Statment Row
-		currTokenType = TOKEN_TYPE.STATEMENT_LIST;
+		currTokenType = TOKEN_TYPE.STATEMENT;
 		tableRow = new HashMap<LLParser.TOKEN_TYPE, LLParser.RULE_NUMER>();
 		tableRow.put(TOKEN_TYPE.ID, RULE_NUMER.STATEMENT1);
 		tableRow.put(TOKEN_TYPE.REPLACE, RULE_NUMER.STATEMENT2);
@@ -102,15 +102,146 @@ public class LLParser {
 		tableRow.put(TOKEN_TYPE.PRINT, RULE_NUMER.STATEMENT4);
 		parseTable.put(currTokenType, tableRow);
 		
+		//ID-Statement Row
+		currTokenType = TOKEN_TYPE.ID_STATEMENT;
+		tableRow = new HashMap<LLParser.TOKEN_TYPE, LLParser.RULE_NUMER>();
+		tableRow.put(TOKEN_TYPE.HASH_TAG, RULE_NUMER.ID_STATEMENT2);
+		tableRow.put(TOKEN_TYPE.MAXFREQSTRING, RULE_NUMER.ID_STATEMENT3);
+		tableRow.put(TOKEN_TYPE.ID, RULE_NUMER.ID_STATEMENT1);
+		tableRow.put(TOKEN_TYPE.LEFT_PAREN, RULE_NUMER.ID_STATEMENT1);
+		parseTable.put(currTokenType, tableRow);
 		
+		//FILE_NAMEs Row
+		currTokenType = TOKEN_TYPE.FILE_NAMES;
+		tableRow = new HashMap<LLParser.TOKEN_TYPE, LLParser.RULE_NUMER>();
+		tableRow.put(TOKEN_TYPE.ASCII_STR, RULE_NUMER.FILE_NAMES);
+		parseTable.put(currTokenType, tableRow);
 		
+		//SOURCE_FILE Row
+		currTokenType = TOKEN_TYPE.SOURCE_FILE;
+		tableRow = new HashMap<LLParser.TOKEN_TYPE, LLParser.RULE_NUMER>();
+		tableRow.put(TOKEN_TYPE.ASCII_STR, RULE_NUMER.SOURCE_FILE);
+		parseTable.put(currTokenType, tableRow);
+
+		//DESTINATION_FILE Row
+		currTokenType = TOKEN_TYPE.DESTINATION_FILE;
+		tableRow = new HashMap<LLParser.TOKEN_TYPE, LLParser.RULE_NUMER>();
+		tableRow.put(TOKEN_TYPE.ASCII_STR, RULE_NUMER.DESTINATION_FILE);
+		parseTable.put(currTokenType, tableRow);
+		
+		//EXP_LIST Row
+		currTokenType = TOKEN_TYPE.EXP_LIST;
+		tableRow = new HashMap<LLParser.TOKEN_TYPE, LLParser.RULE_NUMER>();
+		tableRow.put(TOKEN_TYPE.ID, RULE_NUMER.EXP_LIST);
+		tableRow.put(TOKEN_TYPE.LEFT_PAREN, RULE_NUMER.EXP_LIST);
+		parseTable.put(currTokenType, tableRow);
+		
+		//EXP_LIST_TAIL Row
+		currTokenType = TOKEN_TYPE.EXP_LIST_TAIL;
+		tableRow = new HashMap<LLParser.TOKEN_TYPE, LLParser.RULE_NUMER>();
+		tableRow.put(TOKEN_TYPE.COMMA, RULE_NUMER.EXP_LIST_TAIL);
+		parseTable.put(currTokenType, tableRow);
+		
+		//EXP Row
+		currTokenType = TOKEN_TYPE.EXP;
+		tableRow = new HashMap<LLParser.TOKEN_TYPE, LLParser.RULE_NUMER>();
+		tableRow.put(TOKEN_TYPE.ID, RULE_NUMER.EXP1);
+		tableRow.put(TOKEN_TYPE.FIND, RULE_NUMER.EXP3);
+		tableRow.put(TOKEN_TYPE.ID, RULE_NUMER.EXP2);
+		tableRow.put(TOKEN_TYPE.LEFT_PAREN, RULE_NUMER.EXP2);
+		parseTable.put(currTokenType, tableRow);
+		
+		//EXP_TAIL Row
+		currTokenType = TOKEN_TYPE.EXP_TAIL;
+		tableRow = new HashMap<LLParser.TOKEN_TYPE, LLParser.RULE_NUMER>();
+		tableRow.put(TOKEN_TYPE.DIFF, RULE_NUMER.EXP_TAIL1);
+		tableRow.put(TOKEN_TYPE.UNION, RULE_NUMER.EXP_TAIL1);
+		tableRow.put(TOKEN_TYPE.INTERS, RULE_NUMER.EXP_TAIL1);
+		tableRow.put(TOKEN_TYPE.EMPTY, RULE_NUMER.EXP_TAIL2);
+		parseTable.put(currTokenType, tableRow);
+		
+		//TERM Row
+		currTokenType = TOKEN_TYPE.TERM;
+		tableRow = new HashMap<LLParser.TOKEN_TYPE, LLParser.RULE_NUMER>();
+		tableRow.put(TOKEN_TYPE.LEFT_PAREN, RULE_NUMER.TERM);
+		parseTable.put(currTokenType, tableRow);
+		
+		//FILENAME Row
+		currTokenType = TOKEN_TYPE.FILENAME;
+		tableRow = new HashMap<LLParser.TOKEN_TYPE, LLParser.RULE_NUMER>();
+		tableRow.put(TOKEN_TYPE.ASCII_STR, RULE_NUMER.FILENAME);
+		parseTable.put(currTokenType, tableRow);
+			
+		//BIN_OP Row
+		currTokenType = TOKEN_TYPE.BIN_OP;
+		tableRow = new HashMap<LLParser.TOKEN_TYPE, LLParser.RULE_NUMER>();
+		tableRow.put(TOKEN_TYPE.DIFF, RULE_NUMER.BIN_OP1);
+		tableRow.put(TOKEN_TYPE.UNION, RULE_NUMER.BIN_OP2);
+		tableRow.put(TOKEN_TYPE.INTERS, RULE_NUMER.BIN_OP3);
+		parseTable.put(currTokenType, tableRow);
+		
+	}
+	
+	
+	public boolean parse() throws MiniREErrorException{
+		
+		while(!parseStack.isEmpty()){
+			TOKEN_TYPE currentToken = parseStack.peek();
+			if(nonTermTokens.contains(currentToken)){
+				TOKEN_TYPE lookAheadToken = getTokenType(inputStack.peek());
+				Map<TOKEN_TYPE, RULE_NUMER> currentRow = parseTable.get(currentToken);
+				RULE_NUMER newRule;
+				if(lookAheadToken == TOKEN_TYPE.END){
+					newRule= currentRow.get(TOKEN_TYPE.EMPTY);
+				}
+				else{
+					newRule = currentRow.get(lookAheadToken);	
+				}
+			
+				if(newRule == null){
+					throw new MiniREErrorException("At "+ currentToken.toString() + " Looking ahead is: " + lookAheadToken.toString());
+				}
+				
+				List<TOKEN_TYPE> newTokens = grammarDef.get(newRule);
+				parseStack.pop();
+				for(int i=newTokens.size()-1; i>=0; i--){
+					parseStack.push(newTokens.get(i));
+				}
+			}
+			else{
+				TOKEN_TYPE parseToken = parseStack.peek();
+				TOKEN_TYPE lookAheadToken = getTokenType(inputStack.peek());;
+				
+				if(parseToken.equals(TOKEN_TYPE.EMPTY)){
+					parseStack.pop();
+				}
+				
+				else if(!parseToken.equals(TOKEN_TYPE.EMPTY) && parseToken.equals(lookAheadToken)){
+					parseStack.pop();
+					inputStack.pop();
+				}
+				else{
+					throw new MiniREErrorException("Terminial Token: "+parseToken.toString() + "    Matching: " + lookAheadToken.toString());
+				}
+			}
+		}
+		
+		if(inputStack.isEmpty()){
+			return true;
+		}
+		else{
+			return false;
+		}
 		
 	}
 	
 	
 	
+	
+	
+	
 	private void initializeGrammarRule(){
-	grammarDef = new HashMap<RULE_NUMER, List<TOKEN_TYPE>>();
+		grammarDef = new HashMap<RULE_NUMER, List<TOKEN_TYPE>>();
 		
 		try{
 		
@@ -153,6 +284,30 @@ public String rulesToString(){
 	return sb.toString();
 }
 	
+
+
+public String tableToString(){
+	StringBuilder sb = new StringBuilder();
+	
+	for(TOKEN_TYPE nonToken: nonTermTokens){
+		Map<TOKEN_TYPE, RULE_NUMER> map = parseTable.get(nonToken);
+		sb.append(nonToken.toString()+"      ");
+		if(map != null){
+			for(TOKEN_TYPE token : termTokens){
+				RULE_NUMER rule = map.get(token);
+				String s;
+				if(rule != null){
+					sb.append(token.toString() + " : " + rule.toString() + "     ");
+				}
+						
+			}
+		}
+		sb.append("\n");
+	}
+	
+	
+	return sb.toString();
+}
 	
 	
 	
@@ -186,7 +341,7 @@ private TOKEN_TYPE getTokenType(String token){
 		else if(token.equals("with")){
 			return TOKEN_TYPE.WITH;
 		}
-		else if(token.equals("!")){
+		else if(token.equals(">!")){
 			return TOKEN_TYPE.EXC_MARK;
 		}
 		else if(token.equals("diff")){
