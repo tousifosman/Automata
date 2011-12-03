@@ -1,0 +1,26 @@
+<MiniRE-program> begin <statement-list> end
+<statement-list> <statement> <statement-list-tail> 
+<statement-list-tail1> <statement><statement-list-tail> 
+<statement-list-tail2> empty
+<statement1> ID = <id-exp> ;
+<id-exp1> <exp> ;
+<id-exp2> # <exp> ; 
+<id-exp3> maxfreqstring ( ID ) ;
+<statement2> replace REGEX with ASCII-STR in  <file-names> ;
+<statement3> recursivereplace REGEX with ASCII-STR in  <file-names> ;
+<file-names> <source-file>  > ! <destination-file>
+<source-file> ASCII-STR  
+<destination-file> ASCII-STR
+<statement4> print ( <exp-list> ) ;
+<exp-list> <exp> <exp-list-tail>
+<exp-list-tail> , <exp> <exp-list-tail>
+<exp1> ID
+<exp2> ( <exp> ) 
+<exp3> <term> <exp-tail>
+<exp-tail1> <bin-op> <term> <exp-tail> 
+<exp-tail2> empty
+<term > ( find REGEX in <file-name> ) 
+<file-name> ASCII-STR
+<bin-op1> diff
+<bin-op2> union
+<bin-op3> inters
