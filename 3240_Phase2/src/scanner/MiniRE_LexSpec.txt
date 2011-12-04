@@ -1,0 +1,8 @@
+%%  Definitions for character classes will be contained in this section examples below
+$DIGIT    	[0-9]
+$LETTER      	[A-Za-z] 
+%%  Token definitions will be contained in this section using regexes examples below
+$KEYWORD	(begin)|(end)|=|(replace)|\(|\)|(union)|(in)|(print)|;|#|(find)|(diff)|(inters)|(maxfreqstring)|(recursivereplace)|>!|(print)
+$ID		$LETTER ($LETTER | $DIGIT | _)?($LETTER | $DIGIT | _)?($LETTER | $DIGIT | _)?($LETTER | $DIGIT | _)?($LETTER | $DIGIT | _)?($LETTER | $DIGIT | _)?($LETTER | $DIGIT | _)?($LETTER | $DIGIT | _)?($LETTER | $DIGIT | _)?\ 
+$REGEX		\'.*\'
+$ASCIISTR	\".*\"
