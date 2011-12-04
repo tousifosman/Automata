@@ -1,3 +1,5 @@
+package driver;
+
 
 import automata.*;
 import conversion.NFAtoDFA;
@@ -145,7 +147,6 @@ public class Main {
         fc.showOpenDialog(null);
         File lexSpecs = fc.getSelectedFile();
         directory = fc.getCurrentDirectory();
-        // TODO : Replace with generating NFA
         
     	FinalNFA NFAgen = new FinalNFA();
     	NFA nfa  = NFAgen.generate(lexSpecs.getAbsolutePath());

@@ -1,3 +1,5 @@
+package driver;
+
 
 import automata.DFA;
 import automata.MapBasedDFA;
@@ -17,7 +19,6 @@ import java.util.Scanner;
 import java.util.Set;
 import java.util.Stack;
 
-// TODO : Document me.
 /**
  * Contains functions to manage exporting and importing of DFA files in a defined xml schema.
  * @author 

@@ -179,7 +179,6 @@ public class MinimalDFAGenerator {
         if (regex.length() < 1) {
             return;
         }
-        //JW TODO construct DFAs here
         Map<String, Stack<String>> idMap = getTokens(regex);
         Stack<String> idStack = idMap.values().iterator().next();
         String idName = idMap.keySet().iterator().next();
