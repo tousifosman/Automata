@@ -1,6 +1,5 @@
 package driver;
 
-
 import automata.DFA;
 import automata.State;
 import java.io.File;
@@ -48,13 +47,29 @@ public class ScannerDriver {
     public void run() {
         try {
             Scanner scan = new Scanner(file);
-            while (scan.hasNext()) {
-                // Uses space delimeter by default, may want to change that
-                // in the future.
-                String word = scan.next();
-                this.parse(word);
+            while (scan.hasNextLine()) {
+                String line = scan.nextLine();
+                int startIndex = 0;
+                int endIndex = 0;
+                while (endIndex < line.length()) {
+                    boolean accepted = false;
+                    while (!accepted) {
+                        endIndex += 1;
+                        accepted = parse(line.substring(startIndex, endIndex));
+                    }
+
+                    while (accepted) {
+                        endIndex += 1;
+                        accepted = parse(line.substring(startIndex, endIndex));
+                    }
+
+                    endIndex -= 1;
+                    String longestToken = line.substring(startIndex, endIndex);
+                    System.out.println("longest token: " + longestToken);
+                    startIndex = endIndex;
+                }
+
             }
-            
             builder.exportXML(file.getName().substring(0, file.getName().lastIndexOf('.')));
         } catch (FileNotFoundException ex) {
         } catch (IOException ex) {
@@ -62,28 +77,33 @@ public class ScannerDriver {
         }
     }
 
-    public void parse(String word) {
+    public boolean parse(String word) {
         builder.reset();
 
         State currState = dfa.startState();
 
         for (char character : word.toCharArray()) {
             currState = dfa.transition(currState, character);
-            if(currState != null){
-            	builder.xmlize(character, currState.getTokens());
+            if (currState != null) {
+                builder.xmlize(character, currState.getTokens());
             }
         }
         builder.finalizeXML();
-        if(currState != null){
-	        if (currState.isFinal()) {
-	            if (!currState.getTokens().isEmpty())
-	                System.out.println(word + ": ACCEPT (" + currState.topToken().getValue() + ")");
-	            else
-	                System.out.println(word + ": ACCEPT");
-	        } else System.out.println(word + ": REJECT");
-        }
-        else {
-        	System.out.println(word + ": REJECT");
+        if (currState != null) {
+            if (currState.isFinal()) {
+                if (!currState.getTokens().isEmpty())
+                    System.out.println(word + ": ACCEPT (" + currState.topToken().getValue() + ")");
+                else
+                    System.out.println(word + ": ACCEPT");
+                return true;
+            } else {
+                System.out.println(word + ": REJECT");
+                return false;
+            }
+
+        } else {
+            System.out.println(word + ": REJECT");
+            return false;
         }
     }
 }
