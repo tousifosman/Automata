@@ -7,8 +7,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
-// TODO : Document me.
-// TODO : Bug Check
 /**
  * Performs algorithmic minimization of a table-based DFA.
  * @author 
@@ -155,7 +153,6 @@ public class DFAMinimizer {
                     State newState = mergeMap.get(mergingStates);
                     stateMergeMap.put(currState, newState);
                 } else {
-                    // TODO : token merging
                     State newState = new State();
                     if (currState.isFinal()) newState.setFinal(true);
                     mergeMap.put(mergingStates, newState);

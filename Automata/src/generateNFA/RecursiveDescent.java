@@ -57,10 +57,8 @@ public class RecursiveDescent {
         reCharList = Arrays.asList(RE_CHAR);
         clsCharList = Arrays.asList(CLS_CHAR);
 
-        //JW TODO replace with real defined classes
         this.definedClasses = definedClasses;
         definedClassesNames = new ArrayList<String>(this.definedClasses.keySet());
-        //JW TODO replace with real scanner
         this.scanner = scanner;
         this.nfaName = nfaName;
     }

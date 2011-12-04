@@ -1,3 +1,5 @@
+package driver;
+
 
 import automata.DFA;
 import automata.State;
