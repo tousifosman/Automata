@@ -1,8 +1,10 @@
 package parser;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Stack;
+
+import ast.AbstractSyntaxTree;
+import ast.Node;
 
 public class ParserTest {
 	
@@ -13,9 +15,10 @@ public class ParserTest {
 		//System.out.println(parser.rulesToString());
 	
 //		Test Case 1 		
-//		String[] idTokens  = {"myID", "myID1"};
-//		String[] regexTokens = {};
-//		String [] testTokens = {"begin", "myID", "=", "maxfreqstring" , "(", "myID1", ")", ";", "end"};
+		String[] idTokens  = {"myID", "myID1"};
+		String[] regexTokens = {"'regex'"};
+		String [] testTokens = {"begin", "myID", "=", "maxfreqstring" , "(", "myID1", ")", ";", 
+				"replace", "'regex'", "with" , "asdf", "in", "file1", ">!", "file2", ";","end"};
 
 		
 		
@@ -33,10 +36,10 @@ public class ParserTest {
 		
 
 //		TestCase 4
-		String[] idTokens  = {"myID", "myID1"};
-		String[] regexTokens = {"'regex'"};
-		String [] testTokens = {"begin", "myID", "=", "(", "find", "'regex'", "in", "file1", ")" , ";", "end"};
-			
+//		String[] idTokens  = {"myID", "myID1"};
+//		String[] regexTokens = {"'regex'"};
+//		String [] testTokens = {"begin", "myID", "=", "(", "find", "'regex'", "in", "file1", ")" , ";", "end"};
+//			
 		
 		
 		
@@ -46,7 +49,25 @@ public class ParserTest {
 		}
 		
 		LLParser parser = new LLParser(Arrays.asList(idTokens), Arrays.asList(regexTokens), tokenStack);
-		boolean valid = parser.parse();
-		System.out.println("Valid: " + valid);
+		AbstractSyntaxTree tree = parser.parse();
+		Node headNode = tree.getHead();
+		while(headNode != null){
+			System.out.print(headNode.type()+"    ");
+			try{
+				String[] values = (String[])headNode.value();
+				for(int i=0; i<values.length; i++){
+					System.out.print(values[i]+ "  " );
+					
+				}
+			}catch(ClassCastException e){
+				String value = (String) headNode.value();
+				System.out.print(value+ "  " );
+			}
+			System.out.print("\n");
+			headNode= headNode.nextNode();
+		}
+		
+		
+
 	}
 }
