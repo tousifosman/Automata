@@ -39,7 +39,7 @@ public class ReplaceStatement implements StatementExecutor {
             throw new StatementExecutionException("File1 doesn't exist"); //Taylor TODO - better
 
 
-        replace(values[0], values[1], file1, file2);
+        replace(values[0].replace(" ", ""), values[1], file1, file2);
     }
 
     protected boolean replace(String regex, String string, File fromFile, File toFile) throws StatementExecutionException {
@@ -50,15 +50,14 @@ public class ReplaceStatement implements StatementExecutor {
         try {
             fwriter = new FileWriter(toFile);
             bwriter = new BufferedWriter(fwriter);
-            pwriter = new PrintWriter(pwriter);
-
+            pwriter = new PrintWriter(bwriter);
             Scanner scan = new Scanner(fromFile);
-
             while (scan.hasNextLine()) {
                 String str = scan.nextLine();
                 String newStr = str.replaceAll(regex, string);
                 if (!str.equals(newStr)) changed = true;
                 pwriter.println(newStr);
+                System.out.println(str + ":" + newStr);
             }
             pwriter.flush();
         } catch (FileNotFoundException ex) {
@@ -66,8 +65,14 @@ public class ReplaceStatement implements StatementExecutor {
         } catch (IOException ex) {
             throw new StatementExecutionException("Unable to write to file2"); //Taylor TODO - better
         } finally {
-            pwriter.close();
+            if (pwriter != null) {
+                pwriter.close();
+            }
             return changed;
         }
+    }
+
+    public static String type() {
+        return "replace REGEX with ASCII-STR in  <file-names> ;";
     }
 }

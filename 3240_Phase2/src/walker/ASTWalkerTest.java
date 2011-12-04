@@ -32,7 +32,7 @@ public class ASTWalkerTest {
 
         StatementNode third = new StatementNode(AssignStatement.type(), "c");
         ExpressionNode binop4 = new ExpressionNode(BinopExpression.type(), null);
-        ExpressionNode term4 = new ExpressionNode(TermExpression.type(), new String[]{"(A|a)[A-Z a-z]*", "file2.txt"});
+        ExpressionNode term4 = new ExpressionNode(TermExpression.type(), new String[]{"(A|a) [A-Z a-z]*", "file2.txt"});
         binop4.addSubnode(term4);
 
         third.addSubnode(term4);
@@ -52,14 +52,16 @@ public class ASTWalkerTest {
         print.addSubnode(d);
         
         third.setNextNode(print);
-
+        
+        StatementNode replace = new StatementNode(ReplaceStatement.type(), new String[]{"[A-Z a-z]*ment", "", "file1.txt", "file3.txt"});
+        print.setNextNode(replace);
 
         AbstractSyntaxTree tree = new AbstractSyntaxTree(head);
         ASTWalker walker = new ASTWalker(System.out);
         try {
             walker.walk(tree);
         } catch (ASTExecutionException ex) {
-            ex.printStackTrace();
+            System.out.println("error");
         }
     }
 }

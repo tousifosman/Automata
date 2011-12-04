@@ -23,8 +23,8 @@ public class ASTWalker implements ExpressionDelegate {
 
         this.executionMap = new HashMap<String, StatementExecutor>();
         executionMap.put(AssignStatement.type(), new AssignStatement(idMap));
-        executionMap.put("replace REGEX with ASCII-STR in  <file-names> ;", new ReplaceStatement());
-        executionMap.put("recursivereplace REGEX with ASCII-STR in  <file-names> ;", new RecursiveReplaceStatement());
+        executionMap.put(ReplaceStatement.type(), new ReplaceStatement());
+        executionMap.put(RecursiveReplaceStatement.type(), new RecursiveReplaceStatement());
         executionMap.put(PrintStatement.type(), new PrintStatement(out));
 
         this.expansionMap = new HashMap<String, ExpressionExpander>();
