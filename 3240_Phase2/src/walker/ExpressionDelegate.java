@@ -1,7 +1,6 @@
 package walker;
 
 import ast.ExpressionNode;
-import ast.Node;
 import walker.exceptions.ExpressionExpansionException;
 
 /**
