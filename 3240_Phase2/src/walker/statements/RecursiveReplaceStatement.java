@@ -36,4 +36,8 @@ public class RecursiveReplaceStatement extends ReplaceStatement {
 
         return changedAtAll;
     }
+    
+    public static String type() {
+        return "recursivereplace REGEX with ASCII-STR in  <file-names> ;";
+    }
 }
