@@ -1,14 +1,14 @@
 package scanner;
 
 
-import automata.DFA;
-import automata.State;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
+
+import scanner.automata.DFA;
 
 /**
  * Takes in a DFA then verifies that a given file contains valid tokens. 

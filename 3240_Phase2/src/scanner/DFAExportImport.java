@@ -1,8 +1,4 @@
-
-import automata.DFA;
-import automata.MapBasedDFA;
-import automata.State;
-import automata.Token;
+package scanner;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -16,6 +12,11 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.Set;
 import java.util.Stack;
+
+import scanner.automata.DFA;
+import scanner.automata.MapBasedDFA;
+import scanner.automata.State;
+import scanner.automata.Token;
 
 // TODO : Document me.
 /**

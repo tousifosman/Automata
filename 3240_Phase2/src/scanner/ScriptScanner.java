@@ -1,21 +1,21 @@
 package scanner;
 
-import automata.*;
-import conversion.NFAtoDFA;
-import generateNFA.FinalNFA;
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.List;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Deque;
-import java.util.ArrayDeque;
+import java.util.List;
+
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 
-import exceptions.SyntaxErrorException;
-import java.util.regex.Pattern;
+import scanner.automata.DFA;
+import scanner.automata.NFA;
+import scanner.conversion.NFAtoDFA;
+import scanner.exceptions.SyntaxErrorException;
+import scanner.generateNFA.FinalNFA;
 
 public class ScriptScanner {
 
