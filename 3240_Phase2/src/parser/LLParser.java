@@ -10,6 +10,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 
+import ast.AbstractSyntaxTree;
+import ast.ExpressionNode;
+import ast.StatementNode;
+
 public class LLParser {
 	
 	Map<TOKEN_TYPE, Map<TOKEN_TYPE, RULE_NUMER>> parseTable;
@@ -146,9 +150,9 @@ public class LLParser {
 		currTokenType = TOKEN_TYPE.EXP;
 		tableRow = new HashMap<LLParser.TOKEN_TYPE, LLParser.RULE_NUMER>();
 		tableRow.put(TOKEN_TYPE.ID, RULE_NUMER.EXP1);
-		tableRow.put(TOKEN_TYPE.FIND, RULE_NUMER.EXP3);
-		tableRow.put(TOKEN_TYPE.ID, RULE_NUMER.EXP2);
-		tableRow.put(TOKEN_TYPE.LEFT_PAREN, RULE_NUMER.EXP2);
+		//tableRow.put(TOKEN_TYPE.FIND, RULE_NUMER.EXP3);
+		//tableRow.put(TOKEN_TYPE.ID, RULE_NUMER.EXP2);
+		//tableRow.put(TOKEN_TYPE.LEFT_PAREN, RULE_NUMER.EXP2);
 		parseTable.put(currTokenType, tableRow);
 		
 		//EXP_TAIL Row
@@ -183,27 +187,108 @@ public class LLParser {
 	}
 	
 	
-	public boolean parse() throws MiniREErrorException{
+	public AbstractSyntaxTree parse() throws MiniREErrorException{
+		AbstractSyntaxTree astTree = new AbstractSyntaxTree();
+		StatementNode currentStatementNode = null;
+		ExpressionNode currentExpressionNode =null;
 		
 		while(!parseStack.isEmpty()){
 			TOKEN_TYPE currentToken = parseStack.peek();
 			if(nonTermTokens.contains(currentToken)){
-				TOKEN_TYPE lookAheadToken = getTokenType(inputStack.peek());
+				TOKEN_TYPE lookAheadToken = getTokenType(inputStack.peek());	
 				Map<TOKEN_TYPE, RULE_NUMER> currentRow = parseTable.get(currentToken);
 				RULE_NUMER newRule;
-				if(lookAheadToken == TOKEN_TYPE.END){
-					newRule= currentRow.get(TOKEN_TYPE.EMPTY);
+				if(lookAheadToken.equals(TOKEN_TYPE.LEFT_PAREN) && currentToken.equals(TOKEN_TYPE.EXP)){
+					String tempToken = inputStack.pop();
+					lookAheadToken = getTokenType(inputStack.peek());
+					inputStack.push(tempToken);
+					if(lookAheadToken.equals(TOKEN_TYPE.FIND)){
+						newRule = RULE_NUMER.EXP3;
+					}
+					else if(lookAheadToken.equals(TOKEN_TYPE.LEFT_PAREN) || lookAheadToken.equals(TOKEN_TYPE.ID)){
+						newRule = RULE_NUMER.EXP2;
+					}
+					else {
+						throw new MiniREErrorException("Exp with LEFT_PAREN "+ " Looking ahead is: " + lookAheadToken.toString());
+					}
 				}
 				else{
-					newRule = currentRow.get(lookAheadToken);	
+					
+					if(lookAheadToken == TOKEN_TYPE.END){
+						newRule= currentRow.get(TOKEN_TYPE.EMPTY);
+					}
+					else if(currentToken.equals(TOKEN_TYPE.EXP_TAIL) && lookAheadToken == TOKEN_TYPE.SEMI_COLON){
+						newRule= currentRow.get(TOKEN_TYPE.EMPTY);
+					}
+					else{
+						newRule = currentRow.get(lookAheadToken);	
+					}
+					
+					if(newRule == null){
+						throw new MiniREErrorException("At "+ currentToken.toString() + " Looking ahead is: " + lookAheadToken.toString());
+					}
+					
 				}
-			
-				if(newRule == null){
-					throw new MiniREErrorException("At "+ currentToken.toString() + " Looking ahead is: " + lookAheadToken.toString());
+				if(TOKEN_TYPE.STATEMENT.equals(currentToken)){
+					String type;
+					Object value;
+					if(newRule.equals(RULE_NUMER.STATEMENT1)){
+						type = "assign";
+						value = inputStack.peek();
+					}
+					else if(newRule.equals(RULE_NUMER.STATEMENT2)){
+						type = "replace";
+						value = new String[4];
+					}
+					else if(newRule.equals(RULE_NUMER.STATEMENT3)){
+						type = "recursivereplace";
+						value = new String[4];
+					}
+					else {
+						type = "print";
+						value = null;
+					}
+					if(currentStatementNode == null){
+						currentStatementNode = new StatementNode(type, value);
+						astTree.setHead(currentStatementNode);
+					}
+					else{
+						StatementNode newStatementNode = new StatementNode(type, value);
+						currentStatementNode.setNextNode(newStatementNode);
+						currentExpressionNode=null;
+						currentStatementNode = newStatementNode;		
+					}
+					
+				}
+				//Placing values into node values
+				if(currentToken.equals(TOKEN_TYPE.SOURCE_FILE)){
+					((String[]) currentStatementNode.value())[2]= inputStack.peek();
+				}
+				else if(currentToken.equals(TOKEN_TYPE.DESTINATION_FILE)){
+					((String[]) currentStatementNode.value())[3]= inputStack.peek();
+				}
+				else if(currentToken.equals(TOKEN_TYPE.FILENAME)){
+					((String[]) currentExpressionNode.value())[1]= inputStack.peek();
 				}
 				
+				
+				//Create Expression Nodes
+				if(currentToken.equals(TOKEN_TYPE.ID_STATEMENT)){
+					currentExpressionNode = new ExpressionNode("id-exp", null);
+					currentStatementNode.addSubnode(currentExpressionNode);
+				
+				}
+				else if(currentToken.equals(TOKEN_TYPE.EXP_LIST)){
+					currentExpressionNode = new ExpressionNode("exp-list", null);
+					currentStatementNode.addSubnode(currentExpressionNode);
+				}
+
+				
+				
 				List<TOKEN_TYPE> newTokens = grammarDef.get(newRule);
-				parseStack.pop();
+				
+				//update expression node NEED a new stack for expression Nodes
+				TOKEN_TYPE newTokenType = parseStack.pop();
 				for(int i=newTokens.size()-1; i>=0; i--){
 					parseStack.push(newTokens.get(i));
 				}
@@ -217,6 +302,21 @@ public class LLParser {
 				}
 				
 				else if(!parseToken.equals(TOKEN_TYPE.EMPTY) && parseToken.equals(lookAheadToken)){
+					if(currentExpressionNode == null){
+						if(currentToken.equals(TOKEN_TYPE.REGEX)){
+							((String[]) currentStatementNode.value())[0]= inputStack.peek();
+						}
+						if(currentToken.equals(TOKEN_TYPE.ASCII_STR)){
+							if(((String[]) currentStatementNode.value())[1]==null){
+								((String[]) currentStatementNode.value())[1]= inputStack.peek();
+							}
+						}
+					}
+					else{
+						if(currentToken.equals(TOKEN_TYPE.REGEX)){
+							((String[]) currentExpressionNode.value())[0]= inputStack.peek();
+						}
+					}
 					parseStack.pop();
 					inputStack.pop();
 				}
@@ -227,10 +327,10 @@ public class LLParser {
 		}
 		
 		if(inputStack.isEmpty()){
-			return true;
+			return astTree;
 		}
 		else{
-			return false;
+			throw new MiniREErrorException("Input stack not empty in the end.");
 		}
 		
 	}
