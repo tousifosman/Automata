@@ -1,12 +1,14 @@
 package walker.expressions;
 
 import ast.ExpressionNode;
-import ast.Node;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import walker.ExpressionDelegate;
+import walker.exceptions.ASTExecutionException;
+import walker.exceptions.ExpressionArgumentException;
 import walker.exceptions.ExpressionExpansionException;
+import walker.exceptions.UninitializedIDException;
 
 public class MaxFreqExpression implements ExpressionExpander {
     private Map<String, Object> idMap;
@@ -16,17 +18,15 @@ public class MaxFreqExpression implements ExpressionExpander {
     }
 
     @Override
-    public Object expand(ExpressionNode node, ExpressionDelegate delegate) throws ExpressionExpansionException {
+    public Object expand(ExpressionNode node, ExpressionDelegate delegate) throws ASTExecutionException {
         if (!(node.value() instanceof String)) {
-            // Taylor TODO - Better exception
-            throw new ExpressionExpansionException("Value must be ID");
+            throw new ExpressionArgumentException(this.getClass() + " Error: Value must be String");
         }
         String id = (String)node.value();
 
         Object value = idMap.get(id);
         if (value == null) {
-            // Taylor TODO - Better exception
-            throw new ExpressionExpansionException("Undeclared ID");
+            throw new UninitializedIDException(this.getClass() + "Error : Uninitialized ID (" + id + ")");
         }
 
         if (value instanceof List) {
@@ -46,8 +46,7 @@ public class MaxFreqExpression implements ExpressionExpander {
 
             return maxObject;
         } else {
-            // Taylor TODO - Better exception
-            throw new ExpressionExpansionException("ID should be a list");
+            throw new ExpressionExpansionException(this.getClass() + " Error: Can only use Lists (" + value.getClass() + " given)");
         }
     }
 

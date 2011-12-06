@@ -7,34 +7,34 @@ import java.util.List;
 import walker.ExpressionDelegate;
 import walker.datastructs.StringList;
 import walker.datastructs.StringWithMetaData;
+import walker.exceptions.ASTExecutionException;
+import walker.exceptions.ExpressionArgumentException;
 import walker.exceptions.ExpressionExpansionException;
+import walker.exceptions.IncorrectNodeTypeException;
 
 public class BinopExpression implements ExpressionExpander {
     @Override
-    public List expand(ExpressionNode node, ExpressionDelegate delegate) throws ExpressionExpansionException {
+    public List expand(ExpressionNode node, ExpressionDelegate delegate) throws ASTExecutionException {
         List<Node> subnodes = node.subnodes();
 
 
         if (subnodes.isEmpty()
                 || !(subnodes.get(0) instanceof ExpressionNode)) {
-            // Taylor TODO - Better exception
-            throw new ExpressionExpansionException("Invalid Binop subnodes");
+            throw new IncorrectNodeTypeException(this.getClass() + " Error: Requires at least 1 ExpressionNode", subnodes.get(0));
         }
 
         if (subnodes.size() == 1) {
             Object result = delegate.expand((ExpressionNode) subnodes.get(0));
 
             if (!(result instanceof List)) {
-                // Taylor TODO - Better exception
-                throw new ExpressionExpansionException("Result should be list");
+                throw new ExpressionExpansionException(this.getClass() + " Error: Can only use Lists (" + result.getClass() + " given)");
             }
 
             return (List) result;
         } else if (subnodes.size() == 2
-                && (subnodes.get(0) instanceof ExpressionNode)) {
+                && (subnodes.get(1) instanceof ExpressionNode)) {
             if (!(node.value() instanceof String)) {
-                // Taylor TODO - Better exception
-                throw new ExpressionExpansionException("Value must be binop type");
+                throw new ExpressionArgumentException(this.getClass() + " Error: Value must be String");
             }
             BinopType binopType = BinopType.toBinop((String) node.value());
 
@@ -42,14 +42,12 @@ public class BinopExpression implements ExpressionExpander {
             Object secondList = delegate.expand((ExpressionNode) subnodes.get(1));
 
             if (!(firstList instanceof List) || !(secondList instanceof List)) {
-                // Taylor TODO - Better exception
-                throw new ExpressionExpansionException("Results should be list");
+                throw new ExpressionExpansionException(this.getClass() + " Error: Can only use Lists (" + firstList.getClass() + " and " + secondList.getClass() + " given)");
             }
 
             return binopType.apply((List) firstList, (List) secondList);
         } else {
-            // Taylor TODO - Better exception
-            throw new ExpressionExpansionException("Invalid Binop subnodes");
+            throw new IncorrectNodeTypeException(this.getClass() + " Error: Requires 2 ExpressionNodes", subnodes.get(0));
         }
     }
 
@@ -62,12 +60,11 @@ public class BinopExpression implements ExpressionExpander {
         UNION,
         DIFFERENCE;
 
-        public static BinopType toBinop(String str) throws ExpressionExpansionException {
+        public static BinopType toBinop(String str) throws ASTExecutionException {
             try {
                 return valueOf(str.toUpperCase());
             } catch (Exception ex) {
-                // Taylor TODO - better exception
-                throw new ExpressionExpansionException("invalid binop");
+                throw new ExpressionArgumentException("Binop Error: Invalid binop type (" + str + ")");
             }
         }
 

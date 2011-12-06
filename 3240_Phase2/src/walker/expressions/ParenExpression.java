@@ -4,16 +4,16 @@ import ast.ExpressionNode;
 import ast.Node;
 import java.util.List;
 import walker.ExpressionDelegate;
-import walker.exceptions.ExpressionExpansionException;
+import walker.exceptions.ASTExecutionException;
+import walker.exceptions.IncorrectNodeTypeException;
 
 public class ParenExpression implements ExpressionExpander {
     @Override
-    public Object expand(ExpressionNode node, ExpressionDelegate delegate) throws ExpressionExpansionException {
+    public Object expand(ExpressionNode node, ExpressionDelegate delegate) throws ASTExecutionException {
         List<Node> subnodes = node.subnodes();
 
         if (subnodes.size() != 1 || !(subnodes.get(0) instanceof ExpressionNode)) {
-            // Taylor TODO  - better exception
-            throw new ExpressionExpansionException("ParenExpression error");
+            throw new IncorrectNodeTypeException(this.getClass() + " Error: Requires 1 ExpressionNode", subnodes.get(0));
         }
 
         return delegate.expand((ExpressionNode) subnodes.get(0));

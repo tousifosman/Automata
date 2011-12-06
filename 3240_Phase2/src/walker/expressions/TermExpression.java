@@ -3,26 +3,24 @@ package walker.expressions;
 import ast.ExpressionNode;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Scanner;
 import walker.ExpressionDelegate;
 import walker.datastructs.StringList;
 import walker.datastructs.StringWithMetaData;
+import walker.exceptions.ExpressionArgumentException;
 import walker.exceptions.ExpressionExpansionException;
 
 public class TermExpression implements ExpressionExpander {
     @Override
     public List expand(ExpressionNode node, ExpressionDelegate delegate) throws ExpressionExpansionException {
         if (!(node.value() instanceof String[])) {
-            // Taylor TODO - Better exception
-            throw new ExpressionExpansionException("Value must be array");
+            throw new ExpressionArgumentException(this.getClass() + " Error: Value must be String[]");
         }
         String[] values = (String[]) node.value();
 
         if (values.length != 2) {
-            // Taylor TODO - Better exception
-            throw new ExpressionExpansionException("TermExpressions require two arguments");
+            throw new ExpressionArgumentException(this.getClass() + " Error: Must have two arguments (" + values.length + " given)");
         }
 
         String regex = values[0].replace(" ", "");
@@ -31,7 +29,7 @@ public class TermExpression implements ExpressionExpander {
         File file = new File(fileName);
 
         if (!file.exists())
-            throw new ExpressionExpansionException("File doesn't exist"); //Taylor TODO - better
+            throw new ExpressionArgumentException(this.getClass() + " Error: " + file + " doesn't exist");
 
         return listFromFile(file, regex);
     }
@@ -41,7 +39,7 @@ public class TermExpression implements ExpressionExpander {
             Scanner scan = new Scanner(file);
 
             List<StringWithMetaData> wordList = new StringList();
-            int lineNumber = 0; // TODO -  Start at 0 or 1 for line numbers?
+            int lineNumber = 0;
 
             while (scan.hasNextLine()) {
                 String line = scan.nextLine();
@@ -61,7 +59,7 @@ public class TermExpression implements ExpressionExpander {
             return wordList;
 
         } catch (FileNotFoundException ex) {
-            throw new ExpressionExpansionException("File doesn't exist"); //Taylor TODO - better
+            throw new ExpressionArgumentException(this.getClass() + " Error: " + file + " doesn't exist");
         }
     }
 

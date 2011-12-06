@@ -63,7 +63,7 @@ public class ASTWalker implements ExpressionDelegate {
     }
 
     @Override
-    public Object expand(ExpressionNode node) throws ExpressionExpansionException {
+    public Object expand(ExpressionNode node) throws ASTExecutionException {
         ExpressionExpander expander = expansionMap.get(node.type());
         
         if(expander == null) {

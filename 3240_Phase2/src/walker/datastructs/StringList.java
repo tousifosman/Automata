@@ -161,7 +161,7 @@ public class StringList implements List<StringWithMetaData> {
             this.internalList = newList.internalList;
             this.internalMap = newList.internalMap;
             
-            return true; // TODO - fix?
+            return true;
         } else {
             throw new ClassCastException("Can only retain from StringLists");
         }
