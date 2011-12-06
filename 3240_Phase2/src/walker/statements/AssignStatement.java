@@ -8,6 +8,8 @@ import java.util.Map;
 import walker.ExpressionDelegate;
 import walker.exceptions.ASTExecutionException;
 import walker.exceptions.ExpressionExpansionException;
+import walker.exceptions.IncorrectNodeTypeException;
+import walker.exceptions.StatementArgumentException;
 import walker.exceptions.StatementExecutionException;
 
 /**
@@ -25,15 +27,13 @@ public class AssignStatement implements StatementExecutor {
     public void execute(StatementNode node, ExpressionDelegate delegate) throws ASTExecutionException {
         List<Node> subnodes = node.subnodes();
         if (!(node.value() instanceof String)) {
-            // Taylor TODO - Better exception
-            throw new StatementExecutionException("Value must be ID");
+            throw new StatementArgumentException(this.getClass() + " Error: Value must be a String");
         }
 
         String id = (String) node.value();
 
         if (subnodes.size() != 1 || !(subnodes.get(0) instanceof ExpressionNode)) {
-            // Taylor TODO - Better exception
-            throw new StatementExecutionException("Not correct assignemnt");
+                throw new IncorrectNodeTypeException(this.getClass() + " Error: Requires 1 ExpressionNode", subnodes.get(0));
         }
 
         Object result = delegate.expand((ExpressionNode) subnodes.get(0));
