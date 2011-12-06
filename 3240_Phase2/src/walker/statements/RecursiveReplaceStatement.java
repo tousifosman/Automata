@@ -1,42 +1,54 @@
 package walker.statements;
 
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.Scanner;
+import walker.exceptions.StatementArgumentException;
 import walker.exceptions.StatementExecutionException;
 
 public class RecursiveReplaceStatement extends ReplaceStatement {
     @Override
-    protected boolean replace(String regex, String string, File fromFile, File toFile) throws StatementExecutionException {
+    protected void replace(String regex, String string, File fromFile, File toFile) throws StatementExecutionException {
         if (regex.equals(string)) {
-            // Taylor TODO - better error
-            throw new StatementExecutionException("Recursive Replace: Regex cannot equal string");
+            throw new StatementArgumentException("RecursiveReplaceStatement: Regex cannot equal string (" + regex + ")");
         }
-        File tempFile_0 = new File(toFile.getParent(), toFile.getName() + "_tmp0");
-        File tempFile_1 = new File(toFile.getParent(), toFile.getName() + "_tmp1");
 
-        boolean changed = super.replace(regex, string, fromFile, tempFile_0);
-        boolean changedAtAll = changed;
-        boolean fileSwitch = true;
-
-        while (changed) {
-            if (fileSwitch) {
-                changed = super.replace(regex, string, tempFile_0, tempFile_1);
-            } else {
-                changed = super.replace(regex, string, tempFile_1, tempFile_0);
+        FileWriter fwriter = null;
+        BufferedWriter bwriter = null;
+        PrintWriter pwriter = null;
+        try {
+            fwriter = new FileWriter(toFile);
+            bwriter = new BufferedWriter(fwriter);
+            pwriter = new PrintWriter(bwriter);
+            Scanner scan = new Scanner(fromFile);
+            while (scan.hasNextLine()) {
+                String str = scan.nextLine();
+                String newStr = str.replaceAll(regex, string);
+                String currStr = newStr;
+                boolean changed = !str.equals(newStr);
+                while(changed) {
+                    newStr = currStr.replaceAll(regex, string);
+                    changed = !currStr.equals(newStr);
+                    currStr = newStr;
+                }
+                pwriter.println(newStr);
             }
-            fileSwitch = !fileSwitch;
+            pwriter.flush();
+        } catch (FileNotFoundException ex) {
+            throw new StatementArgumentException("ReplaceStatement Error: " + fromFile + " doesn't exist");
+        } catch (IOException ex) {
+            throw new StatementArgumentException("ReplaceStatement Error: Cannot write to " + toFile);
+        } finally {
+            if (pwriter != null) {
+                pwriter.close();
+            }
         }
-        
-        if(fileSwitch) {
-            tempFile_0.renameTo(toFile);
-            tempFile_1.deleteOnExit();
-        } else {
-            tempFile_1.renameTo(toFile);
-            tempFile_0.deleteOnExit();
-        }
-
-        return changedAtAll;
     }
-    
+
     public static String type() {
         return "recursivereplace REGEX with ASCII-STR in  <file-names> ;";
     }

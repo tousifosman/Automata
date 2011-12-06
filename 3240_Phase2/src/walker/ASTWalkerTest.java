@@ -1,7 +1,6 @@
 package walker;
 
 import ast.*;
-import walker.ASTWalker;
 import walker.exceptions.ASTExecutionException;
 import walker.expressions.*;
 import walker.statements.*;

@@ -7,6 +7,7 @@ import java.io.PrintStream;
 import java.util.List;
 import walker.ExpressionDelegate;
 import walker.exceptions.ASTExecutionException;
+import walker.exceptions.IncorrectNodeTypeException;
 import walker.exceptions.StatementExecutionException;
 
 public class PrintStatement implements StatementExecutor {
@@ -22,8 +23,7 @@ public class PrintStatement implements StatementExecutor {
 
         for (Node subnode : subnodes) {
             if (!(subnode instanceof ExpressionNode)) {
-                // Taylor TODO - Better exception
-                throw new StatementExecutionException("Can't print non-expressions");
+                throw new IncorrectNodeTypeException(this.getClass() + " Error: Requires ExpressionNodes", subnode);
             }
             
             Object result = delegate.expand((ExpressionNode)subnode);
