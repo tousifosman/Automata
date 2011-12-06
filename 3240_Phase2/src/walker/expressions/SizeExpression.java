@@ -4,22 +4,22 @@ import ast.ExpressionNode;
 import ast.Node;
 import java.util.List;
 import walker.ExpressionDelegate;
+import walker.exceptions.ASTExecutionException;
 import walker.exceptions.ExpressionExpansionException;
+import walker.exceptions.IncorrectNodeTypeException;
 
 public class SizeExpression implements ExpressionExpander {
     @Override
-    public Integer expand(ExpressionNode node, ExpressionDelegate delegate) throws ExpressionExpansionException {
+    public Integer expand(ExpressionNode node, ExpressionDelegate delegate) throws ASTExecutionException {
         List<Node> subnodes = node.subnodes();
         if (subnodes.size() != 1 || !(subnodes.get(0) instanceof ExpressionNode)) {
-            // Taylor TODO - better exception
-            throw new ExpressionExpansionException("Invalid expression");
+            throw new IncorrectNodeTypeException(this.getClass() + " Error: Requires 1 ExpressionNode", subnodes.get(0));
         }
 
         Object subResult = delegate.expand((ExpressionNode) subnodes.get(0));
 
         if (!(subResult instanceof List)) {
-            // Taylor TODO - better exception
-            throw new ExpressionExpansionException("Can only take size of lists");
+            throw new ExpressionExpansionException(this.getClass() + " Error: Can only take size of Lists (" + subResult.getClass() + " given)");
         }
 
         Integer result = ((List) subResult).size();

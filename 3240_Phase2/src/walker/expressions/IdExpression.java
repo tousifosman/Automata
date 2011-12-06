@@ -3,7 +3,9 @@ package walker.expressions;
 import ast.ExpressionNode;
 import java.util.Map;
 import walker.ExpressionDelegate;
-import walker.exceptions.ExpressionExpansionException;
+import walker.exceptions.ASTExecutionException;
+import walker.exceptions.ExpressionArgumentException;
+import walker.exceptions.UninitializedIDException;
 
 public class IdExpression implements ExpressionExpander {
     private Map<String, Object> idMap;
@@ -13,17 +15,15 @@ public class IdExpression implements ExpressionExpander {
     }
 
     @Override
-    public Object expand(ExpressionNode node, ExpressionDelegate delegate) throws ExpressionExpansionException {
+    public Object expand(ExpressionNode node, ExpressionDelegate delegate) throws ASTExecutionException {
         if (!(node.value() instanceof String)) {
-            // Taylor TODO - Better exception
-            throw new ExpressionExpansionException("Value must be ID");
+            throw new ExpressionArgumentException(this.getClass() + " Error: Value must be String");
         }
         String id = (String)node.value();
 
-        Object value = idMap.get(id); // TODO - pass by reference, or value?
+        Object value = idMap.get(id);
         if (value == null) {
-            // Taylor TODO - Better exception
-            throw new ExpressionExpansionException("Undeclared ID");
+            throw new UninitializedIDException(this.getClass() + "Error : Uninitialized ID (" + id + ")");
         }
 
         return value;

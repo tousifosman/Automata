@@ -18,10 +18,8 @@ import scanner.automata.MapBasedDFA;
 import scanner.automata.State;
 import scanner.automata.Token;
 
-// TODO : Document me.
 /**
- * Contains functions to manage exporting and importing of DFA files in a defined xml schema.
- * @author 
+ * Contains functions to manage exporting and importing of DFAs
  */
 public class DFAExportImport {
     

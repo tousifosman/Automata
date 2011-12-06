@@ -1,12 +1,12 @@
 package walker;
 
 import ast.ExpressionNode;
-import walker.exceptions.ExpressionExpansionException;
+import walker.exceptions.ASTExecutionException;
 
 /**
  *
  * @author taylor
  */
 public interface ExpressionDelegate {
-    public Object expand(ExpressionNode node) throws ExpressionExpansionException;
+    public Object expand(ExpressionNode node) throws ASTExecutionException;
 }
