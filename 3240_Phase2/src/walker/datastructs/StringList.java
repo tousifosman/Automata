@@ -19,7 +19,11 @@ public class StringList implements List<StringWithMetaData> {
 
     @Override
     public int size() {
-        return internalList.size();
+        int count = 0;
+        for(StringWithMetaData str : internalMap.values()) {
+            count += str.size();
+        }
+        return count;
     }
 
     @Override

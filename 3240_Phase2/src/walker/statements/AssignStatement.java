@@ -26,6 +26,11 @@ public class AssignStatement implements StatementExecutor {
     @Override
     public void execute(StatementNode node, ExpressionDelegate delegate) throws ASTExecutionException {
         List<Node> subnodes = node.subnodes();
+        if (subnodes == null) {
+            throw new StatementArgumentException(this.getClass() + " Error: Assign must have subnodes" + node);
+
+        }
+
         if (!(node.value() instanceof String)) {
             throw new StatementArgumentException(this.getClass() + " Error: Value must be a String");
         }
@@ -33,7 +38,7 @@ public class AssignStatement implements StatementExecutor {
         String id = (String) node.value();
 
         if (subnodes.size() != 1 || !(subnodes.get(0) instanceof ExpressionNode)) {
-                throw new IncorrectNodeTypeException(this.getClass() + " Error: Requires 1 ExpressionNode", subnodes.get(0));
+            throw new IncorrectNodeTypeException(this.getClass() + " Error: Requires 1 ExpressionNode", subnodes.get(0));
         }
 
         Object result = delegate.expand((ExpressionNode) subnodes.get(0));

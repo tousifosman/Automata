@@ -83,4 +83,8 @@ public class StringWithMetaData {
             return false;
         }
     }
+    
+    public int size() {
+        return metaData.size();
+    }
 }
