@@ -20,13 +20,13 @@ public class MaxFreqExpression implements ExpressionExpander {
     @Override
     public Object expand(ExpressionNode node, ExpressionDelegate delegate) throws ASTExecutionException {
         if (!(node.value() instanceof String)) {
-            throw new ExpressionArgumentException(this.getClass() + " Error: Value must be String");
+            throw new ExpressionArgumentException(this.getClass().getSimpleName() + " Error: Value must be String");
         }
         String id = (String)node.value();
 
         Object value = idMap.get(id);
         if (value == null) {
-            throw new UninitializedIDException(this.getClass() + "Error : Uninitialized ID (" + id + ")");
+            throw new UninitializedIDException(this.getClass().getSimpleName() + "Error : Uninitialized ID (" + id + ")");
         }
 
         if (value instanceof List) {
@@ -46,7 +46,7 @@ public class MaxFreqExpression implements ExpressionExpander {
 
             return maxObject;
         } else {
-            throw new ExpressionExpansionException(this.getClass() + " Error: Can only use Lists (" + value.getClass() + " given)");
+            throw new ExpressionExpansionException(this.getClass().getSimpleName() + " Error: Can only use Lists (" + value.getClass() + " given)");
         }
     }
 

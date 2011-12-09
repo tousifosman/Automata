@@ -3,9 +3,9 @@ package walker.statements;
 import ast.ExpressionNode;
 import ast.Node;
 import ast.StatementNode;
-import java.io.PrintStream;
 import java.util.List;
 import walker.ExpressionDelegate;
+import main.PrintStream;
 import walker.exceptions.ASTExecutionException;
 import walker.exceptions.IncorrectNodeTypeException;
 import walker.exceptions.StatementExecutionException;
@@ -23,7 +23,7 @@ public class PrintStatement implements StatementExecutor {
 
         for (Node subnode : subnodes) {
             if (!(subnode instanceof ExpressionNode)) {
-                throw new IncorrectNodeTypeException(this.getClass() + " Error: Requires ExpressionNodes", subnode);
+                throw new IncorrectNodeTypeException(this.getClass().getSimpleName() + " Error: Requires ExpressionNodes", subnode);
             }
             
             Object result = delegate.expand((ExpressionNode)subnode);
