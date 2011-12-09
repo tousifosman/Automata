@@ -1,10 +1,11 @@
 package walker;
 
+import main.PrintStream;
+import java.io.File;
 import walker.exceptions.InvalidStatementTypeException;
 import walker.exceptions.ASTExecutionException;
 import walker.exceptions.NonExecutableNodeException;
 import ast.*;
-import java.io.PrintStream;
 import java.util.HashMap;
 import java.util.Map;
 import walker.exceptions.ExpressionExpansionException;
@@ -18,19 +19,19 @@ public class ASTWalker implements ExpressionDelegate {
     private Map<String, ExpressionExpander> expansionMap;
     private Map<String, Object> idMap;
 
-    public ASTWalker(PrintStream out) {
+    public ASTWalker(PrintStream out, File directory) {
         this.idMap = new HashMap<String, Object>();
 
         this.executionMap = new HashMap<String, StatementExecutor>();
         executionMap.put(AssignStatement.type(), new AssignStatement(idMap));
-        executionMap.put(ReplaceStatement.type(), new ReplaceStatement());
-        executionMap.put(RecursiveReplaceStatement.type(), new RecursiveReplaceStatement());
+        executionMap.put(ReplaceStatement.type(), new ReplaceStatement(directory));
+        executionMap.put(RecursiveReplaceStatement.type(), new RecursiveReplaceStatement(directory));
         executionMap.put(PrintStatement.type(), new PrintStatement(out));
 
         this.expansionMap = new HashMap<String, ExpressionExpander>();
         expansionMap.put(IdExpression.type(), new IdExpression(idMap));
         expansionMap.put(ParenExpression.type(), new ParenExpression());
-        expansionMap.put(TermExpression.type(), new TermExpression());
+        expansionMap.put(TermExpression.type(), new TermExpression(directory));
         expansionMap.put(BinopExpression.type(), new BinopExpression());
         expansionMap.put(SizeExpression.type(), new SizeExpression());
         expansionMap.put(MaxFreqExpression.type(), new MaxFreqExpression(idMap));

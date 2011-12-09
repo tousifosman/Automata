@@ -13,13 +13,13 @@ public class SizeExpression implements ExpressionExpander {
     public Integer expand(ExpressionNode node, ExpressionDelegate delegate) throws ASTExecutionException {
         List<Node> subnodes = node.subnodes();
         if (subnodes.size() != 1 || !(subnodes.get(0) instanceof ExpressionNode)) {
-            throw new IncorrectNodeTypeException(this.getClass() + " Error: Requires 1 ExpressionNode", subnodes.get(0));
+            throw new IncorrectNodeTypeException(this.getClass().getSimpleName() + " Error: Requires 1 ExpressionNode", subnodes.get(0));
         }
 
         Object subResult = delegate.expand((ExpressionNode) subnodes.get(0));
 
         if (!(subResult instanceof List)) {
-            throw new ExpressionExpansionException(this.getClass() + " Error: Can only take size of Lists (" + subResult.getClass() + " given)");
+            throw new ExpressionExpansionException(this.getClass().getSimpleName() + " Error: Can only take size of Lists (" + subResult.getClass() + " given)");
         }
 
         Integer result = ((List) subResult).size();

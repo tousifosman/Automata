@@ -12,24 +12,29 @@ import walker.exceptions.ExpressionArgumentException;
 import walker.exceptions.ExpressionExpansionException;
 
 public class TermExpression implements ExpressionExpander {
+    private File directory;
+    
+    public TermExpression(File directory) {
+        this.directory = directory;
+    }
     @Override
     public List expand(ExpressionNode node, ExpressionDelegate delegate) throws ExpressionExpansionException {
         if (!(node.value() instanceof String[])) {
-            throw new ExpressionArgumentException(this.getClass() + " Error: Value must be String[]");
+            throw new ExpressionArgumentException(this.getClass().getSimpleName() + " Error: Value must be String[]");
         }
         String[] values = (String[]) node.value();
 
         if (values.length != 2) {
-            throw new ExpressionArgumentException(this.getClass() + " Error: Must have two arguments (" + values.length + " given)");
+            throw new ExpressionArgumentException(this.getClass().getSimpleName() + " Error: Must have two arguments (" + values.length + " given)");
         }
 
         String regex = values[0].replace(" ", "");
         String fileName = values[1];
 
-        File file = new File(fileName);
+        File file = new File(directory, fileName);
 
         if (!file.exists())
-            throw new ExpressionArgumentException(this.getClass() + " Error: " + file + " doesn't exist");
+            throw new ExpressionArgumentException(this.getClass().getSimpleName() + " Error: " + file + " doesn't exist");
 
         return listFromFile(file, regex);
     }
@@ -59,7 +64,7 @@ public class TermExpression implements ExpressionExpander {
             return wordList;
 
         } catch (FileNotFoundException ex) {
-            throw new ExpressionArgumentException(this.getClass() + " Error: " + file + " doesn't exist");
+            throw new ExpressionArgumentException(this.getClass().getSimpleName() + " Error: " + file + " doesn't exist");
         }
     }
 

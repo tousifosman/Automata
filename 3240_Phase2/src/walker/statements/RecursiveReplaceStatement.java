@@ -11,10 +11,13 @@ import walker.exceptions.StatementArgumentException;
 import walker.exceptions.StatementExecutionException;
 
 public class RecursiveReplaceStatement extends ReplaceStatement {
+    public RecursiveReplaceStatement(File directory) {
+        super(directory);
+    }
     @Override
     protected void replace(String regex, String string, File fromFile, File toFile) throws StatementExecutionException {
         if (regex.equals(string)) {
-            throw new StatementArgumentException("RecursiveReplaceStatement: Regex cannot equal string (" + regex + ")");
+            throw new StatementArgumentException(this.getClass().getSimpleName() + " Error: Regex cannot equal string (" + regex + ")");
         }
 
         FileWriter fwriter = null;
@@ -39,9 +42,9 @@ public class RecursiveReplaceStatement extends ReplaceStatement {
             }
             pwriter.flush();
         } catch (FileNotFoundException ex) {
-            throw new StatementArgumentException("ReplaceStatement Error: " + fromFile + " doesn't exist");
+            throw new StatementArgumentException(this.getClass().getSimpleName() + " Error: " + fromFile + " doesn't exist");
         } catch (IOException ex) {
-            throw new StatementArgumentException("ReplaceStatement Error: Cannot write to " + toFile);
+            throw new StatementArgumentException(this.getClass().getSimpleName() + " Error: Cannot write to " + toFile);
         } finally {
             if (pwriter != null) {
                 pwriter.close();

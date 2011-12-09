@@ -13,7 +13,7 @@ public class ParenExpression implements ExpressionExpander {
         List<Node> subnodes = node.subnodes();
 
         if (subnodes.size() != 1 || !(subnodes.get(0) instanceof ExpressionNode)) {
-            throw new IncorrectNodeTypeException(this.getClass() + " Error: Requires 1 ExpressionNode", subnodes.get(0));
+            throw new IncorrectNodeTypeException(this.getClass().getSimpleName() + " Error: Requires 1 ExpressionNode", subnodes.get(0));
         }
 
         return delegate.expand((ExpressionNode) subnodes.get(0));

@@ -20,21 +20,21 @@ public class BinopExpression implements ExpressionExpander {
 
         if (subnodes.isEmpty()
                 || !(subnodes.get(0) instanceof ExpressionNode)) {
-            throw new IncorrectNodeTypeException(this.getClass() + " Error: Requires at least 1 ExpressionNode", subnodes.get(0));
+            throw new IncorrectNodeTypeException(this.getClass().getSimpleName() + " Error: Requires at least 1 ExpressionNode", subnodes.get(0));
         }
 
         if (subnodes.size() == 1) {
             Object result = delegate.expand((ExpressionNode) subnodes.get(0));
 
             if (!(result instanceof List)) {
-                throw new ExpressionExpansionException(this.getClass() + " Error: Can only use Lists (" + result.getClass() + " given)");
+                throw new ExpressionExpansionException(this.getClass().getSimpleName() + " Error: Can only use Lists (" + result.getClass() + " given)");
             }
 
             return (List) result;
         } else if (subnodes.size() == 2
                 && (subnodes.get(1) instanceof ExpressionNode)) {
             if (!(node.value() instanceof String)) {
-                throw new ExpressionArgumentException(this.getClass() + " Error: Value must be String");
+                throw new ExpressionArgumentException(this.getClass().getSimpleName() + " Error: Value must be String");
             }
             BinopType binopType = BinopType.toBinop((String) node.value());
 
@@ -42,12 +42,12 @@ public class BinopExpression implements ExpressionExpander {
             Object secondList = delegate.expand((ExpressionNode) subnodes.get(1));
 
             if (!(firstList instanceof List) || !(secondList instanceof List)) {
-                throw new ExpressionExpansionException(this.getClass() + " Error: Can only use Lists (" + firstList.getClass() + " and " + secondList.getClass() + " given)");
+                throw new ExpressionExpansionException(this.getClass().getSimpleName() + " Error: Can only use Lists (" + firstList.getClass() + " and " + secondList.getClass() + " given)");
             }
 
             return binopType.apply((List) firstList, (List) secondList);
         } else {
-            throw new IncorrectNodeTypeException(this.getClass() + " Error: Requires 2 ExpressionNodes", subnodes.get(0));
+            throw new IncorrectNodeTypeException(this.getClass().getSimpleName() + " Error: Requires 2 ExpressionNodes", subnodes.get(0));
         }
     }
 

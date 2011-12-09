@@ -8,16 +8,21 @@ import walker.exceptions.StatementArgumentException;
 import walker.exceptions.StatementExecutionException;
 
 public class ReplaceStatement implements StatementExecutor {
+    protected File directory;
+    public ReplaceStatement(File directory) {
+        this.directory = directory;
+    }
+    
     @Override
     public void execute(StatementNode node, ExpressionDelegate delegate) throws StatementExecutionException {
         if (!(node.value() instanceof String[])) {
-            throw new StatementArgumentException(this.getClass() + " Error: String[] required as argument");
+            throw new StatementArgumentException(this.getClass().getSimpleName() + " Error: String[] required as argument");
         }
 
         String[] values = (String[]) node.value();
 
         if (values.length != 4) {
-            throw new StatementArgumentException(this.getClass() + " Error: Requires 4 arguments, " + values.length + " given");
+            throw new StatementArgumentException(this.getClass().getSimpleName() + " Error: Requires 4 arguments, " + values.length + " given");
         }
 
 
@@ -25,14 +30,14 @@ public class ReplaceStatement implements StatementExecutor {
         String fileName2 = values[3];
 
         if (fileName1.equals(fileName2)) {
-            throw new StatementArgumentException(this.getClass() + " Error: File1 and File2 cannot be the same file (" + fileName1 + ")");
+            throw new StatementArgumentException(this.getClass().getSimpleName() + " Error: File1 and File2 cannot be the same file (" + fileName1 + ")");
         }
 
-        File file1 = new File(fileName1);
-        File file2 = new File(fileName2);
+        File file1 = new File(directory, fileName1);
+        File file2 = new File(directory, fileName2);
 
         if (!file1.exists())
-            throw new StatementArgumentException(this.getClass() + " Error: " + file1 + " doesn't exist");
+            throw new StatementArgumentException(this.getClass().getSimpleName() + " Error: " + file1 + " doesn't exist");
 
 
         replace(values[0].replace(" ", ""), values[1], file1, file2);
@@ -54,9 +59,9 @@ public class ReplaceStatement implements StatementExecutor {
             }
             pwriter.flush();
         } catch (FileNotFoundException ex) {
-            throw new StatementArgumentException(this.getClass() + " Error: " + fromFile + " doesn't exist");
+            throw new StatementArgumentException(this.getClass().getSimpleName() + " Error: " + fromFile + " doesn't exist");
         } catch (IOException ex) {
-            throw new StatementArgumentException(this.getClass() + " Error: Cannot write to " + toFile);
+            throw new StatementArgumentException(this.getClass().getSimpleName() + " Error: Cannot write to " + toFile);
         } finally {
             if (pwriter != null) {
                 pwriter.close();
