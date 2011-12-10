@@ -43,8 +43,9 @@ public class ScriptScanner {
         tokens = new ArrayDeque<String>();
 
         System.out.println("Using Lexical Specification for MinRE: " + ScriptScanner.class.getResource("MiniRE_LexSpec.txt").toString().substring(6));
-        DFA dfa = generateDFA(ScriptScanner.class.getResource("MiniRE_LexSpec.txt").toString().substring(6));
+        //DFA dfa = generateDFA(ScriptScanner.class.getResource("MiniRE_LexSpec.txt").toString().substring(6));
 
+        DFA dfa = generateDFA("MiniRE_LexSpec.txt");
 
         File inputFile;
 
