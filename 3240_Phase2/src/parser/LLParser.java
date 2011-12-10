@@ -125,6 +125,7 @@ public class LLParser {
 		tableRow.put(TOKEN_TYPE.MAXFREQSTRING, RULE_NUMER.ID_STATEMENT3);
 		tableRow.put(TOKEN_TYPE.ID, RULE_NUMER.ID_STATEMENT1);
 		tableRow.put(TOKEN_TYPE.LEFT_PAREN, RULE_NUMER.ID_STATEMENT1);
+		tableRow.put(TOKEN_TYPE.FIND, RULE_NUMER.ID_STATEMENT1);
 		parseTable.put(currTokenType, tableRow);
 		
 		//FILE_NAMEs Row
@@ -163,9 +164,9 @@ public class LLParser {
 		currTokenType = TOKEN_TYPE.EXP;
 		tableRow = new HashMap<LLParser.TOKEN_TYPE, LLParser.RULE_NUMER>();
 		tableRow.put(TOKEN_TYPE.ID, RULE_NUMER.EXP1);
-		//tableRow.put(TOKEN_TYPE.FIND, RULE_NUMER.EXP3);
+		tableRow.put(TOKEN_TYPE.FIND, RULE_NUMER.EXP3);
 		//tableRow.put(TOKEN_TYPE.ID, RULE_NUMER.EXP2);
-		//tableRow.put(TOKEN_TYPE.LEFT_PAREN, RULE_NUMER.EXP2);
+		tableRow.put(TOKEN_TYPE.LEFT_PAREN, RULE_NUMER.EXP2);
 		parseTable.put(currTokenType, tableRow);
 		
 		//EXP_TAIL Row
@@ -180,7 +181,7 @@ public class LLParser {
 		//TERM Row
 		currTokenType = TOKEN_TYPE.TERM;
 		tableRow = new HashMap<LLParser.TOKEN_TYPE, LLParser.RULE_NUMER>();
-		tableRow.put(TOKEN_TYPE.LEFT_PAREN, RULE_NUMER.TERM);
+		tableRow.put(TOKEN_TYPE.FIND, RULE_NUMER.TERM);
 		parseTable.put(currTokenType, tableRow);
 		
 		//FILENAME Row
@@ -211,21 +212,21 @@ public class LLParser {
 				TOKEN_TYPE lookAheadToken = getTokenType(inputStack.peek());	
 				Map<TOKEN_TYPE, RULE_NUMER> currentRow = parseTable.get(currentToken);
 				RULE_NUMER newRule;
-				if(lookAheadToken.equals(TOKEN_TYPE.LEFT_PAREN) && currentToken.equals(TOKEN_TYPE.EXP)){
-					String tempToken = inputStack.pop();
-					lookAheadToken = getTokenType(inputStack.peek());
-					inputStack.push(tempToken);
-					if(lookAheadToken.equals(TOKEN_TYPE.FIND)){
-						newRule = RULE_NUMER.EXP3;
-					}
-					else if(lookAheadToken.equals(TOKEN_TYPE.LEFT_PAREN) || lookAheadToken.equals(TOKEN_TYPE.ID)){
-						newRule = RULE_NUMER.EXP2;
-					}
-					else {
-						throw new MiniREErrorException("Exp with LEFT_PAREN "+ " Looking ahead is: " + lookAheadToken.toString());
-					}
-				}
-				else{
+//				if(lookAheadToken.equals(TOKEN_TYPE.LEFT_PAREN) && currentToken.equals(TOKEN_TYPE.EXP)){
+//					String tempToken = inputStack.pop();
+//					lookAheadToken = getTokenType(inputStack.peek());
+//					inputStack.push(tempToken);
+//					if(lookAheadToken.equals(TOKEN_TYPE.FIND)){
+//						newRule = RULE_NUMER.EXP3;
+//					}
+//					else if(lookAheadToken.equals(TOKEN_TYPE.LEFT_PAREN) || lookAheadToken.equals(TOKEN_TYPE.ID)){
+//						newRule = RULE_NUMER.EXP2;
+//					}
+//					else {
+//						throw new MiniREErrorException("Exp with LEFT_PAREN "+ " Looking ahead is: " + lookAheadToken.toString());
+//					}
+//				}
+				//else{
 					
 					if(lookAheadToken == TOKEN_TYPE.END){
 						newRule= currentRow.get(TOKEN_TYPE.EMPTY);
@@ -233,7 +234,7 @@ public class LLParser {
 					else if(currentToken.equals(TOKEN_TYPE.EXP_TAIL) && lookAheadToken == TOKEN_TYPE.SEMI_COLON){
 						newRule= currentRow.get(TOKEN_TYPE.EMPTY);
 					}
-					else if(currentToken.equals(TOKEN_TYPE.EXP_LIST_TAIL) && lookAheadToken == TOKEN_TYPE.RIGHT_PAREN){
+					else if(currentToken.equals(TOKEN_TYPE.EXP_LIST_TAIL) && (lookAheadToken == TOKEN_TYPE.RIGHT_PAREN)){
 						newRule= currentRow.get(TOKEN_TYPE.EMPTY);
 					}
 					else{
@@ -244,7 +245,7 @@ public class LLParser {
 						throw new MiniREErrorException("At "+ currentToken.toString() + " Looking ahead is: " + lookAheadToken.toString());
 					}
 					
-				}
+				//}
 				if(TOKEN_TYPE.STATEMENT.equals(currentToken)){
 					String type;
 					Object value;
