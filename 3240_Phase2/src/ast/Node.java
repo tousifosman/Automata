@@ -63,4 +63,14 @@ public abstract class Node {
     public Node getParent() {
         return parent;
     }
+    
+    
+    public void setType(String type){
+    	this.type = type;
+    }
+    
+    public void setValue(Object value){
+    	this.value = value;
+    }
+    
 }

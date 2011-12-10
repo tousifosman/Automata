@@ -24,6 +24,9 @@ public class LLParser {
 	Stack<TOKEN_TYPE> parseStack;
 	Stack<String> inputStack;
 	
+	Stack<ExpressionNode> expressionNodeStack;
+	
+	
 	Map<RULE_NUMER, List<TOKEN_TYPE>> grammarDef;
 
 	enum TOKEN_TYPE{ID, REPLACE, RECURSIVEREPLACE, REGEX, WITH, ASCII_STR, IN, EMPTY, MAXFREQSTRING,
@@ -52,14 +55,22 @@ public class LLParser {
 			TOKEN_TYPE.UNION, TOKEN_TYPE.INTERS, TOKEN_TYPE.FIND, TOKEN_TYPE.PRINT, TOKEN_TYPE.COMMA, 
 			TOKEN_TYPE.EQUAL_SIGN, TOKEN_TYPE.SEMI_COLON, TOKEN_TYPE.BEGIN, TOKEN_TYPE.END};
 	
+	TOKEN_TYPE[] otherArray = {TOKEN_TYPE.SOURCE_FILE, TOKEN_TYPE.DESTINATION_FILE}; 
 	
+	String [] extraTokenArray = {"(", ")", ";", "in", "end"};
+	
+	
+	
+	List<TOKEN_TYPE> otherTokens = Arrays.asList(otherArray);
 	List<TOKEN_TYPE> nonTermTokens = Arrays.asList(nonTermArray);
 	List<TOKEN_TYPE> termTokens = Arrays.asList(termArray);
+	List<String> extraTokens = Arrays.asList(extraTokenArray);
 	
 	public LLParser(List<String> ids, List<String>regex, Stack<String> input){
 		identifiers = ids; 
 		this.regexes = regex;
 		this.inputStack = input;
+		expressionNodeStack = new Stack<ExpressionNode>();
 		parseStack = new Stack<TOKEN_TYPE>();
 		parseStack.push(TOKEN_TYPE.MINIRE);
 		generateLLTable();
@@ -267,31 +278,54 @@ public class LLParser {
 				else if(currentToken.equals(TOKEN_TYPE.DESTINATION_FILE)){
 					((String[]) currentStatementNode.value())[3]= inputStack.peek();
 				}
-				else if(currentToken.equals(TOKEN_TYPE.FILENAME)){
-					((String[]) currentExpressionNode.value())[1]= inputStack.peek();
-				}
+//				else if(currentToken.equals(TOKEN_TYPE.FILENAME)){
+//					((String[]) currentExpressionNode.value())[1]= inputStack.peek();
+//				}
+				
+				
+				List<TOKEN_TYPE> newTokens = grammarDef.get(newRule);
 				
 				
 				//Create Expression Nodes
 				if(currentToken.equals(TOKEN_TYPE.ID_STATEMENT)){
-					currentExpressionNode = new ExpressionNode("id-exp", null);
+					currentExpressionNode = new ExpressionNode(TOKEN_TYPE.ID_STATEMENT.toString(), null);
 					currentStatementNode.addSubnode(currentExpressionNode);
+					expressionNodeStack.push(currentExpressionNode);
+					//currentStatementNode = null;
 				
 				}
 				else if(currentToken.equals(TOKEN_TYPE.EXP_LIST)){
-					currentExpressionNode = new ExpressionNode("exp-list", null);
+					currentExpressionNode = new ExpressionNode(TOKEN_TYPE.EXP_LIST.toString(), null);
 					currentStatementNode.addSubnode(currentExpressionNode);
+					expressionNodeStack.push(currentExpressionNode);
+					//currentStatementNode=null;
 				}
-
-				
-				
-				List<TOKEN_TYPE> newTokens = grammarDef.get(newRule);
 				
 				//update expression node NEED a new stack for expression Nodes
 				TOKEN_TYPE newTokenType = parseStack.pop();
 				for(int i=newTokens.size()-1; i>=0; i--){
 					parseStack.push(newTokens.get(i));
 				}
+				if(!(TOKEN_TYPE.STATEMENT.equals(newTokenType) || TOKEN_TYPE.MINIRE.equals(newTokenType)
+						|| TOKEN_TYPE.STATEMENT_LIST.equals(newTokenType) || TOKEN_TYPE.STATEMENT_LIST_TAIL.equals(newTokenType))
+						&& !(termTokens.contains(newTokenType))){
+					ExpressionNode tempExpressionNode = expressionNodeStack.pop();
+					tempExpressionNode.setType(newRule.toString());
+					
+					if(!tempExpressionNode.type().equals(RULE_NUMER.FILENAME.toString())){
+						currentExpressionNode = tempExpressionNode;
+					}
+					
+					for(int i=newTokens.size()-1; i>=0; i--){
+						ExpressionNode newExpressionNode = new ExpressionNode(newTokens.get(i).toString(), null);
+						
+						if(nonTermTokens.contains(newTokens.get(i)) && (!otherTokens.contains(newTokens.get(i))) ){
+							expressionNodeStack.push(newExpressionNode);
+							currentExpressionNode.addSubnode(newExpressionNode);
+						}
+					}
+				}
+
 			}
 			else{
 				TOKEN_TYPE parseToken = parseStack.peek();
@@ -313,8 +347,35 @@ public class LLParser {
 						}
 					}
 					else{
-						if(currentToken.equals(TOKEN_TYPE.REGEX)){
-							((String[]) currentExpressionNode.value())[0]= inputStack.peek();
+//						if(currentToken.equals(TOKEN_TYPE.REGEX)){
+//							((String[]) currentExpressionNode.value())[0]= inputStack.peek();
+//						}
+						String currentString = inputStack.peek();
+						if(!extraTokens.contains(currentString)){
+						
+							if(currentExpressionNode.value() == null){
+								currentExpressionNode.setValue(inputStack.peek());
+							}
+							else{
+								String [] newValue;
+								Object oldValue = currentExpressionNode.value();
+								if(oldValue instanceof String){
+									newValue = new String[2];
+									newValue[0] = (String) oldValue;
+									newValue[1] = inputStack.peek();
+								}
+								else{
+									String [] interValue = (String[]) oldValue;
+									newValue = new String[interValue.length+1];
+									int i=0;
+									for(; i<interValue.length; i++){
+										newValue[i] = interValue[i];
+									}
+									newValue[i] = inputStack.peek();
+									
+								}
+								currentExpressionNode.setValue(newValue);
+							}						
 						}
 					}
 					parseStack.pop();
