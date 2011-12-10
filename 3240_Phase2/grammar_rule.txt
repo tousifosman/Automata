@@ -20,7 +20,7 @@
 <exp3> <term> <exp-tail>
 <exp-tail1> <bin-op> <term> <exp-tail> 
 <exp-tail2> empty
-<term> ( find REGEX in <file-name> ) 
+<term> find REGEX in <file-name> 
 <file-name> ASCII-STR
 <bin-op1> diff
 <bin-op2> union
