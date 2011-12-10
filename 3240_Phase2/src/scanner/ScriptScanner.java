@@ -58,6 +58,8 @@ public class ScriptScanner {
             System.out.println("Error: Cannot find file");
             System.out.println(ex.getMessage());
         }
+        
+        checkIDs();
     }
 
     /**
@@ -72,7 +74,7 @@ public class ScriptScanner {
      * @throws IOException 
      * @throws FileNotFoundException 
      */
-    public static void scan(String input, File directory) throws FileNotFoundException, IOException, SyntaxErrorException {
+    public static void scan(String input) throws FileNotFoundException, IOException, SyntaxErrorException {
         identifiers = new ArrayList<String>();
         regexes = new ArrayList<String>();
         strconsts = new ArrayList<String>();
@@ -83,13 +85,13 @@ public class ScriptScanner {
 
         DFA dfa = generateDFA("MiniRE_LexSpec.txt");
 
-        File temp_file = new File(directory, "temp.tmp");
+        File temp_file = new File("temp.tmp");
         FileWriter f = null;
         BufferedWriter b = null;
         PrintWriter p = null;
 
         try {
-            f = new FileWriter(temp_file, false);
+            f = new FileWriter(temp_file, true);
             b = new BufferedWriter(f);
             p = new PrintWriter(b);
 
@@ -108,11 +110,23 @@ public class ScriptScanner {
             System.out.println("Error: Cannot find file");
             System.out.println(ex.getMessage());
         }
+        
+        checkIDs();
     }
 
     private static DFA generateDFA(String fileName) throws FileNotFoundException, IOException, SyntaxErrorException {
         FinalNFA NFAgen = new FinalNFA();
         NFA nfa = NFAgen.generate(fileName);
         return NFAtoDFA.dfaFromNFA(nfa);
+    }
+    
+    public static void checkIDs() {
+        for (String a : ScriptScanner.identifiers) {
+            if (a.length > 10) {
+                String err = "Identifier \'" + "a + "\' too long; must be 10 chars at most!";
+                System.out.println(err);
+                throw new SyntaxErrorException(err);
+            }
+        }
     }
 }
