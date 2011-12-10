@@ -55,9 +55,9 @@ public class LLParser {
 			TOKEN_TYPE.UNION, TOKEN_TYPE.INTERS, TOKEN_TYPE.FIND, TOKEN_TYPE.PRINT, TOKEN_TYPE.COMMA, 
 			TOKEN_TYPE.EQUAL_SIGN, TOKEN_TYPE.SEMI_COLON, TOKEN_TYPE.BEGIN, TOKEN_TYPE.END};
 	
-	TOKEN_TYPE[] otherArray = {TOKEN_TYPE.SOURCE_FILE, TOKEN_TYPE.DESTINATION_FILE}; 
+	TOKEN_TYPE[] otherArray = {TOKEN_TYPE.SOURCE_FILE, TOKEN_TYPE.DESTINATION_FILE, TOKEN_TYPE.FILE_NAMES}; 
 	
-	String [] extraTokenArray = {"(", ")", ";", "in", "end"};
+	String [] extraTokenArray = {"(", ")", ";", "in", "end", "find"};
 	
 	
 	
@@ -308,7 +308,7 @@ public class LLParser {
 				}
 				if(!(TOKEN_TYPE.STATEMENT.equals(newTokenType) || TOKEN_TYPE.MINIRE.equals(newTokenType)
 						|| TOKEN_TYPE.STATEMENT_LIST.equals(newTokenType) || TOKEN_TYPE.STATEMENT_LIST_TAIL.equals(newTokenType))
-						&& !(termTokens.contains(newTokenType))){
+						&& !(termTokens.contains(newTokenType)) && !(otherTokens.contains(newTokenType))){
 					ExpressionNode tempExpressionNode = expressionNodeStack.pop();
 					tempExpressionNode.setType(newRule.toString());
 					

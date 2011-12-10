@@ -20,9 +20,11 @@ public class ParserTest {
 //		Test Case 1 		
 		String[] idTokens  = {"myID", "myID1"};
 		String[] regexTokens = {"'regex'"};
-		String [] testTokens = {"begin", 
+		String [] testTokens = {"begin", "replace", "'regex'", "with", "abcdd", "in", "file1", ">!", "file2", ";",
 				"myID", "=", "(", "find", "'regex'", "in", "file3", ")", "union", 
-				"(", "find", "'regex'", "in", "file4", ")", ";","end"};
+				"(", "find", "'regex'", "in", "file4", ")", ";", 
+				"myID", "=", "maxfreqstring" , "(", "myID1", ")", ";",
+				"end"};
 
 		
 		
