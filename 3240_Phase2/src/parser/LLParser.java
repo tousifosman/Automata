@@ -151,6 +151,7 @@ public class LLParser {
 		tableRow = new HashMap<LLParser.TOKEN_TYPE, LLParser.RULE_NUMER>();
 		tableRow.put(TOKEN_TYPE.ID, RULE_NUMER.EXP_LIST);
 		tableRow.put(TOKEN_TYPE.LEFT_PAREN, RULE_NUMER.EXP_LIST);
+		tableRow.put(TOKEN_TYPE.FIND, RULE_NUMER.EXP_LIST);
 		parseTable.put(currTokenType, tableRow);
 		
 		//EXP_LIST_TAIL Row
