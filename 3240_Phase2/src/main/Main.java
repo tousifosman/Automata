@@ -117,12 +117,12 @@ public class Main extends JPanel {
             if (interpretMode) {
                 tree = TreeSaver.load(input);
             } else {
-                ScriptScanner.scan(input);
-                System.out.println("-> Tokens:");
+                ScriptScanner.scan(input, directory);
+                /*System.out.println("-> Tokens:");
                 for (String a : ScriptScanner.tokens) {
                     System.out.println(a);
                 }
-                /*System.out.println("-> String Constants:");
+                System.out.println("-> String Constants:");
                 for (String a : ScriptScanner.strconsts) {
                     System.out.println(a);
                 }

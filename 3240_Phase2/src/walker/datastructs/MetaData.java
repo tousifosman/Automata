@@ -40,4 +40,8 @@ class MetaData {
         hash = 67 * hash + this.endIndex;
         return hash;
     }
+    
+    public String getFile() {
+        return fileName;
+    }
 }
