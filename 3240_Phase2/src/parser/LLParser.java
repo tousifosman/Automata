@@ -40,7 +40,7 @@ public class LLParser {
 					
 	enum RULE_NUMER{MINIRE, STATEMENT_LIST, STATEMENT_LIST_TAIL1, STATEMENT_LIST_TAIL2, STATEMENT1, ID_STATEMENT1,
 					ID_STATEMENT2, ID_STATEMENT3, STATEMENT2, STATEMENT3, FILE_NAMES, SOURCE_FILE,
-					DESTINATION_FILE, STATEMENT4, EXP_LIST, EXP_LIST_TAIL, EXP1, EXP2, EXP3, EXP_TAIL1,
+					DESTINATION_FILE, STATEMENT4, EXP_LIST, EXP_LIST_TAIL,EXP_LIST_TAIL1, EXP1, EXP2, EXP3, EXP_TAIL1,
 					EXP_TAIL2, TERM, FILENAME, BIN_OP1, BIN_OP2, BIN_OP3};
 
 	
@@ -57,7 +57,7 @@ public class LLParser {
 	
 	TOKEN_TYPE[] otherArray = {TOKEN_TYPE.SOURCE_FILE, TOKEN_TYPE.DESTINATION_FILE, TOKEN_TYPE.FILE_NAMES}; 
 	
-	String [] extraTokenArray = {"(", ")", ";", "in", "end", "find"};
+	String [] extraTokenArray = {"(", ")", ";", "in", "end", "find", "maxfreqstring"};
 	
 	
 	
@@ -155,6 +155,7 @@ public class LLParser {
 		currTokenType = TOKEN_TYPE.EXP_LIST_TAIL;
 		tableRow = new HashMap<LLParser.TOKEN_TYPE, LLParser.RULE_NUMER>();
 		tableRow.put(TOKEN_TYPE.COMMA, RULE_NUMER.EXP_LIST_TAIL);
+		tableRow.put(TOKEN_TYPE.EMPTY, RULE_NUMER.EXP_LIST_TAIL1);
 		parseTable.put(currTokenType, tableRow);
 		
 		//EXP Row
@@ -229,6 +230,9 @@ public class LLParser {
 						newRule= currentRow.get(TOKEN_TYPE.EMPTY);
 					}
 					else if(currentToken.equals(TOKEN_TYPE.EXP_TAIL) && lookAheadToken == TOKEN_TYPE.SEMI_COLON){
+						newRule= currentRow.get(TOKEN_TYPE.EMPTY);
+					}
+					else if(currentToken.equals(TOKEN_TYPE.EXP_LIST_TAIL) && lookAheadToken == TOKEN_TYPE.RIGHT_PAREN){
 						newRule= currentRow.get(TOKEN_TYPE.EMPTY);
 					}
 					else{
@@ -540,6 +544,9 @@ private TOKEN_TYPE getTokenType(String token){
 		
 		else if(token.equals("end")){
 			return TOKEN_TYPE.END;
+		}
+		else if(token.equals("print")){
+			return TOKEN_TYPE.PRINT;
 		}
 		
 		else{
