@@ -10,13 +10,13 @@ import walker.exceptions.IncorrectNodeTypeException;
 
 public class SizeExpression implements ExpressionExpander {
     @Override
-    public Integer expand(ExpressionNode node, ExpressionDelegate delegate) throws ASTExecutionException {
+    public Integer expand(ExpressionNode node, ExpressionDelegate delegate, Object param) throws ASTExecutionException {
         List<Node> subnodes = node.subnodes();
         if (subnodes.size() != 1 || !(subnodes.get(0) instanceof ExpressionNode)) {
             throw new IncorrectNodeTypeException(this.getClass().getSimpleName() + " Error: Requires 1 ExpressionNode", subnodes.get(0));
         }
 
-        Object subResult = delegate.expand((ExpressionNode) subnodes.get(0));
+        Object subResult = delegate.expand((ExpressionNode) subnodes.get(0), null);
 
         if (!(subResult instanceof List)) {
             throw new ExpressionExpansionException(this.getClass().getSimpleName() + " Error: Can only take size of Lists (" + subResult.getClass() + " given)");

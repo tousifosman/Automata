@@ -7,7 +7,7 @@ import walker.ExpressionDelegate;
 import walker.exceptions.ASTExecutionException;
 import walker.exceptions.IncorrectNodeTypeException;
 
-public class ParenExpression implements ExpressionExpander {
+public class IDStatement1Expression implements ExpressionExpander {
     @Override
     public Object expand(ExpressionNode node, ExpressionDelegate delegate, Object param) throws ASTExecutionException {
         List<Node> subnodes = node.subnodes();
@@ -20,6 +20,6 @@ public class ParenExpression implements ExpressionExpander {
     }
 
     public static String type() {
-        return "paren";
+        return "ID_STATEMENT1";
     }
 }

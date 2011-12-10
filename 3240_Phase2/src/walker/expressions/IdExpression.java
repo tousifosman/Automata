@@ -15,7 +15,7 @@ public class IdExpression implements ExpressionExpander {
     }
 
     @Override
-    public Object expand(ExpressionNode node, ExpressionDelegate delegate) throws ASTExecutionException {
+    public Object expand(ExpressionNode node, ExpressionDelegate delegate, Object params) throws ASTExecutionException {
         if (!(node.value() instanceof String)) {
             throw new ExpressionArgumentException(this.getClass().getSimpleName() + " Error: Value must be String");
         }

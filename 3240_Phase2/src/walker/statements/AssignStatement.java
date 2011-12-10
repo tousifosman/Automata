@@ -41,7 +41,7 @@ public class AssignStatement implements StatementExecutor {
             throw new IncorrectNodeTypeException(this.getClass().getSimpleName() + " Error: Requires 1 ExpressionNode", subnodes.get(0));
         }
 
-        Object result = delegate.expand((ExpressionNode) subnodes.get(0));
+        Object result = delegate.expand((ExpressionNode) subnodes.get(0), null);
 
         idMap.put(id, result);
     }

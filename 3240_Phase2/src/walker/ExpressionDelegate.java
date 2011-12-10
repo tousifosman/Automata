@@ -8,5 +8,5 @@ import walker.exceptions.ASTExecutionException;
  * @author taylor
  */
 public interface ExpressionDelegate {
-    public Object expand(ExpressionNode node) throws ASTExecutionException;
+    public Object expand(ExpressionNode node, Object params) throws ASTExecutionException;
 }
