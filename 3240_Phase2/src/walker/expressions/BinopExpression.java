@@ -37,7 +37,7 @@ public class BinopExpression implements ExpressionExpander {
     }
 
     enum BinopType {
-        INTERSECT,
+        INTERS,
         UNION,
         DIFFERENCE;
 
@@ -52,7 +52,7 @@ public class BinopExpression implements ExpressionExpander {
         private List apply(List<StringWithMetaData> firstList, List<StringWithMetaData> secondList) {
             List newList;
             switch (this) {
-                case INTERSECT:
+                case INTERS:
                     newList = new StringList();
                     newList.addAll(firstList);
                     newList.retainAll(secondList);
