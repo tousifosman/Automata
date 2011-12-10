@@ -32,6 +32,6 @@ public class PrintStatement implements StatementExecutor {
     }
 
     public static String type() {
-        return "print ( <exp-list> ) ;";
+        return "print";
     }
 }

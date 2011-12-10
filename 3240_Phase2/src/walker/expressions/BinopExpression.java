@@ -2,7 +2,6 @@ package walker.expressions;
 
 import ast.ExpressionNode;
 import ast.Node;
-import java.util.ArrayList;
 import java.util.List;
 import walker.ExpressionDelegate;
 import walker.datastructs.StringList;
@@ -52,7 +51,7 @@ public class BinopExpression implements ExpressionExpander {
     }
 
     public static String type() {
-        return "<bin-op>";
+        return "binop";
     }
 
     enum BinopType {

@@ -28,6 +28,6 @@ public class SizeExpression implements ExpressionExpander {
     }
 
     public static String type() {
-        return "# <exp>";
+        return "size";
     }
 }

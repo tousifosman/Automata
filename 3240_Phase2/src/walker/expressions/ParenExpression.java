@@ -20,6 +20,6 @@ public class ParenExpression implements ExpressionExpander {
     }
 
     public static String type() {
-        return "( <exp> )";
+        return "paren";
     }
 }
