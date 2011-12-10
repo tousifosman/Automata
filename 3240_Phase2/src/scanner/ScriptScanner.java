@@ -74,7 +74,7 @@ public class ScriptScanner {
      * @throws IOException 
      * @throws FileNotFoundException 
      */
-    public static void scan(String input) throws FileNotFoundException, IOException, SyntaxErrorException {
+    public static void scan(String input, File directory) throws FileNotFoundException, IOException, SyntaxErrorException {
         identifiers = new ArrayList<String>();
         regexes = new ArrayList<String>();
         strconsts = new ArrayList<String>();
@@ -91,7 +91,7 @@ public class ScriptScanner {
         PrintWriter p = null;
 
         try {
-            f = new FileWriter(temp_file, true);
+            f = new FileWriter(temp_file, false);
             b = new BufferedWriter(f);
             p = new PrintWriter(b);
 
@@ -120,10 +120,10 @@ public class ScriptScanner {
         return NFAtoDFA.dfaFromNFA(nfa);
     }
     
-    public static void checkIDs() {
+    public static void checkIDs() throws SyntaxErrorException {
         for (String a : ScriptScanner.identifiers) {
-            if (a.length > 10) {
-                String err = "Identifier \'" + "a + "\' too long; must be 10 chars at most!";
+            if (a.length() > 10) {
+                String err = "Identifier '" + a + "' too long; must be 10 chars at most!";
                 System.out.println(err);
                 throw new SyntaxErrorException(err);
             }
