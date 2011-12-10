@@ -1,6 +1,9 @@
 package parser;
 
 import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Queue;
 import java.util.Stack;
 
 import ast.AbstractSyntaxTree;
@@ -17,8 +20,9 @@ public class ParserTest {
 //		Test Case 1 		
 		String[] idTokens  = {"myID", "myID1"};
 		String[] regexTokens = {"'regex'"};
-		String [] testTokens = {"begin", "myID", "=", "maxfreqstring" , "(", "myID1", ")", ";", 
-				"replace", "'regex'", "with" , "asdf", "in", "file1", ">!", "file2", ";","end"};
+		String [] testTokens = {"begin", 
+				"myID", "=", "(", "find", "'regex'", "in", "file3", ")", "union", 
+				"(", "find", "'regex'", "in", "file4", ")", ";","end"};
 
 		
 		
@@ -48,22 +52,75 @@ public class ParserTest {
 			tokenStack.push(testTokens[i]);
 		}
 		
+		Queue<Node> nodeQueue = new LinkedList<Node>();
+		
 		LLParser parser = new LLParser(Arrays.asList(idTokens), Arrays.asList(regexTokens), tokenStack);
 		AbstractSyntaxTree tree = parser.parse();
 		Node headNode = tree.getHead();
 		while(headNode != null){
 			System.out.print(headNode.type()+"    ");
-			try{
-				String[] values = (String[])headNode.value();
-				for(int i=0; i<values.length; i++){
-					System.out.print(values[i]+ "  " );
-					
-				}
-			}catch(ClassCastException e){
+			if(headNode.value() instanceof String){
 				String value = (String) headNode.value();
 				System.out.print(value+ "  " );
 			}
+			else{
+				String[] values = (String[])headNode.value();
+				for(int i=0; i<values.length; i++){
+					System.out.print(values[i]+ "  " );
+				}
+			}
 			System.out.print("\n");
+			
+			List<Node> subNodes = headNode.subnodes();
+			if(null != subNodes){
+				System.out.print(headNode.type()+": ");
+				for(Node node : subNodes){
+					System.out.print(node.type()+": ");
+					nodeQueue.add(node);
+					if(node.value() instanceof String){
+						String value = (String) node.value();
+						System.out.print(value+ "  " );
+					}
+					else{
+						String[] values = (String[])node.value();
+						if(values != null){
+							for(int i=0; i<values.length; i++){
+								System.out.print(values[i]+ "  " );
+							}
+						}
+					}
+					System.out.print(" | ");
+				}
+				System.out.print("\n");
+			}
+			while(!nodeQueue.isEmpty()){
+				Node currentNode = nodeQueue.poll();
+				System.out.print(currentNode.type()+": ");
+				subNodes = currentNode.subnodes();
+				if(null != subNodes){
+					for(Node node : subNodes){
+						System.out.print(node.type()+": ");
+						nodeQueue.add(node);
+						if(node.value() instanceof String){
+							String value = (String) node.value();
+							System.out.print(value+ "  " );
+						}
+						else{
+							String[] values = (String[])node.value();
+							if(values != null){
+								for(int i=0; i<values.length; i++){
+									System.out.print(values[i]+ "  " );
+								}
+							}
+						}
+						System.out.print(" | ");
+					}
+					System.out.print("\n");
+				}
+			}
+			System.out.print("\n");
+			
+			
 			headNode= headNode.nextNode();
 		}
 		
