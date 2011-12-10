@@ -6,5 +6,5 @@ import walker.exceptions.ASTExecutionException;
 import walker.exceptions.ExpressionExpansionException;
 
 public interface ExpressionExpander {
-    public Object expand(ExpressionNode node, ExpressionDelegate delegate) throws ASTExecutionException;
+    public Object expand(ExpressionNode node, ExpressionDelegate delegate, Object param) throws ASTExecutionException;
 }

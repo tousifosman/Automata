@@ -26,7 +26,7 @@ public class PrintStatement implements StatementExecutor {
                 throw new IncorrectNodeTypeException(this.getClass().getSimpleName() + " Error: Requires ExpressionNodes", subnode);
             }
             
-            Object result = delegate.expand((ExpressionNode)subnode);
+            Object result = delegate.expand((ExpressionNode)subnode, null);
             out.println(result);
         }
     }

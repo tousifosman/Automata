@@ -18,7 +18,7 @@ public class TermExpression implements ExpressionExpander {
         this.directory = directory;
     }
     @Override
-    public List expand(ExpressionNode node, ExpressionDelegate delegate) throws ExpressionExpansionException {
+    public List expand(ExpressionNode node, ExpressionDelegate delegate, Object param) throws ExpressionExpansionException {
         if (!(node.value() instanceof String[])) {
             throw new ExpressionArgumentException(this.getClass().getSimpleName() + " Error: Value must be String[]");
         }
@@ -69,6 +69,6 @@ public class TermExpression implements ExpressionExpander {
     }
 
     public static String type() {
-        return "term";
+        return "TERM";
     }
 }

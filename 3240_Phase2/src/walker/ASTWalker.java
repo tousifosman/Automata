@@ -35,6 +35,9 @@ public class ASTWalker implements ExpressionDelegate {
         expansionMap.put(BinopExpression.type(), new BinopExpression());
         expansionMap.put(SizeExpression.type(), new SizeExpression());
         expansionMap.put(MaxFreqExpression.type(), new MaxFreqExpression(idMap));
+        expansionMap.put(IDStatement1Expression.type(), new IDStatement1Expression());
+        expansionMap.put(Exp3Expression.type(), new Exp3Expression());
+        expansionMap.put(ExpTail1Expression.type(), new ExpTail1Expression());
         
     }
 
@@ -64,13 +67,13 @@ public class ASTWalker implements ExpressionDelegate {
     }
 
     @Override
-    public Object expand(ExpressionNode node) throws ASTExecutionException {
+    public Object expand(ExpressionNode node, Object params) throws ASTExecutionException {
         ExpressionExpander expander = expansionMap.get(node.type());
         
         if(expander == null) {
             throw new InvalidExpressionTypeException(node);
         }
         
-        return expander.expand(node, this);
+        return expander.expand(node, this, params);
     }
 }

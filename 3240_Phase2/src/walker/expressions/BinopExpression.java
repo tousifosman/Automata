@@ -13,45 +13,27 @@ import walker.exceptions.IncorrectNodeTypeException;
 
 public class BinopExpression implements ExpressionExpander {
     @Override
-    public List expand(ExpressionNode node, ExpressionDelegate delegate) throws ASTExecutionException {
-        List<Node> subnodes = node.subnodes();
+    public List expand(ExpressionNode node, ExpressionDelegate delegate, Object param) throws ASTExecutionException {
 
-
-        if (subnodes.isEmpty()
-                || !(subnodes.get(0) instanceof ExpressionNode)) {
-            throw new IncorrectNodeTypeException(this.getClass().getSimpleName() + " Error: Requires at least 1 ExpressionNode", subnodes.get(0));
+        if (!(node.value() instanceof String)) {
+            throw new ExpressionArgumentException(this.getClass().getSimpleName() + " Error: Requires a String as an argument");
         }
 
-        if (subnodes.size() == 1) {
-            Object result = delegate.expand((ExpressionNode) subnodes.get(0));
+        if (param instanceof Object[] && ((Object[]) param).length == 2) {
+            List list1 = (List)((Object[]) param)[0];
+            List list2 = (List)((Object[]) param)[1];
+            BinopType type = BinopType.toBinop((String) node.value());
+            
+            return type.apply(list1, list2);
 
-            if (!(result instanceof List)) {
-                throw new ExpressionExpansionException(this.getClass().getSimpleName() + " Error: Can only use Lists (" + result.getClass() + " given)");
-            }
-
-            return (List) result;
-        } else if (subnodes.size() == 2
-                && (subnodes.get(1) instanceof ExpressionNode)) {
-            if (!(node.value() instanceof String)) {
-                throw new ExpressionArgumentException(this.getClass().getSimpleName() + " Error: Value must be String");
-            }
-            BinopType binopType = BinopType.toBinop((String) node.value());
-
-            Object firstList = delegate.expand((ExpressionNode) subnodes.get(0));
-            Object secondList = delegate.expand((ExpressionNode) subnodes.get(1));
-
-            if (!(firstList instanceof List) || !(secondList instanceof List)) {
-                throw new ExpressionExpansionException(this.getClass().getSimpleName() + " Error: Can only use Lists (" + firstList.getClass() + " and " + secondList.getClass() + " given)");
-            }
-
-            return binopType.apply((List) firstList, (List) secondList);
         } else {
-            throw new IncorrectNodeTypeException(this.getClass().getSimpleName() + " Error: Requires 2 ExpressionNodes", subnodes.get(0));
+            throw new ExpressionArgumentException(this.getClass().getSimpleName() + " Error: Requires 2 lists as parameters");
+
         }
     }
 
     public static String type() {
-        return "binop";
+        return "BIN_OP";
     }
 
     enum BinopType {
