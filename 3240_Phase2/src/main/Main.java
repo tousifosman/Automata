@@ -118,7 +118,7 @@ public class Main extends JPanel {
                 tree = TreeSaver.load(input);
             } else {
                 ScriptScanner.scan(input, directory);
-                /*System.out.println("-> Tokens:");
+                System.out.println("-> Tokens:");
                 for (String a : ScriptScanner.tokens) {
                     System.out.println(a);
                 }
@@ -134,7 +134,7 @@ public class Main extends JPanel {
                 for (String a : ScriptScanner.regexes) {
                     System.out.println(a);
                 }
-                System.out.println("End");*/
+                System.out.println("End");
 
                 LLParser parser = new LLParser(ScriptScanner.identifiers, ScriptScanner.regexes, ScriptScanner.tokens);
                 tree = parser.parse();
