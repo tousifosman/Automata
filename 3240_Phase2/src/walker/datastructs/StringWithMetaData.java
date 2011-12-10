@@ -56,7 +56,7 @@ public class StringWithMetaData {
         }
     }
 
-    String getString() {
+    public String getString() {
         return string;
     }
 

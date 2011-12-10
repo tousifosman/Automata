@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import walker.ExpressionDelegate;
+import walker.datastructs.StringWithMetaData;
 import walker.exceptions.ASTExecutionException;
 import walker.exceptions.ExpressionArgumentException;
 import walker.exceptions.ExpressionExpansionException;
@@ -22,7 +23,7 @@ public class MaxFreqExpression implements ExpressionExpander {
         if (!(node.value() instanceof String)) {
             throw new ExpressionArgumentException(this.getClass().getSimpleName() + " Error: Value must be String");
         }
-        String id = (String)node.value();
+        String id = (String) node.value();
 
         Object value = idMap.get(id);
         if (value == null) {
@@ -30,21 +31,20 @@ public class MaxFreqExpression implements ExpressionExpander {
         }
 
         if (value instanceof List) {
-            List list = (List) value;
+            List<StringWithMetaData> list = (List) value;
 
             int maxSize = 0;
-            Object maxObject = null;
-            Counter counter = new Counter();
+            StringWithMetaData maxObject = null;
 
-            for (Object o : list) {
-                counter.increment(o);
-                if (counter.count(o) > maxSize) {
-                    maxSize = counter.count(o);
+            for (StringWithMetaData o : list) {
+                int size = o.size();
+                if (size > maxSize) {
+                    maxSize = size;
                     maxObject = o;
                 }
             }
 
-            return maxObject;
+            return maxObject.getString();
         } else {
             throw new ExpressionExpansionException(this.getClass().getSimpleName() + " Error: Can only use Lists (" + value.getClass() + " given)");
         }
@@ -52,29 +52,5 @@ public class MaxFreqExpression implements ExpressionExpander {
 
     public static String type() {
         return "maxfreqstring";
-    }
-
-    class Counter {
-        private Map<Object, Integer> internalCount;
-
-        public Counter() {
-            internalCount = new HashMap<Object, Integer>();
-        }
-
-        public void increment(Object o) {
-            if (!internalCount.containsKey(o)) {
-                internalCount.put(o, 0);
-            }
-
-            internalCount.put(o, internalCount.get(o) + 1);
-        }
-
-        public int count(Object o) {
-            if (!internalCount.containsKey(o)) {
-                internalCount.put(o, 0);
-            }
-
-            return internalCount.get(o);
-        }
     }
 }
