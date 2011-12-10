@@ -96,6 +96,16 @@ public class ScannerDriver {
                                 endIndex++;
                             }
                             break;
+                         case '\"':
+                            endIndex++;
+                            while (endIndex < line.length()) {
+                                if (line.charAt(endIndex) == '\"' && line.charAt(endIndex - 1) != '\\') {
+                                    longestToken = line.substring(startIndex, endIndex + 1);
+                                    break;
+                                }
+                                endIndex++;
+                            }
+                            break;
                     }
 //                    while (!accepted && endIndex < line.length()) {
 //                        endIndex += 1;
