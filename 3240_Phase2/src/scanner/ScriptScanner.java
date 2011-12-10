@@ -72,7 +72,7 @@ public class ScriptScanner {
      * @throws IOException 
      * @throws FileNotFoundException 
      */
-    public static void scan(String input) throws FileNotFoundException, IOException, SyntaxErrorException {
+    public static void scan(String input, File directory) throws FileNotFoundException, IOException, SyntaxErrorException {
         identifiers = new ArrayList<String>();
         regexes = new ArrayList<String>();
         strconsts = new ArrayList<String>();
@@ -83,13 +83,13 @@ public class ScriptScanner {
 
         DFA dfa = generateDFA("MiniRE_LexSpec.txt");
 
-        File temp_file = new File("temp.tmp");
+        File temp_file = new File(directory, "temp.tmp");
         FileWriter f = null;
         BufferedWriter b = null;
         PrintWriter p = null;
 
         try {
-            f = new FileWriter(temp_file, true);
+            f = new FileWriter(temp_file, false);
             b = new BufferedWriter(f);
             p = new PrintWriter(b);
 

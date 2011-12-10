@@ -83,8 +83,18 @@ public class StringWithMetaData {
             return false;
         }
     }
-    
+
     public int size() {
-        return metaData.size();
+        HashSet<String> countedFiles = new HashSet<String>();
+        for (MetaData data : metaData) {
+            countedFiles.add(data.getFile());
+        }
+        if (countedFiles.size() > 1) {
+            return 1;
+        } else {
+            return metaData.size();
+        }
+
+        //return metaData.size() - (countedFiles.size()-1);
     }
 }

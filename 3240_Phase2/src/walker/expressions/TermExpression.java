@@ -31,6 +31,7 @@ public class TermExpression implements ExpressionExpander {
         String regex = values[0].replace(" ", "");
         regex = regex.substring(1, regex.length()-1);
         String fileName = values[1];
+        fileName = fileName.substring(1, fileName.length()-1);
 
         File file = new File(directory, fileName);
 

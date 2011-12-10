@@ -9,10 +9,11 @@ import walker.exceptions.StatementExecutionException;
 
 public class ReplaceStatement implements StatementExecutor {
     protected File directory;
+
     public ReplaceStatement(File directory) {
         this.directory = directory;
     }
-    
+
     @Override
     public void execute(StatementNode node, ExpressionDelegate delegate) throws StatementExecutionException {
         if (!(node.value() instanceof String[])) {
@@ -27,7 +28,11 @@ public class ReplaceStatement implements StatementExecutor {
 
 
         String fileName1 = values[2];
+        fileName1 = fileName1.substring(1, fileName1.length() - 1);
+
         String fileName2 = values[3];
+        fileName2 = fileName2.substring(1, fileName2.length() - 1);
+
 
         if (fileName1.equals(fileName2)) {
             throw new StatementArgumentException(this.getClass().getSimpleName() + " Error: File1 and File2 cannot be the same file (" + fileName1 + ")");
