@@ -8,10 +8,12 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.io.*;
-import java.util.Scanner;
+import java.util.*;
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import parser.LLParser;
+import parser.MiniREErrorException;
 import walker.ASTWalker;
 import walker.exceptions.ASTExecutionException;
 import walker.expressions.*;
@@ -110,21 +112,42 @@ public class Main extends JPanel {
 
         AbstractSyntaxTree tree;
 
-        if (interpretMode) {
-            tree = TreeSaver.load(input);
-        } else {
-            // TODO - "compile" code from 'code' text area, report areas, or create tree
-            tree = getTestTree();
-            TreeSaver.save(tree, new File(directory, "ast.c"));
-
-        }
-
-        ASTWalker walker = new ASTWalker(stream, directory);
         try {
-            walker.walk(tree);
-        } catch (ASTExecutionException ex) {
-            stream.println("!! " + ex.getMessage());
-            JOptionPane.showMessageDialog(this, ex.getMessage(), "Runtime Error!", JOptionPane.ERROR_MESSAGE);
+            if (interpretMode) {
+                tree = TreeSaver.load(input);
+            } else {
+                String[] idTokens = {"match_these", "these", "match_the", "the_size", "the"};
+                String[] regexTokens = {"'[A-z a-z]*h[A-z a-z]*'", "'[A-z a-z]*the[A-z a-z]*'", "'[A-z a-z]*s[A-z a-z]*'"};
+                String[] testTokens = {"begin", "replace", "'[A-z a-z]*h[A-z a-z]*'", "with", "anana", "in", "input.txt", ">!", "result2.txt", ";",
+                    "match_these", "=", "(", "find", "'[A-z a-z]*the[A-z a-z]*'", "in", "input.txt", ")", "inters",
+                    "(", "find", "'[A-z a-z]*s[A-z a-z]*'", "in", "input.txt", ")", ";",
+                    "these", "=", "maxfreqstring", "(", "match_these", ")", ";",
+                    "match_the", "=", "(", "find", "'[A-z a-z]*the[A-z a-z]*'", "in", "input.txt", ")", ";",
+                    "the_size", "=", "#", "match_the", ";",
+                    "the", "=", "maxfreqstring", "(", "match_the", ")", ";",
+                    "print", "(", "match_the", ",", "the_size", ")", ";",
+                    "end"};
+                Stack<String> tokenStack = new Stack<String>();
+                for (int i = testTokens.length - 1; i >= 0; i--) {
+                    tokenStack.push(testTokens[i]);
+                }
+
+                Queue<Node> nodeQueue = new LinkedList<Node>();
+                LLParser parser = new LLParser(Arrays.asList(idTokens), Arrays.asList(regexTokens), tokenStack);
+                tree = parser.parse();
+                TreeSaver.save(tree, new File(directory, "ast.c"));
+
+            }
+
+            ASTWalker walker = new ASTWalker(stream, directory);
+            try {
+                walker.walk(tree);
+            } catch (ASTExecutionException ex) {
+                stream.println("!! " + ex.getMessage());
+                JOptionPane.showMessageDialog(this, ex.getMessage(), "Runtime Error!", JOptionPane.ERROR_MESSAGE);
+            }
+        } catch (MiniREErrorException e) {
+            JOptionPane.showMessageDialog(this, e.getMessage(), "Parsing Error!", JOptionPane.ERROR_MESSAGE);
         }
     }
 
@@ -179,8 +202,8 @@ public class Main extends JPanel {
         directory = chooser.getCurrentDirectory();
 
         File chosenFile = chooser.getSelectedFile();
-        if(chosenFile == null) return;
-        
+        if (chosenFile == null) return;
+
         if (!chosenFile.getPath().toLowerCase().endsWith(".txt")) {
             chosenFile = new File(chosenFile.getPath() + ".txt");
         }
@@ -223,7 +246,7 @@ public class Main extends JPanel {
             } else if (ae.getSource() == saveButton) {
                 save();
             } else if (ae.getSource() == interpretLabel) {
-                if(interpretLabel.getText().equals("Compile Mode")) {
+                if (interpretLabel.getText().equals("Compile Mode")) {
                     setInterpreted(true);
                 } else {
                     setInterpreted(false);
