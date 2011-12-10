@@ -310,8 +310,11 @@ public class LLParser {
 						|| TOKEN_TYPE.STATEMENT_LIST.equals(newTokenType) || TOKEN_TYPE.STATEMENT_LIST_TAIL.equals(newTokenType))
 						&& !(termTokens.contains(newTokenType)) && !(otherTokens.contains(newTokenType))){
 					ExpressionNode tempExpressionNode = expressionNodeStack.pop();
-					tempExpressionNode.setType(newRule.toString());
 					
+					if(!tempExpressionNode.type().equals(TOKEN_TYPE.BIN_OP.toString())){
+						tempExpressionNode.setType(newRule.toString());
+					}
+
 					if(!tempExpressionNode.type().equals(RULE_NUMER.FILENAME.toString())){
 						currentExpressionNode = tempExpressionNode;
 					}
