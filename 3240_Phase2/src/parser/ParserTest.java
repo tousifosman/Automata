@@ -27,6 +27,7 @@ public class ParserTest {
 				"match_the", "=", "(", "find", "'[A-z a-z]*the[A-z a-z]*'", "in", "input.txt", ")", ";",                                 
 				"the_size", "=", "#", "match_the", ";",                                 
 				"the", "=", "maxfreqstring" , "(", "match_the", ")", ";",
+				"print", "(", "match_the", ",", "the_size", ")", ";",
                                 "end"};
 
 		
