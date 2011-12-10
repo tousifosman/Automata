@@ -23,6 +23,8 @@ public class Main extends JPanel {
     private JTextArea code, output;
     private File directory;
     private JRootPane root;
+    boolean interpretMode = false;
+    private JButton interpretLabel;
 
     public static void main(String[] args) {
         JFrame frame = new JFrame("Phase II");
@@ -51,16 +53,22 @@ public class Main extends JPanel {
         clearOutputOnRun = new JCheckBox("Clear Output Before Run", true);
         logOutput = new JCheckBox("Log Output", true);
 
+        interpretLabel = new JButton("Compile Mode");
+        interpretLabel.addActionListener(new ButtonListener());
+
         loadButton.addActionListener(new ButtonListener());
         runButton.addActionListener(new ButtonListener());
         saveButton.addActionListener(new ButtonListener());
 
         JPanel topBar = new JPanel();
+        topBar.setLayout(new BoxLayout(topBar, BoxLayout.X_AXIS));
         topBar.add(loadButton);
         topBar.add(saveButton);
         topBar.add(runButton);
         topBar.add(logOutput);
         topBar.add(clearOutputOnRun);
+        topBar.add(Box.createHorizontalGlue());
+        topBar.add(interpretLabel);
 
         code = new JTextArea(20, 70);
         JScrollPane codeScroll = new JScrollPane(code);
@@ -99,11 +107,17 @@ public class Main extends JPanel {
 
 
         String input = code.getText();
-        //"compile" code from 'code' text area, report areas, or create tree
-        //AbstractSyntaxTree tree = getTestTree();
-        AbstractSyntaxTree tree = TreeSaver.load(input);
-        
-        TreeSaver.save(tree, new File(directory, "ast.c"));
+
+        AbstractSyntaxTree tree;
+
+        if (interpretMode) {
+            tree = TreeSaver.load(input);
+        } else {
+            // TODO - "compile" code from 'code' text area, report areas, or create tree
+            tree = getTestTree();
+            TreeSaver.save(tree, new File(directory, "ast.c"));
+
+        }
 
         ASTWalker walker = new ASTWalker(stream, directory);
         try {
@@ -143,6 +157,12 @@ public class Main extends JPanel {
             completeText.append(line);
         }
 
+        if (chosenFile.getName().endsWith(".c")) {
+            setInterpreted(true);
+        } else {
+            setInterpreted(false);
+        }
+
         code.setText(completeText.toString());
         root.putClientProperty("Window.documentModified", false);
         saveButton.setEnabled(false);
@@ -159,9 +179,16 @@ public class Main extends JPanel {
         directory = chooser.getCurrentDirectory();
 
         File chosenFile = chooser.getSelectedFile();
-
+        if(chosenFile == null) return;
+        
         if (!chosenFile.getPath().toLowerCase().endsWith(".txt")) {
             chosenFile = new File(chosenFile.getPath() + ".txt");
+        }
+
+        if (chosenFile.getName().endsWith(".c")) {
+            setInterpreted(true);
+        } else {
+            setInterpreted(false);
         }
 
 
@@ -195,6 +222,12 @@ public class Main extends JPanel {
                 run();
             } else if (ae.getSource() == saveButton) {
                 save();
+            } else if (ae.getSource() == interpretLabel) {
+                if(interpretLabel.getText().equals("Compile Mode")) {
+                    setInterpreted(true);
+                } else {
+                    setInterpreted(false);
+                }
             }
         }
     }
@@ -257,6 +290,15 @@ public class Main extends JPanel {
         @Override
         public void changedUpdate(DocumentEvent de) {
             setUpdated();
+        }
+    }
+
+    private void setInterpreted(boolean interpret) {
+        interpretMode = interpret;
+        if (interpret) {
+            interpretLabel.setText("Interpret Mode");
+        } else {
+            interpretLabel.setText("Compile Mode");
         }
     }
 

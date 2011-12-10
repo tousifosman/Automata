@@ -15,12 +15,12 @@ class TXTFilter extends FileFilter {
 
     @Override
     public boolean accept(File file) {
-        return file.getName().endsWith(".txt");
+        return file.getName().endsWith(".txt") || file.getName().endsWith(".c");
     }
 
     @Override
     public String getDescription() {
-        return ".TXT files";
+        return "miniRE file (.txt) and compiled ASTs (.c)";
     }
     
 }
