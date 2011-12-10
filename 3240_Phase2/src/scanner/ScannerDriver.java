@@ -69,6 +69,7 @@ public class ScannerDriver {
                         case ';':
                         case ')':
                         case '(':
+                        case ',':
                             newToken(line.substring(startIndex, startIndex + 1));
                             startIndex++;
                             endIndex = startIndex;
