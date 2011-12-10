@@ -40,12 +40,16 @@ public class ReplaceStatement implements StatementExecutor {
 
         File file1 = new File(directory, fileName1);
         File file2 = new File(directory, fileName2);
-
+        String regex = values[0].replace(" ", "");
+        regex = regex.substring(1, regex.length()-1);
+        String str = values[1];
+        str = str.substring(1, str.length()-1);
+        
         if (!file1.exists())
             throw new StatementArgumentException(this.getClass().getSimpleName() + " Error: " + file1 + " doesn't exist");
 
 
-        replace(values[0].replace(" ", ""), values[1], file1, file2);
+        replace(regex, str, file1, file2);
     }
 
     protected void replace(String regex, String string, File fromFile, File toFile) throws StatementExecutionException {
@@ -61,6 +65,7 @@ public class ReplaceStatement implements StatementExecutor {
                 String str = scan.nextLine();
                 String newStr = str.replaceAll(regex, string);
                 pwriter.println(newStr);
+                //System.out.println(regex + ", " + string + ", " + str + ", " + newStr);
             }
             pwriter.flush();
         } catch (FileNotFoundException ex) {
