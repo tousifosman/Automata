@@ -8,6 +8,8 @@ import java.util.Stack;
 
 import ast.AbstractSyntaxTree;
 import ast.Node;
+import java.util.ArrayDeque;
+import java.util.Deque;
 
 public class ParserTest {
 	
@@ -53,7 +55,7 @@ public class ParserTest {
 		
 		
 		
-		Stack<String> tokenStack = new Stack<String>();
+		Deque<String> tokenStack = new ArrayDeque<String>();
 		for(int i=testTokens.length-1; i>=0; i--){
 			tokenStack.push(testTokens[i]);
 		}

@@ -20,10 +20,10 @@ public class BinopExpression implements ExpressionExpander {
         }
 
         if (param instanceof Object[] && ((Object[]) param).length == 2) {
-            List list1 = (List)((Object[]) param)[0];
-            List list2 = (List)((Object[]) param)[1];
+            List list1 = (List) ((Object[]) param)[0];
+            List list2 = (List) ((Object[]) param)[1];
             BinopType type = BinopType.toBinop((String) node.value());
-            
+
             return type.apply(list1, list2);
 
         } else {
@@ -38,6 +38,8 @@ public class BinopExpression implements ExpressionExpander {
 
     enum BinopType {
         INTERS,
+        INTERSEC,
+        INTERSECT,
         UNION,
         DIFFERENCE;
 
@@ -53,6 +55,11 @@ public class BinopExpression implements ExpressionExpander {
             List newList;
             switch (this) {
                 case INTERS:
+                    newList = new StringList();
+                    newList.addAll(firstList);
+                    newList.retainAll(secondList);
+                    return newList;
+                case INTERSEC:
                     newList = new StringList();
                     newList.addAll(firstList);
                     newList.retainAll(secondList);

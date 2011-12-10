@@ -14,6 +14,7 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import parser.LLParser;
 import parser.MiniREErrorException;
+import scanner.ScriptScanner;
 import walker.ASTWalker;
 import walker.exceptions.ASTExecutionException;
 import walker.expressions.*;
@@ -116,24 +117,26 @@ public class Main extends JPanel {
             if (interpretMode) {
                 tree = TreeSaver.load(input);
             } else {
-                String[] idTokens = {"match_these", "these", "match_the", "the_size", "the"};
-                String[] regexTokens = {"'[A-z a-z]*h[A-z a-z]*'", "'[A-z a-z]*the[A-z a-z]*'", "'[A-z a-z]*s[A-z a-z]*'"};
-                String[] testTokens = {"begin", "replace", "'[A-z a-z]*h[A-z a-z]*'", "with", "anana", "in", "input.txt", ">!", "result2.txt", ";",
-                    "match_these", "=", "(", "find", "'[A-z a-z]*the[A-z a-z]*'", "in", "input.txt", ")", "inters",
-                    "(", "find", "'[A-z a-z]*s[A-z a-z]*'", "in", "input.txt", ")", ";",
-                    "these", "=", "maxfreqstring", "(", "match_these", ")", ";",
-                    "match_the", "=", "(", "find", "'[A-z a-z]*the[A-z a-z]*'", "in", "input.txt", ")", ";",
-                    "the_size", "=", "#", "match_the", ";",
-                    "the", "=", "maxfreqstring", "(", "match_the", ")", ";",
-                    "print", "(", "match_the", ",", "the_size", ")", ";",
-                    "end"};
-                Stack<String> tokenStack = new Stack<String>();
-                for (int i = testTokens.length - 1; i >= 0; i--) {
-                    tokenStack.push(testTokens[i]);
+                ScriptScanner.scan(input);
+                System.out.println("-> Tokens:");
+                for (String a : ScriptScanner.tokens) {
+                    System.out.println(a);
                 }
+                /*System.out.println("-> String Constants:");
+                for (String a : ScriptScanner.strconsts) {
+                    System.out.println(a);
+                }
+                System.out.println("-> Identifiers:");
+                for (String a : ScriptScanner.identifiers) {
+                    System.out.println(a);
+                }
+                System.out.println("-> Regexes:");
+                for (String a : ScriptScanner.regexes) {
+                    System.out.println(a);
+                }
+                System.out.println("End");*/
 
-                Queue<Node> nodeQueue = new LinkedList<Node>();
-                LLParser parser = new LLParser(Arrays.asList(idTokens), Arrays.asList(regexTokens), tokenStack);
+                LLParser parser = new LLParser(ScriptScanner.identifiers, ScriptScanner.regexes, ScriptScanner.tokens);
                 tree = parser.parse();
                 TreeSaver.save(tree, new File(directory, "ast.c"));
 
@@ -148,6 +151,8 @@ public class Main extends JPanel {
             }
         } catch (MiniREErrorException e) {
             JOptionPane.showMessageDialog(this, e.getMessage(), "Parsing Error!", JOptionPane.ERROR_MESSAGE);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, e.getMessage(), "Error!", JOptionPane.ERROR_MESSAGE);
         }
     }
 
