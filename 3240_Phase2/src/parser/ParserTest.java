@@ -56,7 +56,10 @@ public class ParserTest {
 		
 		LLParser parser = new LLParser(Arrays.asList(idTokens), Arrays.asList(regexTokens), tokenStack);
 		AbstractSyntaxTree tree = parser.parse();
-		Node headNode = tree.getHead();
+                System.out.println(tree);
+                
+                
+		/*Node headNode = tree.getHead();
 		while(headNode != null){
 			System.out.print(headNode.type()+"    ");
 			if(headNode.value() instanceof String){
@@ -122,8 +125,7 @@ public class ParserTest {
 			
 			
 			headNode= headNode.nextNode();
-		}
-		
+		}*/
 		
 
 	}
