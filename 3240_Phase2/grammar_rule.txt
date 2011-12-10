@@ -14,6 +14,7 @@
 <statement4> print ( <exp-list> ) ;
 <exp-list> <exp> <exp-list-tail>
 <exp-list-tail> , <exp> <exp-list-tail>
+<exp-list-tail1> empty
 <exp1> ID
 <exp2> ( <exp> ) 
 <exp3> <term> <exp-tail>
