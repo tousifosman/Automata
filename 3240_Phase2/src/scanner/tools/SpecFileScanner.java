@@ -100,7 +100,7 @@ public class SpecFileScanner {
             while (jScanner.hasNextLine()) {
                 line++;
                 curr = jScanner.nextLine();
-                System.out.println(curr);
+                //System.out.println(curr);
                 log("Line " + line + ": " + curr);
                 if (curr.length() <= 0) {
                     continue;
@@ -122,7 +122,7 @@ public class SpecFileScanner {
                 regex = new StringBuilder();
                 line++;
                 curr = jScanner.nextLine();
-                System.out.println(curr);
+               // System.out.println(curr);
                 log("Line " + line + ": " + curr);
                 if (curr.length() <= 0) {
                     continue;
