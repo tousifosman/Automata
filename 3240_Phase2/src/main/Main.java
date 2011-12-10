@@ -100,8 +100,10 @@ public class Main extends JPanel {
 
         String input = code.getText();
         //"compile" code from 'code' text area, report areas, or create tree
-        AbstractSyntaxTree tree = getTestTree();
-
+        //AbstractSyntaxTree tree = getTestTree();
+        AbstractSyntaxTree tree = TreeSaver.load(input);
+        
+        TreeSaver.save(tree, new File(directory, "ast.c"));
 
         ASTWalker walker = new ASTWalker(stream, directory);
         try {
@@ -119,7 +121,7 @@ public class Main extends JPanel {
         chooser.setFileFilter(new TXTFilter());
 
         chooser.showOpenDialog(this);
-        directory = chooser.getCurrentDirectory();
+        this.directory = chooser.getCurrentDirectory();
 
         File chosenFile = chooser.getSelectedFile();
         try {

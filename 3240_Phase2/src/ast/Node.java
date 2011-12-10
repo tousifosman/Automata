@@ -1,10 +1,12 @@
 package ast;
 
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
 public abstract class Node {
     protected List<Node> subnodes;
+    protected Node parent;
     protected Node next;
     protected String type;
     protected Object value;
@@ -43,9 +45,22 @@ public abstract class Node {
             this.subnodes = new LinkedList<Node>();
         }
         this.subnodes.add(child);
+        child.parent = this;
     }
 
     public void setSubnodes(List<Node> subnodes) {
         this.subnodes = subnodes;
+    }
+
+    public String toString() {
+        if (value instanceof Object[]) {
+            return this.getClass().getSimpleName() + " " + type + " " + Arrays.toString((Object[])value);
+        } else {
+            return this.getClass().getSimpleName() + " " + type + " " + value;
+        }
+    }
+    
+    public Node getParent() {
+        return parent;
     }
 }

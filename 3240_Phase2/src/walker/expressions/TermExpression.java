@@ -69,6 +69,6 @@ public class TermExpression implements ExpressionExpander {
     }
 
     public static String type() {
-        return "<term>";
+        return "term";
     }
 }

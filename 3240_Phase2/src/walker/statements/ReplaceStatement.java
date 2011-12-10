@@ -70,6 +70,6 @@ public class ReplaceStatement implements StatementExecutor {
     }
 
     public static String type() {
-        return "replace REGEX with ASCII-STR in  <file-names> ;";
+        return "replace";
     }
 }

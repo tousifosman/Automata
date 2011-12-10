@@ -51,7 +51,7 @@ public class MaxFreqExpression implements ExpressionExpander {
     }
 
     public static String type() {
-        return "maxfreqstring (ID);";
+        return "maxfreqstring";
     }
 
     class Counter {
