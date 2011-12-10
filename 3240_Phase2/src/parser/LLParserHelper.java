@@ -51,6 +51,10 @@ public class LLParserHelper {
 			return RULE_NUMER.DESTINATION_FILE;
 		}
 		
+		else if(tokenName.contains("exp-list-tail1")){
+			return RULE_NUMER.EXP_LIST_TAIL1;
+		}
+		
 		else if(tokenName.contains("exp-list-tail")){
 			return RULE_NUMER.EXP_LIST_TAIL;
 		}
