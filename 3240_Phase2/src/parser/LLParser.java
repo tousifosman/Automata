@@ -231,7 +231,7 @@ public class LLParser {
 					if(lookAheadToken == TOKEN_TYPE.END){
 						newRule= currentRow.get(TOKEN_TYPE.EMPTY);
 					}
-					else if(currentToken.equals(TOKEN_TYPE.EXP_TAIL) && lookAheadToken == TOKEN_TYPE.SEMI_COLON){
+					else if(currentToken.equals(TOKEN_TYPE.EXP_TAIL) && (lookAheadToken == TOKEN_TYPE.SEMI_COLON || lookAheadToken.equals(TOKEN_TYPE.RIGHT_PAREN))){
 						newRule= currentRow.get(TOKEN_TYPE.EMPTY);
 					}
 					else if(currentToken.equals(TOKEN_TYPE.EXP_LIST_TAIL) && (lookAheadToken == TOKEN_TYPE.RIGHT_PAREN || lookAheadToken.equals(TOKEN_TYPE.ASCII_STR))){
