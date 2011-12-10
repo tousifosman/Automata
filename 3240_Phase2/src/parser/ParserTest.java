@@ -18,13 +18,16 @@ public class ParserTest {
 		//System.out.println(parser.rulesToString());
 	
 //		Test Case 1 		
-		String[] idTokens  = {"myID", "myID1"};
-		String[] regexTokens = {"'regex'"};
-		String [] testTokens = {"begin", "replace", "'regex'", "with", "abcdd", "in", "file1", ">!", "file2", ";",
-				"myID", "=", "(", "find", "'regex'", "in", "file3", ")", "union", 
-				"(", "find", "'regex'", "in", "file4", ")", ";", 
-				"myID", "=", "maxfreqstring" , "(", "myID1", ")", ";",
-				"end"};
+		String[] idTokens  = {"match_these", "these", "match_the", "the_size", "the"};
+		String[] regexTokens = {"'[A-z a-z]*h[A-z a-z]*'", "'[A-z a-z]*the[A-z a-z]*'", "'[A-z a-z]*s[A-z a-z]*'"};
+		String [] testTokens = {"begin", "replace", "'[A-z a-z]*h[A-z a-z]*'", "with", "anana", "in", "input.txt", ">!", "result2.txt", ";",
+				"match_these", "=", "(", "find", "'[A-z a-z]*the[A-z a-z]*'", "in", "input.txt", ")", "inters", 
+				"(", "find", "'[A-z a-z]*s[A-z a-z]*'", "in", "input.txt", ")", ";", 
+				"these", "=", "maxfreqstring" , "(", "match_these", ")", ";",
+				"match_the", "=", "(", "find", "'[A-z a-z]*the[A-z a-z]*'", "in", "input.txt", ")", ";",                                 
+				"the_size", "=", "#", "match_the", ";",                                 
+				"the", "=", "maxfreqstring" , "(", "match_the", ")", ";",
+                                "end"};
 
 		
 		

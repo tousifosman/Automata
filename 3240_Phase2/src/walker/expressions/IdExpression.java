@@ -30,6 +30,6 @@ public class IdExpression implements ExpressionExpander {
     }
 
     public static String type() {
-        return "ID";
+        return "EXP1";
     }
 }
