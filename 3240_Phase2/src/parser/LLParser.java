@@ -5,6 +5,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Deque;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,7 +23,7 @@ public class LLParser {
 	List<String> identifiers;
 	List<String> regexes;
 	Stack<TOKEN_TYPE> parseStack;
-	Stack<String> inputStack;
+	Deque<String> inputStack;
 	
 	Stack<ExpressionNode> expressionNodeStack;
 	
@@ -57,7 +58,7 @@ public class LLParser {
 	
 	TOKEN_TYPE[] otherArray = {TOKEN_TYPE.SOURCE_FILE, TOKEN_TYPE.DESTINATION_FILE, TOKEN_TYPE.FILE_NAMES}; 
 	
-	String [] extraTokenArray = {"(", ")", ";", "in", "end", "find", "maxfreqstring"};
+	String [] extraTokenArray = {"(", ")", ";", "in", "end", "find", "maxfreqstring", ","};
 	
 	
 	
@@ -66,7 +67,7 @@ public class LLParser {
 	List<TOKEN_TYPE> termTokens = Arrays.asList(termArray);
 	List<String> extraTokens = Arrays.asList(extraTokenArray);
 	
-	public LLParser(List<String> ids, List<String>regex, Stack<String> input){
+	public LLParser(List<String> ids, List<String>regex, Deque<String> input){
 		identifiers = ids; 
 		this.regexes = regex;
 		this.inputStack = input;
